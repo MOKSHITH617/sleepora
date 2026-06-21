@@ -26,6 +26,20 @@ const AdminDashboard = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [homepageContent, setHomepageContent] = useState(null);
 
+  // AI Assistant and Knowledge States
+  const [faqs, setFaqs] = useState([]);
+  const [faqForm, setFaqForm] = useState({ question: '', answer: '', category: 'General' });
+  const [editingFaq, setEditingFaq] = useState(null);
+
+  const [websiteContent, setWebsiteContent] = useState({});
+  const [activeContentKey, setActiveContentKey] = useState('about_us');
+  const [editorContent, setEditorContent] = useState('');
+
+  const [trainedDocs, setTrainedDocs] = useState([]);
+  const [docFile, setDocFile] = useState(null);
+
+  const [analyticsData, setAnalyticsData] = useState(null);
+
   // loading & errors
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -80,12 +94,38 @@ const AdminDashboard = () => {
         setHomepageContent(homeRes.data.content);
         setHomepageForm(homeRes.data.content);
       }
+
+      // 1. Fetch FAQs
+      const faqsRes = await API.get('/faqs');
+      setFaqs(faqsRes.data.faqs || []);
+
+      // 2. Fetch website custom text sections
+      const webContentRes = await API.get('/website-content');
+      setWebsiteContent(webContentRes.data.data || {});
+
+      // 3. Fetch trained AI documents list
+      const docsRes = await API.get('/ai/documents');
+      setTrainedDocs(docsRes.data.documents || []);
+
+      // 4. Fetch Conversation Analytics
+      const analyticsRes = await API.get('/analytics');
+      setAnalyticsData(analyticsRes.data.metrics || null);
+
     } catch (err) {
       console.error('Failed to load dashboard resources:', err);
     } finally {
       setLoading(false);
     }
   };
+
+  // Sync website content editor area
+  useEffect(() => {
+    if (websiteContent && websiteContent[activeContentKey]) {
+      setEditorContent(websiteContent[activeContentKey]);
+    } else {
+      setEditorContent('');
+    }
+  }, [activeContentKey, websiteContent]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -335,6 +375,113 @@ const AdminDashboard = () => {
     setSubmitLoading(false);
   };
 
+  // FAQ CRUD handlers
+  const handleSaveFAQ = async (e) => {
+    e.preventDefault();
+    setSubmitLoading(true);
+    try {
+      if (editingFaq) {
+        await API.put(`/faqs/${editingFaq._id}`, faqForm);
+      } else {
+        await API.post('/faqs', faqForm);
+      }
+      await fetchDashboardData();
+      resetFAQForm();
+      alert('FAQ saved and vector index updated!');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to save FAQ.');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const handleEditFAQClick = (faq) => {
+    setEditingFaq(faq);
+    setFaqForm({
+      question: faq.question || '',
+      answer: faq.answer || '',
+      category: faq.category || 'General'
+    });
+  };
+
+  const handleDeleteFAQ = async (id) => {
+    if (!window.confirm('Delete this FAQ record? It will be removed from AI training vectors.')) return;
+    setSubmitLoading(true);
+    try {
+      await API.delete(`/faqs/${id}`);
+      await fetchDashboardData();
+      alert('FAQ deleted.');
+    } catch (err) {
+      alert('Failed to delete FAQ.');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const resetFAQForm = () => {
+    setEditingFaq(null);
+    setFaqForm({ question: '', answer: '', category: 'General' });
+  };
+
+  // Website Content editor handler
+  const handleSaveWebsiteContent = async (e) => {
+    e.preventDefault();
+    setSubmitLoading(true);
+    try {
+      await API.put(`/website-content/${activeContentKey}`, { content: editorContent });
+      await fetchDashboardData();
+      alert('Section updated and AI re-trained!');
+    } catch (err) {
+      alert('Failed to update website content section.');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  // AI Training Document handlers
+  const handleDocUpload = async (e) => {
+    e.preventDefault();
+    if (!docFile) {
+      alert('Please select a .pdf or .docx document.');
+      return;
+    }
+    setSubmitLoading(true);
+    const formData = new FormData();
+    formData.append('document', docFile);
+
+    try {
+      const response = await API.post('/ai/train-upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (response.data.success) {
+        alert(response.data.message);
+        setDocFile(null);
+        // Reset file input value
+        const fileInput = document.getElementById('aiDocInput');
+        if (fileInput) fileInput.value = '';
+        await fetchDashboardData();
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || 'Document indexing failed.');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const handleDeleteDoc = async (id) => {
+    if (!window.confirm('Remove this document from the AI Knowledge Base? All related chunks will be deleted.')) return;
+    setSubmitLoading(true);
+    try {
+      await API.delete(`/ai/documents/${id}`);
+      await fetchDashboardData();
+      alert('Document removed.');
+    } catch (err) {
+      alert('Failed to remove document.');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
   // Search/Filter leads
   const filteredLeads = leads.filter(lead => {
     const matchesCategory = !categoryFilter || lead.category === categoryFilter;
@@ -410,6 +557,30 @@ const AdminDashboard = () => {
             className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'homepage' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
           >
             Homepage Content
+          </button>
+          <button 
+            onClick={() => setActiveTab('faqs')}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'faqs' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+          >
+            FAQs Manager ({faqs.length})
+          </button>
+          <button 
+            onClick={() => setActiveTab('website_content')}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'website_content' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+          >
+            Website Content Manager
+          </button>
+          <button 
+            onClick={() => setActiveTab('ai_training')}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'ai_training' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+          >
+            AI Training Panel ({trainedDocs.length})
+          </button>
+          <button 
+            onClick={() => setActiveTab('analytics')}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'analytics' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+          >
+            Analytics Dashboard
           </button>
           <button 
             onClick={() => setActiveTab('profile')}
@@ -1275,6 +1446,333 @@ const AdminDashboard = () => {
                 </button>
 
               </form>
+            </div>
+          )}
+
+          {/* 8. FAQs CRUD MODULE */}
+          {activeTab === 'faqs' && (
+            <div className="animate-fade-in text-xs">
+              <h3 className="text-xl font-bold font-display text-primary mb-1">FAQs Manager</h3>
+              <p className="text-xs text-text-muted mb-6">Manage website FAQs and automatically synchronize them with the AI Voice Assistant</p>
+
+              {/* FAQ Form */}
+              <div className="bg-bg-light/45 border border-border p-4 rounded-sm mb-6">
+                <h4 className="font-bold text-xs text-primary mb-3">
+                  {editingFaq ? 'Edit FAQ Item' : 'Add New FAQ Item'}
+                </h4>
+                <form onSubmit={handleSaveFAQ} className="space-y-3 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="flex flex-col sm:col-span-2">
+                      <label className="font-bold text-primary mb-1">Question Description</label>
+                      <input 
+                        type="text" 
+                        value={faqForm.question}
+                        onChange={(e) => setFaqForm({ ...faqForm, question: e.target.value })}
+                        required
+                        placeholder="e.g. Do you manufacture custom sized mattresses?"
+                        className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="font-bold text-primary mb-1">Category</label>
+                      <input 
+                        type="text" 
+                        value={faqForm.category}
+                        onChange={(e) => setFaqForm({ ...faqForm, category: e.target.value })}
+                        required
+                        placeholder="e.g. Customization"
+                        className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="font-bold text-primary mb-1">Answer Description Details</label>
+                    <textarea 
+                      rows="3"
+                      value={faqForm.answer}
+                      onChange={(e) => setFaqForm({ ...faqForm, answer: e.target.value })}
+                      required
+                      placeholder="e.g. Yes! We can manufacture mattresses in any custom dimensions you specify..."
+                      className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none resize-none"
+                    ></textarea>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2 border-t border-border/60">
+                    <button 
+                      type="button" 
+                      onClick={resetFAQForm}
+                      className="border border-border py-1.5 px-4 rounded-sm hover:bg-bg-light transition-colors"
+                    >
+                      Reset Form
+                    </button>
+                    <button 
+                      type="submit"
+                      disabled={submitLoading}
+                      className="bg-primary hover:bg-primary-light text-white font-bold py-1.5 px-5 rounded-sm shadow-sm transition-colors"
+                    >
+                      {submitLoading ? 'Saving...' : 'Save FAQ Item'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* FAQs List Table */}
+              <div className="border border-border rounded-sm overflow-hidden">
+                <table className="w-full text-left">
+                  <thead className="bg-bg-light border-b border-border">
+                    <tr>
+                      <th className="p-3 font-bold text-primary w-[25%]">Question</th>
+                      <th className="p-3 font-bold text-primary w-[15%]">Category</th>
+                      <th className="p-3 font-bold text-primary w-[45%]">Answer</th>
+                      <th className="p-3 font-bold text-primary text-right w-[15%]">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {faqs.length > 0 ? (
+                      faqs.map(faq => (
+                        <tr key={faq._id} className="border-b border-border last:border-b-0 hover:bg-bg-light/20">
+                          <td className="p-3 font-semibold text-primary">{faq.question}</td>
+                          <td className="p-3"><span className="bg-border text-text-muted px-1.5 py-0.5 rounded text-[10px] font-semibold">{faq.category}</span></td>
+                          <td className="p-3 text-text-muted">{faq.answer}</td>
+                          <td className="p-3 text-right space-x-3">
+                            <button onClick={() => handleEditFAQClick(faq)} className="text-primary hover:underline font-bold">Edit</button>
+                            <button onClick={() => handleDeleteFAQ(faq._id)} className="text-red-500 hover:underline font-bold">Delete</button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="p-6 text-center text-text-muted">No FAQs found. Create one above to feed the AI memory.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* 9. WEBSITE CONTENT MODULE */}
+          {activeTab === 'website_content' && (
+            <div className="animate-fade-in text-xs">
+              <h3 className="text-xl font-bold font-display text-primary mb-1">Website Content Management</h3>
+              <p className="text-xs text-text-muted mb-6">Modify text content for static pages. Updates are automatically re-indexed for vector searches.</p>
+
+              <form onSubmit={handleSaveWebsiteContent} className="space-y-4">
+                <div className="flex flex-col max-w-sm">
+                  <label className="font-bold text-primary mb-1">Select Page Section to Edit</label>
+                  <select
+                    value={activeContentKey}
+                    onChange={(e) => setActiveContentKey(e.target.value)}
+                    className="bg-bg-light border border-border rounded-sm py-2 px-3 focus:outline-none text-primary cursor-pointer font-bold"
+                  >
+                    <option value="about_us">About Us Company Story</option>
+                    <option value="contact_info">Contact Details / Support Hours</option>
+                    <option value="store_locations">Outlets and Depots Locations</option>
+                    <option value="warranty_policy">Warranty Coverage Policy</option>
+                    <option value="delivery_info">Delivery / Shipping Information</option>
+                    <option value="return_policy">Returns / Replacement Policy</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col">
+                  <label className="font-bold text-primary mb-1">Page Markdown / Plain Text Copy</label>
+                  <textarea 
+                    rows="12"
+                    value={editorContent}
+                    onChange={(e) => setEditorContent(e.target.value)}
+                    required
+                    placeholder="Enter detailed page content text..."
+                    className="bg-bg-light border border-border rounded-sm p-4 focus:outline-none text-primary leading-relaxed font-sans"
+                  ></textarea>
+                </div>
+
+                <div className="flex justify-end border-t border-border pt-4">
+                  <button 
+                    type="submit"
+                    disabled={submitLoading}
+                    className="bg-primary hover:bg-primary-light text-white font-bold py-2.5 px-6 rounded-sm shadow-sm transition-colors"
+                  >
+                    {submitLoading ? 'Updating vectors...' : 'Save & Update AI Knowledge Base'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* 10. AI TRAINING PANEL */}
+          {activeTab === 'ai_training' && (
+            <div className="animate-fade-in text-xs">
+              <h3 className="text-xl font-bold font-display text-primary mb-1">AI Training & Vector Feeds</h3>
+              <p className="text-xs text-text-muted mb-6">Upload PDFs or Word Documents (catalogs, specifications, detailed policies) to feed the Vector Database context.</p>
+
+              {/* Upload Drop Zone */}
+              <div className="bg-bg-light border-2 border-dashed border-border/80 p-8 rounded text-center mb-8 flex flex-col items-center justify-center">
+                <span className="text-3xl mb-3">📁</span>
+                <h4 className="font-bold text-sm text-primary mb-1">Index PDF or DOCX Manuals</h4>
+                <p className="text-[10px] text-text-muted mb-4">Supported formats: PDF, DOCX (Max size: 10MB)</p>
+                
+                <form onSubmit={handleDocUpload} className="flex flex-col items-center gap-3">
+                  <input 
+                    type="file" 
+                    id="aiDocInput"
+                    accept=".pdf,.docx"
+                    onChange={(e) => setDocFile(e.target.files[0])}
+                    className="text-xs cursor-pointer max-w-xs"
+                  />
+                  <button
+                    type="submit"
+                    disabled={submitLoading || !docFile}
+                    className="bg-accent hover:bg-accent-hover text-primary font-extrabold py-2 px-6 rounded shadow-sm disabled:opacity-50 transition-colors"
+                  >
+                    {submitLoading ? 'Extracting Text Chunks...' : 'Train AI on Selected Document'}
+                  </button>
+                </form>
+              </div>
+
+              {/* Currently Trained Documents List */}
+              <div>
+                <h4 className="font-bold text-sm text-primary mb-4">Indexed Vector Documents</h4>
+                <div className="border border-border rounded-sm overflow-hidden">
+                  <table className="w-full text-left">
+                    <thead className="bg-bg-light border-b border-border">
+                      <tr>
+                        <th className="p-3 font-bold text-primary">Document Name</th>
+                        <th className="p-3 font-bold text-primary">Context Chunks</th>
+                        <th className="p-3 font-bold text-primary">Trained Date</th>
+                        <th className="p-3 font-bold text-primary text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {trainedDocs.length > 0 ? (
+                        trainedDocs.map(doc => (
+                          <tr key={doc.id} className="border-b border-border last:border-b-0 hover:bg-bg-light/20">
+                            <td className="p-3 font-semibold text-primary">{doc.name}</td>
+                            <td className="p-3 text-text-muted">{doc.chunksCount} vectors</td>
+                            <td className="p-3 text-text-muted">{new Date(doc.createdAt).toLocaleDateString()}</td>
+                            <td className="p-3 text-right">
+                              <button 
+                                onClick={() => handleDeleteDoc(doc.id)}
+                                className="text-red-500 hover:underline font-bold"
+                              >
+                                Delete Source
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="4" className="p-6 text-center text-text-muted">No custom catalogs uploaded yet. Use the selector above.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 11. ANALYTICS DASHBOARD */}
+          {activeTab === 'analytics' && (
+            <div className="animate-fade-in text-xs space-y-8">
+              <div>
+                <h3 className="text-xl font-bold font-display text-primary mb-1">Conversational Analytics</h3>
+                <p className="text-xs text-text-muted">Monitor assistant volume, accuracy feedback, and language usage charts</p>
+              </div>
+
+              {analyticsData ? (
+                <>
+                  {/* Stats Summary Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div className="bg-bg-light border border-border p-4 rounded text-center">
+                      <div className="text-2xl font-black text-primary">{analyticsData.totalConversations}</div>
+                      <div className="text-[9px] text-text-muted font-bold uppercase tracking-wider mt-1">Total Conversations</div>
+                    </div>
+                    <div className="bg-bg-light border border-border p-4 rounded text-center">
+                      <div className="text-2xl font-black text-[#10B981]">{analyticsData.totalLeads}</div>
+                      <div className="text-[9px] text-text-muted font-bold uppercase tracking-wider mt-1">leads Generated</div>
+                    </div>
+                    <div className="bg-bg-light border border-border p-4 rounded text-center">
+                      <div className="text-2xl font-black text-primary">{analyticsData.satisfactionRate}%</div>
+                      <div className="text-[9px] text-text-muted font-bold uppercase tracking-wider mt-1">Satisfaction Score</div>
+                    </div>
+                    <div className="bg-bg-light border border-border p-4 rounded text-center flex flex-col items-center justify-center">
+                      <div className="text-sm font-bold text-text-muted flex gap-2">
+                        <span className="text-green-600">👍 {analyticsData.feedback.helpful}</span>
+                        <span className="text-red-500">👎 {analyticsData.feedback.unhelpful}</span>
+                      </div>
+                      <div className="text-[9px] text-text-muted font-bold uppercase tracking-wider mt-1.5">User Feedback ratings</div>
+                    </div>
+                  </div>
+
+                  {/* Languages and Topic Breakdown charts */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                    
+                    {/* Languages Chart */}
+                    <div className="bg-white border border-border p-5 rounded">
+                      <h4 className="font-bold text-sm text-primary mb-4">Interactions by Language Locale</h4>
+                      <div className="space-y-3.5">
+                        {analyticsData.languages.map(lang => {
+                          const percentage = analyticsData.totalConversations > 0 
+                            ? Math.round((lang.count / analyticsData.totalConversations) * 100)
+                            : 0;
+                          return (
+                            <div key={lang.name} className="space-y-1">
+                              <div className="flex justify-between font-bold text-[10px] text-primary">
+                                <span>{lang.name}</span>
+                                <span>{lang.count} ({percentage}%)</span>
+                              </div>
+                              <div className="w-full bg-border h-2 rounded-full overflow-hidden">
+                                <div className="bg-primary h-full" style={{ width: `${percentage}%` }}></div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Popular Query Topics Chart */}
+                    <div className="bg-white border border-border p-5 rounded">
+                      <h4 className="font-bold text-sm text-primary mb-4">Most Queried Intent Topics</h4>
+                      <div className="space-y-3.5">
+                        {analyticsData.topics.map(topic => {
+                          const totalLogs = analyticsData.totalConversations || 1;
+                          const percentage = Math.min(Math.round((topic.count / totalLogs) * 100), 100);
+                          return (
+                            <div key={topic.name} className="space-y-1">
+                              <div className="flex justify-between font-bold text-[10px] text-primary">
+                                <span>{topic.name} Related</span>
+                                <span>{topic.count} hits</span>
+                              </div>
+                              <div className="w-full bg-border h-2 rounded-full overflow-hidden">
+                                <div className="bg-accent h-full" style={{ width: `${percentage}%` }}></div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Popular Product mentions aggregated from leads */}
+                  <div className="bg-white border border-border p-5 rounded pt-4 max-w-md">
+                    <h4 className="font-bold text-sm text-primary mb-4">Top Custom Inquired Products</h4>
+                    <ul className="divide-y divide-border">
+                      {analyticsData.topProducts.map((p, idx) => (
+                        <li key={idx} className="py-2.5 flex justify-between items-center text-xs">
+                          <span className="font-bold text-primary">{idx + 1}. {p.name}</span>
+                          <span className="bg-primary/5 text-primary px-2.5 py-0.5 rounded font-bold">{p.count} submissions</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                </>
+              ) : (
+                <div className="text-center py-20 text-xs text-text-muted">
+                  No conversation logs available to aggregate statistics.
+                </div>
+              )}
+
             </div>
           )}
 

@@ -10,6 +10,9 @@ import Manufacturing from './pages/Manufacturing';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import About from './pages/About';
+import Warranty from './pages/Warranty';
+import Stores from './pages/Stores';
 import { AuthProvider } from './context/AuthContext';
 
 function App() {
@@ -20,11 +23,17 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/mattresses" element={<Mattresses />} />
+            <Route path="/products/mattresses" element={<Mattresses />} />
             <Route path="/mattresses/:slug" element={<MattressDetail />} />
             <Route path="/sofas" element={<Sofas />} />
+            <Route path="/products/sofas" element={<Sofas />} />
             <Route path="/sofas/:slug" element={<SofaDetail />} />
             <Route path="/factory" element={<Manufacturing />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/contacts" element={<Contact />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/warranty" element={<Warranty />} />
+            <Route path="/stores" element={<Stores />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>

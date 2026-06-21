@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import VoiceAssistant from '../components/VoiceAssistant';
 
 const MainLayout = ({ children }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -188,6 +189,8 @@ const MainLayout = ({ children }) => {
           </div>
         </div>
       </footer>
+
+      <VoiceAssistant />
 
     </div>
   );

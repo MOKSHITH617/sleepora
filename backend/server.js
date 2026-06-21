@@ -4,7 +4,9 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
 const connectDB = require('./config/db');
+
 require('dotenv').config();
+
 
 // Initialize express application
 const app = express();
@@ -16,6 +18,54 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+// Custom Security: In-Memory IP Rate Limiter
+const rateLimits = new Map();
+const rateLimiter = (req, res, next) => {
+  const ip = req.ip;
+  const now = Date.now();
+  const limitWindow = 60 * 1000; // 1 minute
+  const maxRequests = 120; // 120 requests per minute
+
+  if (!rateLimits.has(ip)) {
+    rateLimits.set(ip, []);
+  }
+
+  const timestamps = rateLimits.get(ip).filter(t => now - t < limitWindow);
+  timestamps.push(now);
+  rateLimits.set(ip, timestamps);
+
+  if (timestamps.length > maxRequests) {
+    return res.status(429).json({ success: false, message: 'Too many requests from this IP. Please try again later.' });
+  }
+  next();
+};
+app.use(rateLimiter);
+
+// Custom Security: Input Sanitization against XSS
+const sanitizeInput = (req, res, next) => {
+  const sanitize = (val) => {
+    if (typeof val === 'string') {
+      return val.replace(/<script[^>]*>([\S\s]*?)<\/script>/gi, '').trim();
+    }
+    if (Array.isArray(val)) {
+      return val.map(sanitize);
+    }
+    if (typeof val === 'object' && val !== null) {
+      const cleaned = {};
+      for (const key in val) {
+        cleaned[key] = sanitize(val[key]);
+      }
+      return cleaned;
+    }
+    return val;
+  };
+  req.body = sanitize(req.body);
+  req.query = sanitize(req.query);
+  req.params = sanitize(req.params);
+  next();
+};
+app.use(sanitizeInput);
 
 // Configure Helmet to allow cross-origin assets loading
 app.use(helmet({
@@ -38,6 +88,10 @@ app.use('/api/leads', require('./routes/leadRoutes'));
 app.use('/api/testimonials', require('./routes/testimonialRoutes'));
 app.use('/api/homepage', require('./routes/homepageRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
+app.use('/api/faqs', require('./routes/faqRoutes'));
+app.use('/api/website-content', require('./routes/websiteContentRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
+app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
 // Dynamic XML Sitemap Endpoint
 const { generateSitemapXml } = require('./utils/sitemap');
