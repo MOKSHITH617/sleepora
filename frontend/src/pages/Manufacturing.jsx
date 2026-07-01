@@ -1,5 +1,46 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MetaTags from '../components/MetaTags';
+
+const ScrollRevealItem = ({ children, delay = 0 }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => {
+      if (elementRef.current) {
+        observer.unobserve(elementRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div
+      ref={elementRef}
+      className={`transition-all duration-700 transform ${
+        isVisible 
+          ? 'opacity-100 translate-y-0 scale-100' 
+          : 'opacity-0 translate-y-12 scale-[0.98] pointer-events-none'
+      }`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
 
 const Manufacturing = () => {
   const steps = [
@@ -48,76 +89,94 @@ const Manufacturing = () => {
   ];
 
   return (
-    <div className="max-w-[1200px] mx-auto px-6 py-12 select-none">
+    <div className="max-w-[1480px] mx-auto px-6 pt-10 pb-[25px] select-none bg-[#FAF8F5]">
       <MetaTags 
         title="Our Manufacturing Capability | Direct Mattress Factory"
         description="Take a look inside our manufacturing floor. Learn how we foam, cut, stitch, and test our premium mattresses and custom sofas direct from raw materials."
       />
 
-      <div className="text-center max-w-[650px] mx-auto mb-16">
-        <span className="text-xs font-bold text-accent uppercase tracking-wider mb-2 inline-block">Direct From Factory</span>
-        <h1 className="text-3xl md:text-4xl font-extrabold font-display mb-4">Inside Our Manufacturing Operations</h1>
-        <p className="text-sm text-text-muted leading-relaxed">
+      <div className="text-center max-w-[650px] mx-auto mb-4 animate-fade-in">
+        <span className="text-xs font-bold text-[#7C5F43] uppercase tracking-[2px] mb-3 inline-block">Direct From Factory</span>
+        <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#2A211D] mb-4">Inside Our Manufacturing Operations</h1>
+        <p className="text-[13px] text-[#8E7D75] leading-relaxed">
           We do not just retail mattresses. We run independent foaming, slicing, cover sewing, and edge tape binding machines to control comfort standards.
         </p>
       </div>
 
       {/* --- IMAGE COLLAGE DISPLAY --- */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-        <div className="md:col-span-2 relative pt-[50%] rounded-md overflow-hidden border border-border shadow-sm">
-          <img src="/images/factory_floor.png" alt="Factory assembly floor" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-6">
-            <span className="text-white font-display font-semibold text-lg">TimeWell Assembly Operations Floor</span>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+        <div className="md:col-span-2 relative pt-[50%] overflow-hidden border border-[#EADFC9]/50 shadow-xs rounded-none bg-white p-2 group">
+          <img 
+            src="/images/factory_floor.png" 
+            alt="Factory assembly floor" 
+            className="absolute inset-0 w-full h-full object-cover p-2 transition-transform duration-700 group-hover:scale-[1.025]" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-6 m-2 z-10">
+            <span className="text-white font-serif font-bold text-lg tracking-wide">TimeWell Assembly Operations Floor</span>
           </div>
         </div>
         
-        <div className="grid grid-rows-2 gap-6">
-          <div className="relative pt-[50%] md:pt-0 rounded-md overflow-hidden border border-border shadow-sm">
-            <img src="/images/workers_crafting.png" alt="Stitching cover tape edges" className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-4">
-              <span className="text-white font-display font-semibold text-xs">Edge Tape Binding Machine</span>
+        <div className="grid grid-rows-2 gap-5">
+          <div className="relative pt-[50%] md:pt-0 overflow-hidden border border-[#EADFC9]/50 shadow-xs rounded-none bg-white p-1.5 group">
+            <img 
+              src="/images/workers_crafting.png" 
+              alt="Stitching cover tape edges" 
+              className="absolute inset-0 w-full h-full object-cover p-1.5 transition-transform duration-700 group-hover:scale-[1.025]" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-4 m-1.5 z-10">
+              <span className="text-white font-serif font-bold text-xs tracking-wide">Edge Tape Binding Machine</span>
             </div>
           </div>
-          <div className="relative pt-[50%] md:pt-0 rounded-md overflow-hidden border border-border shadow-sm">
-            <img src="/images/latex_mattress.png" alt="Natural Latex Curing" className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-4">
-              <span className="text-white font-display font-semibold text-xs">Natural Latex Curing Core Blocks</span>
+          <div className="relative pt-[50%] md:pt-0 overflow-hidden border border-[#EADFC9]/50 shadow-xs rounded-none bg-white p-1.5 group">
+            <img 
+              src="/images/latex_mattress.png" 
+              alt="Natural Latex Curing" 
+              className="absolute inset-0 w-full h-full object-cover p-1.5 transition-transform duration-700 group-hover:scale-[1.025]" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-4 m-1.5 z-10">
+              <span className="text-white font-serif font-bold text-xs tracking-wide">Natural Latex Curing Core Blocks</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* --- STEPS TIMELINE STORYTELLING --- */}
-      <div className="relative border-l-2 border-border ml-4 md:ml-36 pl-8 md:pl-12 space-y-16">
+      <div className="relative border-l border-[#EADFC9]/55 ml-4 md:ml-36 pl-8 md:pl-12 space-y-6">
         
         {steps.map((s, idx) => (
-          <div key={idx} className="relative animate-fade-in">
-            {/* Step node indicator */}
-            <span className="absolute -left-[50px] md:-left-[82px] top-0 w-[36px] h-[36px] bg-primary text-accent rounded-full border-2 border-white flex items-center justify-center font-display font-bold text-sm shadow-md">
-              {s.step}
-            </span>
+          <ScrollRevealItem key={idx} delay={idx % 2 * 100}>
+            <div className="relative group mb-10 last:mb-0">
+              {/* Step node indicator */}
+              <span className="absolute -left-[50px] md:-left-[80px] top-0 w-9 h-9 bg-white text-[#7C5F43] rounded-none border border-[#7C5F43] flex items-center justify-center font-serif font-bold text-sm shadow-xs group-hover:bg-[#7C5F43] group-hover:text-white group-hover:scale-110 transition-all duration-300">
+                {s.step}
+              </span>
 
-            {/* Content card */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-white border border-border rounded-md shadow-sm p-6 md:p-8 hover:border-accent/30 transition-all duration-300">
-              
-              <div className="md:col-span-8">
-                <span className="text-[10px] font-bold text-accent uppercase tracking-wider mb-1 block">
-                  {s.subtitle}
-                </span>
-                <h3 className="text-xl font-bold font-display text-primary mb-3">
-                  {s.title}
-                </h3>
-                <p className="text-xs text-text-muted leading-relaxed">
-                  {s.desc}
-                </p>
+              {/* Content card */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-white border border-[#EADFC9]/45 rounded-none shadow-[0_4px_20px_rgba(42,33,29,0.02)] p-5 md:p-6 group-hover:border-[#7C5F43]/40 group-hover:shadow-[0_12px_32px_rgba(42,33,29,0.06)] group-hover:-translate-y-1 transition-all duration-300 transform">
+                
+                <div className="md:col-span-8">
+                  <span className="text-[10px] font-bold text-[#7C5F43] uppercase tracking-[1.5px] mb-1.5 block">
+                    {s.subtitle}
+                  </span>
+                  <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-3">
+                    {s.title}
+                  </h3>
+                  <p className="text-[12px] text-[#8E7D75] leading-relaxed">
+                    {s.desc}
+                  </p>
+                </div>
+
+                <div className="md:col-span-4 relative pt-[50%] md:pt-[70%] rounded-none overflow-hidden border border-[#EADFC9]/30 bg-[#FAF5EF]">
+                  <img 
+                    src={s.img} 
+                    alt={s.title} 
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                  />
+                </div>
+
               </div>
-
-              <div className="md:col-span-4 relative pt-[50%] md:pt-[70%] rounded-sm overflow-hidden border border-border bg-bg-light">
-                <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover" />
-              </div>
-
             </div>
-          </div>
+          </ScrollRevealItem>
         ))}
 
       </div>

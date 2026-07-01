@@ -5,11 +5,9 @@ const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const isMattress = product.category === 'mattress';
 
-  // Baseline prices (Starting From)
+  // Starting price
   const currentPrice = product.basePrice;
-  const retailPrice = Math.round(product.basePrice * product.retailMultiplier);
-  const savings = retailPrice - currentPrice;
-  const savingsPercent = Math.round((savings / retailPrice) * 100);
+  const warranty = product.specifications?.['Warranty'] || '10 Years Warranty';
 
   const handleWhatsAppEnquiry = (e) => {
     e.preventDefault();
@@ -51,97 +49,108 @@ Please guide me on how I can customize seating, fabric materials, and colors!`;
 
   const detailPath = isMattress ? `/mattresses/${product.slug}` : `/sofas/${product.slug}`;
   const imgUrl = product.images?.[0] || '/images/ortho_mattress.png';
+  const whatsappNumber = '919876543210';
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi, I am interested in ${product.name}`)}`;
 
   return (
-    <div className="w-full flex flex-col bg-white border border-border rounded-lg shadow-sm overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-lg group relative">
+    <div className="bg-white rounded-xl border border-[#E6DED2] overflow-hidden flex flex-col justify-between shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.10)] hover:border-[#C7A36B] hover:-translate-y-2 transition-all duration-300 group h-[430px] max-h-[445px]">
       
-      {/* Badge */}
-      {product.isFeatured && (
-        <span className="absolute top-3 left-3 bg-accent text-primary px-2 py-0.5 rounded text-[9px] font-extrabold tracking-[0.5px] z-10 shadow">
-          {isMattress ? 'Top Seller' : 'Featured Craft'}
-        </span>
-      )}
-
-      {/* Image Container with Breathing Room */}
-      <div className="mx-3.5 mt-3.5 relative pt-[36%] bg-bg-light overflow-hidden rounded border border-border/40 shadow-sm">
+      {/* IMAGE SECTION — 225px (~52% of 430px) */}
+      <div className="h-[225px] flex-shrink-0 overflow-hidden relative border-b border-[#E6DED2]">
         <img 
           src={imgUrl} 
           alt={product.name} 
-          className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        
+        {/* Desktop-only hover overlay */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-xs flex flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 hidden lg:flex">
+          <Link 
+            to={detailPath}
+            className="w-40 py-2.5 bg-white hover:bg-[#F2ECE3] text-[#2A2A2A] text-[10px] tracking-widest uppercase font-semibold rounded-full shadow-md transition-colors flex items-center justify-center space-x-1.5"
+          >
+            <svg className="h-3.5 w-3.5 text-[#6B4F3B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span>View Details</span>
+          </Link>
+          
+          <button 
+            onClick={handleGetQuote}
+            className="w-40 py-2.5 bg-[#6B4F3B] hover:bg-[#A67C52] text-white text-[10px] tracking-widest uppercase font-semibold rounded-full shadow-md transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
+          >
+            <span>Get Quote</span>
+          </button>
+          
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-40 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] tracking-widest uppercase font-semibold rounded-full shadow-md transition-colors flex items-center justify-center space-x-1.5"
+          >
+            <svg className="h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
+            </svg>
+            <span>WhatsApp</span>
+          </a>
+        </div>
       </div>
 
-      {/* Info Body */}
-      <div className="p-4 flex-grow flex flex-col justify-between">
-        <div>
-          {/* Category Badge & Rating Row */}
-          <div className="flex justify-between items-center mb-1.5">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-primary-light bg-primary-light/10 px-1.5 py-0.5 rounded">
-              {isMattress ? 'Mattress' : 'Sofa'}
-            </span>
-            <span className="flex items-center gap-1 text-accent text-[10px] font-semibold">
-              <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              {product.ratings} ({product.reviewsCount})
-            </span>
-          </div>
-
-          {/* Title */}
-          <h3 className="text-sm md:text-base font-extrabold font-display text-primary mb-1 line-clamp-1 group-hover:text-accent transition-colors duration-300">
+      {/* CONTENT SECTION — padding 16px (p-4), compact gaps */}
+      <div className="p-4 flex-grow flex flex-col justify-between text-left gap-1.5">
+        <div className="space-y-1">
+          {/* Product Name */}
+          <h3 className="text-[15px] font-semibold tracking-wide font-serif text-[#2A2A2A] leading-tight line-clamp-1">
             {product.name}
           </h3>
           
-          {/* Description */}
-          <p className="text-[11.5px] text-text-muted leading-snug mb-2.5 line-clamp-2">
-            {product.shortDescription}
+          {/* Price */}
+          <p className="text-sm font-bold text-[#A67C52] font-serif leading-none">
+            ₹{currentPrice.toLocaleString('en-IN')}
           </p>
+          
+          {/* Warranty with shield icon */}
+          <div className="flex items-center space-x-2 text-[10px] text-[#2A2A2A]/50">
+            <svg className="h-3.5 w-3.5 text-[#C7A36B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+            </svg>
+            <span>{warranty}</span>
+          </div>
+          
+          {/* Features list */}
+          <ul className="space-y-0.5 pt-1.5 border-t border-[#E6DED2] text-[11px] text-[#2A2A2A]/60 font-light leading-[1.3]">
+            {product.benefits?.slice(0, 3).map((benefit, idx) => (
+              <li key={idx} className="flex items-center space-x-1.5">
+                <span className="text-[#C7A36B] font-bold">✓</span>
+                <span>{benefit}</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {/* Pricing Comparison (Starting From & Savings) */}
-        <div className="border-t border-border pt-2.5 mt-auto">
-          <div className="flex justify-between items-end mb-3">
-            <div className="text-left">
-              <span className="block text-[8px] text-text-muted font-bold uppercase tracking-wider leading-none mb-1">Starting From</span>
-              <span className="text-lg font-black text-primary leading-none">
-                ₹{currentPrice.toLocaleString('en-IN')}
-              </span>
-            </div>
-            <div className="text-right">
-              <span className="inline-block bg-accent-light text-primary font-bold text-[9.5px] px-2 py-0.75 rounded shadow-xs border border-accent/20">
-                Save {savingsPercent}%
-              </span>
-            </div>
-          </div>
-
-          {/* Symmetrical Button Layout */}
-          <div className="grid grid-cols-3 gap-2">
-            <Link 
-              to={detailPath}
-              className="bg-primary-light text-white text-[10px] font-bold h-8 rounded flex items-center justify-center hover:bg-primary text-center transition-all duration-300 active:scale-95 shadow-xs"
-            >
-              Details
-            </Link>
-            
-            <button 
-              onClick={handleGetQuote}
-              className="bg-accent hover:bg-accent-hover text-primary font-bold text-[10px] h-8 rounded flex items-center justify-center shadow-gold hover:shadow transition-all duration-300 active:scale-95"
-            >
-              Get Quote
-            </button>
-            
-            <button 
-              onClick={handleWhatsAppEnquiry}
-              className="bg-whatsapp hover:bg-whatsapp-dark text-white rounded flex items-center justify-center gap-1 h-8 transition-all duration-300 active:scale-95 shadow-xs hover:shadow text-[10px] font-bold w-full"
-              title="Inquire on WhatsApp"
-            >
-              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.432 2.503 1.157 3.473L6.5 20.5l5.244-1.378c.905.492 1.944.75 3.02.75 3.182 0 5.767-2.586 5.768-5.766 0-3.18-2.585-5.766-5.766-5.766zm2.75 7.64c-.161-.081-.954-.471-1.102-.524-.148-.053-.255-.08-.363.08-.108.16-.417.524-.51.63-.095.107-.19.12-.35.04-.16-.08-.68-.25-1.295-.8-.479-.427-.802-.954-.897-1.114-.094-.16-.01-.247.07-.327.072-.073.161-.187.242-.28.08-.094.108-.16.162-.267.054-.107.027-.2-.014-.28-.04-.08-.363-.873-.497-1.202-.132-.32-.278-.277-.38-.282-.098-.005-.213-.005-.33-.005-.115 0-.303.043-.462.213-.158.17-.604.59-.604 1.44 0 .85.618 1.67.704 1.789.086.117 1.213 1.853 2.94 2.597.41.177.73.282.98.362.414.13.79.112 1.088.067.332-.05.955-.39 1.09-.768.134-.378.134-.702.094-.769-.04-.067-.148-.107-.309-.188z"/>
-              </svg>
-              <span>WhatsApp</span>
-            </button>
-          </div>
+        {/* Mobile-only action buttons */}
+        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E6DED2] lg:hidden">
+          <Link
+            to={detailPath}
+            className="py-2 text-[11px] font-bold uppercase tracking-wider text-white bg-[#6B4F3B] hover:bg-[#A67C52] rounded transition-all text-center shadow-sm"
+          >
+            Details
+          </Link>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="py-2 text-[11px] font-bold uppercase tracking-wider text-[#6B4F3B] hover:bg-[#F2ECE3] border border-[#6B4F3B] rounded transition-all text-center flex items-center justify-center space-x-1"
+          >
+            <svg className="h-3.5 w-3.5 text-emerald-600 fill-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
+            </svg>
+            <span>WhatsApp</span>
+          </a>
         </div>
-
       </div>
+
     </div>
   );
 };

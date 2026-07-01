@@ -34,21 +34,21 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-bg-light px-6 select-none animate-fade-in">
+    <div className="min-h-[80vh] flex items-center justify-center bg-[#FAF8F5] px-6 select-none animate-fade-in">
       <MetaTags title="Admin Login" description="Administrative access panel login screen." />
 
-      <div className="bg-white border border-border rounded-md shadow-md max-w-md w-full p-8">
+      <div className="bg-white border border-[#EADFC9]/45 rounded-none shadow-sm max-w-md w-full p-8">
         
         <div className="text-center mb-8">
-          <div className="w-[48px] h-[48px] bg-gradient-to-br from-accent to-[#B3860B] rounded-[50%_50%_50%_0] flex items-center justify-center text-primary font-black text-xl mx-auto mb-3">
+          <div className="w-12 h-12 bg-[#7C5F43] rounded-none flex items-center justify-center text-[#E3D8C4] font-serif font-black text-xl mx-auto mb-3.5">
             TW
           </div>
-          <h2 className="text-2xl font-bold font-display text-primary mb-1">Admin Dashboard Portal</h2>
-          <p className="text-xs text-text-muted">Enter administrative credentials to manage catalog items</p>
+          <h2 className="text-2xl font-serif font-bold text-[#2A211D] mb-1">Admin Dashboard Portal</h2>
+          <p className="text-xs text-[#8E7D75]">Enter administrative credentials to manage catalog items</p>
         </div>
 
         {(localError || authError) && (
-          <div className="bg-red-50 text-red-600 text-xs p-3 rounded border border-red-200 mb-5 font-semibold text-center select-none">
+          <div className="bg-red-50 text-red-700 text-xs p-3 rounded-none border border-red-200 mb-5 font-semibold text-center select-none">
             {localError || authError}
           </div>
         )}
@@ -56,7 +56,7 @@ const AdminLogin = () => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           
           <div className="flex flex-col">
-            <label htmlFor="login-email" className="text-[10px] font-bold text-primary uppercase tracking-wider mb-1">Admin Email Address</label>
+            <label htmlFor="login-email" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Admin Email Address</label>
             <input 
               id="login-email"
               type="email" 
@@ -64,12 +64,12 @@ const AdminLogin = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@example.com"
               required
-              className="bg-bg-light border border-border rounded-sm py-2.5 px-3.5 text-xs focus:outline-none focus:border-accent text-primary font-medium"
+              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75] font-medium"
             />
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="login-password" className="text-[10px] font-bold text-primary uppercase tracking-wider mb-1">Security Password</label>
+            <label htmlFor="login-password" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Security Password</label>
             <input 
               id="login-password"
               type="password" 
@@ -77,21 +77,21 @@ const AdminLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••"
               required
-              className="bg-bg-light border border-border rounded-sm py-2.5 px-3.5 text-xs focus:outline-none focus:border-accent text-primary"
+              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
 
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-primary hover:bg-primary-light text-white font-bold text-xs py-3 rounded-sm tracking-wider uppercase mt-4 transition-colors duration-200 shadow-sm disabled:opacity-50 focus:outline-none"
+            className="w-full bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold text-xs py-3.5 rounded-none tracking-wider uppercase mt-4 transition-colors duration-200 focus:outline-none"
           >
             {loading ? 'Verifying Session...' : 'Authenticate Access'}
           </button>
 
         </form>
 
-        <div className="mt-8 text-center text-[10px] text-text-muted select-none border-t border-border pt-4">
+        <div className="mt-8 text-center text-[10px] text-[#8E7D75] select-none border-t border-[#EADFC9]/30 pt-4">
           <span className="block font-semibold">Protected Administration Session</span>
           <span className="block mt-0.5">Authorization tokens remain active for 30 days. Do not share admin credentials.</span>
         </div>

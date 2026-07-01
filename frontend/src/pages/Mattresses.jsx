@@ -14,6 +14,9 @@ const Mattresses = () => {
   const [selectedThickness, setSelectedThickness] = useState('all');
   const [maxPrice, setMaxPrice] = useState(25000);
   const [sortBy, setSortBy] = useState('featured');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedWarranty, setSelectedWarranty] = useState('all');
+  const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [visibleLimit, setVisibleLimit] = useState(6);
   
   // Responsive States
@@ -22,7 +25,7 @@ const Mattresses = () => {
 
   useEffect(() => {
     setVisibleLimit(6);
-  }, [selectedCore, selectedSize, selectedThickness, maxPrice, sortBy]);
+  }, [selectedCore, selectedSize, selectedThickness, maxPrice, sortBy, searchTerm, selectedWarranty, onlyAvailable]);
 
   useEffect(() => {
     const fetchMattressData = async () => {
@@ -47,12 +50,15 @@ const Mattresses = () => {
     setSelectedThickness('all');
     setMaxPrice(25000);
     setSortBy('featured');
+    setSearchTerm('');
+    setSelectedWarranty('all');
+    setOnlyAvailable(false);
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#7C5F43] border-t-transparent animate-spin"></div>
       </div>
     );
   }
@@ -61,8 +67,6 @@ const Mattresses = () => {
   const filteredProducts = products.filter(product => {
     const matchesCore = selectedCore === 'all' || product.mattressCoreType === selectedCore;
     
-    // Bed Size Filter: mattresses support all sizes since they are custom made to order.
-    // Otherwise check specifications.
     const matchesSize = selectedSize === 'all' || 
       (product.category === 'mattress' && ['single', 'double', 'queen', 'king', 'custom'].includes(selectedSize.toLowerCase())) ||
       (product.specifications && JSON.stringify(product.specifications).toLowerCase().includes(selectedSize.toLowerCase()));
@@ -72,7 +76,17 @@ const Mattresses = () => {
 
     const matchesPrice = product.basePrice >= 2000 && product.basePrice <= maxPrice;
 
-    return matchesCore && matchesSize && matchesThickness && matchesPrice;
+    const matchesSearch = searchTerm.trim() === '' || 
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.shortDescription.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesWarranty = selectedWarranty === 'all' || 
+      (product.specifications && JSON.stringify(product.specifications).toLowerCase().includes(selectedWarranty.toLowerCase()));
+
+    const matchesAvailability = !onlyAvailable || product.isAvailable;
+
+    return matchesCore && matchesSize && matchesThickness && matchesPrice && matchesSearch && matchesWarranty && matchesAvailability;
   });
 
   // Sort Logic
@@ -93,180 +107,15 @@ const Mattresses = () => {
     }
   });
 
-  // UI rendering functions
-  const renderCoreFilters = () => {
-    const options = [
-      { value: 'all', label: 'All Materials' },
-      { value: 'ortho', label: 'Memory Foam' },
-      { value: 'latex', label: 'Natural Latex' },
-      { value: 'spring', label: 'Pocket Spring' },
-      { value: 'coir', label: 'Coir' },
-      { value: 'dual', label: 'Hybrid' },
-    ];
-    return (
-      <div className="flex flex-col gap-2">
-        {options.map((opt) => (
-          <label key={opt.value} className="flex items-center gap-2.5 text-xs text-text-muted hover:text-primary cursor-pointer font-medium">
-            <input
-              type="radio"
-              name="core-filter"
-              value={opt.value}
-              checked={selectedCore === opt.value}
-              onChange={() => setSelectedCore(opt.value)}
-              className="w-4 h-4 text-accent border-border focus:ring-accent cursor-pointer accent-accent"
-            />
-            <span className={selectedCore === opt.value ? 'text-primary font-bold' : ''}>
-              {opt.label}
-            </span>
-          </label>
-        ))}
-      </div>
-    );
-  };
-
-  const renderCoreFiltersInline = () => (
-    <select
-      value={selectedCore}
-      onChange={(e) => setSelectedCore(e.target.value)}
-      className="w-full bg-bg-light border border-border rounded py-1.5 px-3 text-xs font-semibold focus:outline-none focus:border-accent text-primary cursor-pointer hover:bg-white transition-colors"
-    >
-      <option value="all">All Materials</option>
-      <option value="ortho">Memory Foam</option>
-      <option value="latex">Natural Latex</option>
-      <option value="spring">Pocket Spring</option>
-      <option value="coir">Coir</option>
-      <option value="dual">Hybrid</option>
-    </select>
-  );
-
-  const renderSizeFilters = () => {
-    const options = [
-      { value: 'all', label: 'All Sizes' },
-      { value: 'single', label: 'Single Bed' },
-      { value: 'double', label: 'Double Bed' },
-      { value: 'queen', label: 'Queen Size' },
-      { value: 'king', label: 'King Size' },
-      { value: 'custom', label: 'Custom Sizes' },
-    ];
-    return (
-      <div className="flex flex-col gap-2">
-        {options.map((opt) => (
-          <label key={opt.value} className="flex items-center gap-2.5 text-xs text-text-muted hover:text-primary cursor-pointer font-medium">
-            <input
-              type="radio"
-              name="size-filter"
-              value={opt.value}
-              checked={selectedSize === opt.value}
-              onChange={() => setSelectedSize(opt.value)}
-              className="w-4 h-4 text-accent border-border focus:ring-accent cursor-pointer accent-accent"
-            />
-            <span className={selectedSize === opt.value ? 'text-primary font-bold' : ''}>
-              {opt.label}
-            </span>
-          </label>
-        ))}
-      </div>
-    );
-  };
-
-  const renderSizeFiltersInline = () => (
-    <select
-      value={selectedSize}
-      onChange={(e) => setSelectedSize(e.target.value)}
-      className="w-full bg-bg-light border border-border rounded py-1.5 px-3 text-xs font-semibold focus:outline-none focus:border-accent text-primary cursor-pointer hover:bg-white transition-colors"
-    >
-      <option value="all">All Sizes</option>
-      <option value="single">Single Bed</option>
-      <option value="double">Double Bed</option>
-      <option value="queen">Queen Size</option>
-      <option value="king">King Size</option>
-      <option value="custom">Custom Sizes</option>
-    </select>
-  );
-
-  const renderThicknessFilters = () => {
-    const options = [
-      { value: 'all', label: 'All Thicknesses' },
-      { value: '4-inch', label: '4 inch' },
-      { value: '5-inch', label: '5 inch' },
-      { value: '6-inch', label: '6 inch' },
-      { value: '8-inch', label: '8 inch' },
-      { value: '10-inch', label: '10 inch' },
-    ];
-    return (
-      <div className="flex flex-col gap-2">
-        {options.map((opt) => (
-          <label key={opt.value} className="flex items-center gap-2.5 text-xs text-text-muted hover:text-primary cursor-pointer font-medium">
-            <input
-              type="radio"
-              name="thickness-filter"
-              value={opt.value}
-              checked={selectedThickness === opt.value}
-              onChange={() => setSelectedThickness(opt.value)}
-              className="w-4 h-4 text-accent border-border focus:ring-accent cursor-pointer accent-accent"
-            />
-            <span className={selectedThickness === opt.value ? 'text-primary font-bold' : ''}>
-              {opt.label}
-            </span>
-          </label>
-        ))}
-      </div>
-    );
-  };
-
-  const renderThicknessFiltersInline = () => (
-    <select
-      value={selectedThickness}
-      onChange={(e) => setSelectedThickness(e.target.value)}
-      className="w-full bg-bg-light border border-border rounded py-1.5 px-3 text-xs font-semibold focus:outline-none focus:border-accent text-primary cursor-pointer hover:bg-white transition-colors"
-    >
-      <option value="all">All Thicknesses</option>
-      <option value="4-inch">4 inch</option>
-      <option value="5-inch">5 inch</option>
-      <option value="6-inch">6 inch</option>
-      <option value="8-inch">8 inch</option>
-      <option value="10-inch">10 inch</option>
-    </select>
-  );
-
-  const renderPriceSlider = () => {
-    return (
-      <div className="flex flex-col gap-2">
-        <input
-          type="range"
-          min="2000"
-          max="25000"
-          step="500"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(Number(e.target.value))}
-          className="w-full h-1 bg-border rounded-lg appearance-none cursor-pointer accent-accent"
-        />
-        <div className="flex justify-between items-center text-[10.5px] font-bold text-primary">
-          <span>₹2,000</span>
-          <span className="text-accent bg-accent-light px-2 py-0.5 rounded border border-accent/20">
-            Max: ₹{maxPrice.toLocaleString('en-IN')}
-          </span>
-          <span>₹25,000</span>
-        </div>
-      </div>
-    );
-  };
+  const hasActiveFilters = selectedCore !== 'all' || selectedSize !== 'all' || selectedThickness !== 'all' || maxPrice !== 25000 || sortBy !== 'featured' || searchTerm !== '' || selectedWarranty !== 'all' || onlyAvailable;
 
   const renderResetButtons = () => {
-    const hasActiveFilters = selectedCore !== 'all' || selectedSize !== 'all' || selectedThickness !== 'all' || maxPrice !== 25000 || sortBy !== 'featured';
     return (
       <div className="flex gap-2">
         <button
           onClick={handleResetFilters}
           disabled={!hasActiveFilters}
-          className={`text-[11px] font-bold py-1 px-2.5 rounded border transition-all select-none ${hasActiveFilters ? 'text-accent border-accent hover:bg-accent-light cursor-pointer' : 'text-text-muted/50 border-border/50 cursor-not-allowed'}`}
-        >
-          Reset Filters
-        </button>
-        <button
-          onClick={handleResetFilters}
-          disabled={!hasActiveFilters}
-          className={`text-[11px] font-bold py-1 px-2.5 rounded border transition-all select-none ${hasActiveFilters ? 'text-primary border-primary hover:bg-bg-light cursor-pointer' : 'text-text-muted/50 border-border/50 cursor-not-allowed'}`}
+          className={`text-[10px] font-bold py-1 px-3 border uppercase tracking-wider transition-all select-none ${hasActiveFilters ? 'text-[#7C5F43] border-[#7C5F43] hover:bg-[#FAF5EF] cursor-pointer' : 'text-stone-300 border-stone-200 cursor-not-allowed'}`}
         >
           Clear All
         </button>
@@ -275,156 +124,248 @@ const Mattresses = () => {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto px-6 py-12 select-none">
+    <div className="max-w-[1480px] mx-auto px-6 pt-10 pb-[25px] select-none bg-[#FAF8F5]">
       <MetaTags 
         title="Explore Mattress Collection | Factory Direct Mattresses"
         description="Browse our range of Ortho-Memory Foam, Premium Natural Latex, Hybrid Pocket Spring, Dual Comfort, and Coconut Coir mattresses. Handcrafted to order."
       />
 
-      <div className="text-center max-w-[650px] mx-auto mb-8">
-        <span className="text-xs font-bold text-accent uppercase tracking-wider mb-2 inline-block">TimeWell Catalogue</span>
-        <h1 className="text-2.5xl md:text-3xl font-extrabold font-display mb-3">Explore Our Premium Mattress Range</h1>
-        <p className="text-xs text-text-muted leading-relaxed">
+      <div className="text-center max-w-[650px] mx-auto mb-4 animate-fade-in">
+        <span className="text-xs font-bold text-[#7C5F43] uppercase tracking-[2px] mb-3 inline-block">TimeWell Catalogue</span>
+        <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#2A211D] mb-4">Explore Our Premium Mattress Range</h1>
+        <p className="text-[13px] text-[#8E7D75] leading-relaxed">
           Filter by core support layers or dimensions to find the perfect mattress tailored for your posture and back support.
         </p>
       </div>
 
       {/* Mobile & Tablet Toggle Controls Bar */}
-      <div className="flex md:hidden justify-between items-center bg-white border border-border rounded-lg p-3.5 mb-6 shadow-sm">
+      <div className="flex lg:hidden justify-between items-center bg-white border border-[#EADFC9]/40 p-4 mb-8 shadow-sm">
         <button
           onClick={() => setIsMobileDrawerOpen(true)}
-          className="flex items-center gap-2 bg-primary text-white text-xs font-bold py-2.5 px-4 rounded hover:bg-primary-light transition-colors focus:outline-none"
+          className="flex items-center gap-2 bg-[#7C5F43] text-white text-xs font-bold py-2.5 px-5 uppercase tracking-wider hover:bg-[#5F4630] transition-colors focus:outline-none"
         >
           <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
             <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h6V7h-6V5h-2v6h2V9z"/>
           </svg>
           Filters
         </button>
-        <div className="text-text-muted font-semibold text-xs">
-          Showing <strong className="text-primary font-extrabold">{sortedProducts.length}</strong> Products
+        <div className="text-[#8E7D75] font-semibold text-xs">
+          Showing <strong className="text-[#2A211D]">{sortedProducts.length}</strong> Products
         </div>
       </div>
-
-      {/* Tablet Collapsible Trigger */}
-      <div className="hidden md:flex lg:hidden justify-between items-center bg-white border border-border rounded-lg p-3.5 mb-6 shadow-sm">
-        <button
-          onClick={() => setIsTabletFilterExpanded(!isTabletFilterExpanded)}
-          className="flex items-center gap-2 bg-bg-light border border-border text-primary text-xs font-bold py-2 px-3.5 rounded hover:bg-white transition-colors focus:outline-none"
-        >
-          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-            <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h6V7h-6V5h-2v6h2V9z"/>
-          </svg>
-          {isTabletFilterExpanded ? 'Hide Filters' : 'Show Filters'}
-        </button>
-        <div className="text-text-muted font-semibold text-xs">
-          Showing <strong className="text-primary font-extrabold">{sortedProducts.length}</strong> Products
-        </div>
-      </div>
-
-      {/* Tablet Collapsible Filter Panel */}
-      {isTabletFilterExpanded && (
-        <div className="hidden md:block lg:hidden bg-white border border-border rounded-lg p-5 mb-6 shadow-sm animate-fade-in">
-          <div className="grid grid-cols-3 gap-6">
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-primary mb-3">Core Material</h4>
-              {renderCoreFiltersInline()}
-            </div>
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-primary mb-3">Bed Size</h4>
-              {renderSizeFiltersInline()}
-            </div>
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-primary mb-3">Thickness</h4>
-              {renderThicknessFiltersInline()}
-            </div>
-          </div>
-          <div className="border-t border-border mt-4 pt-4 flex justify-between items-center gap-6">
-            <div className="flex-grow">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-primary mb-2">Price Range</h4>
-              {renderPriceSlider()}
-            </div>
-            <div className="flex gap-3 mt-4">
-              {renderResetButtons()}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Main Content Grid Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-[28px] items-start">
         
-        {/* Desktop Left Sidebar */}
-        <aside className="hidden lg:block lg:col-span-1 bg-white border border-border rounded-lg p-5 shadow-sm sticky top-[100px]">
-          <div className="flex justify-between items-center mb-5 pb-3 border-b border-border">
-            <h3 className="font-display font-bold text-sm text-primary uppercase tracking-wider">Filters</h3>
-            <div className="flex gap-2">
-              {renderResetButtons()}
-            </div>
+        {/* Desktop Left Sidebar Filters */}
+        <aside className="hidden lg:block bg-white border border-[#E6DED2] p-6 rounded-[16px] shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_40px_rgba(42,33,29,0.04)] hover:border-[#C7A36B]/40 transition-all duration-300 sticky top-[100px]">
+          <div className="flex justify-between items-center mb-4 pb-2 border-b border-[#EADFC9]/30">
+            <h3 className="font-serif font-bold text-sm text-[#2A211D] uppercase tracking-wider select-none">Filters</h3>
+            {renderResetButtons()}
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-[18px]">
+            {/* Search */}
             <div>
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-primary mb-3">Core Material</h4>
-              {renderCoreFilters()}
+              <h4 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3">Search</h4>
+              <input
+                type="text"
+                placeholder="Search mattresses..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-md py-2 px-3 text-xs text-[#2A211D] placeholder-[#8E7D75] hover:border-[#7C5F43]/50 focus:outline-none focus:border-[#7C5F43] focus:ring-1 focus:ring-[#7C5F43]/30 transition-all duration-200"
+              />
+            </div>
+
+            {/* Sort */}
+            <div className="border-t border-[#EADFC9]/25 pt-4">
+              <h4 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3">Sort By</h4>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-md py-2 px-3 text-xs font-semibold hover:border-[#7C5F43]/50 focus:outline-none focus:border-[#7C5F43] focus:ring-1 focus:ring-[#7C5F43]/30 text-[#2A211D] cursor-pointer transition-all duration-200"
+              >
+                <option value="featured">Featured</option>
+                <option value="price-low-to-high">Price: Low to High</option>
+                <option value="price-high-to-low">Price: High to Low</option>
+                <option value="most-popular">Most Popular</option>
+                <option value="highest-rated">Highest Rated</option>
+              </select>
+            </div>
+
+            {/* Price Range */}
+            <div className="border-t border-[#EADFC9]/25 pt-4">
+              <h4 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3">Price Range</h4>
+              <div className="flex flex-col gap-2">
+                <input
+                  type="range"
+                  min="2000"
+                  max="25000"
+                  step="500"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  className="w-full h-1 bg-[#EADFC9] rounded-lg appearance-none cursor-pointer accent-[#7C5F43]"
+                />
+                <div className="flex justify-between items-center text-[10px] font-bold text-[#8E7D75]">
+                  <span>₹2,000</span>
+                  <span className="text-[#7C5F43] bg-[#FAF5EF] px-2 py-0.5 border border-[#7C5F43]/15">
+                    Max: ₹{maxPrice.toLocaleString('en-IN')}
+                  </span>
+                  <span>₹25,000</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Core Type */}
+            <div className="border-t border-[#EADFC9]/25 pt-4">
+              <h4 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3">Mattress Type</h4>
+              <div className="flex flex-col gap-2.5">
+                {[
+                  { value: 'all', label: 'All Materials' },
+                  { value: 'ortho', label: 'Memory Foam' },
+                  { value: 'latex', label: 'Natural Latex' },
+                  { value: 'spring', label: 'Pocket Spring' },
+                  { value: 'coir', label: 'Coir' },
+                  { value: 'dual', label: 'Hybrid' },
+                ].map((opt) => (
+                  <label key={opt.value} className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer font-medium">
+                    <input
+                      type="radio"
+                      name="core-filter-desktop"
+                      value={opt.value}
+                      checked={selectedCore === opt.value}
+                      onChange={() => setSelectedCore(opt.value)}
+                      className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43]/30 cursor-pointer accent-[#7C5F43] transition-all duration-200"
+                    />
+                    <span className={selectedCore === opt.value ? 'text-[#2A211D] font-bold' : ''}>
+                      {opt.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
             </div>
             
-            <div className="border-t border-border pt-4">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-primary mb-3">Bed Size</h4>
-              {renderSizeFilters()}
+            {/* Size */}
+            <div className="border-t border-[#EADFC9]/25 pt-4">
+              <h4 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3">Size</h4>
+              <div className="flex flex-col gap-2.5">
+                {[
+                  { value: 'all', label: 'All Sizes' },
+                  { value: 'single', label: 'Single Bed' },
+                  { value: 'double', label: 'Double Bed' },
+                  { value: 'queen', label: 'Queen Size' },
+                  { value: 'king', label: 'King Size' },
+                  { value: 'custom', label: 'Custom Sizes' },
+                ].map((opt) => (
+                  <label key={opt.value} className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer font-medium">
+                    <input
+                      type="radio"
+                      name="size-filter-desktop"
+                      value={opt.value}
+                      checked={selectedSize === opt.value}
+                      onChange={() => setSelectedSize(opt.value)}
+                      className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43]/30 cursor-pointer accent-[#7C5F43] transition-all duration-200"
+                    />
+                    <span className={selectedSize === opt.value ? 'text-[#2A211D] font-bold' : ''}>
+                      {opt.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
             </div>
             
-            <div className="border-t border-border pt-4">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-primary mb-3">Thickness</h4>
-              {renderThicknessFilters()}
+            {/* Thickness */}
+            <div className="border-t border-[#EADFC9]/25 pt-4">
+              <h4 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3">Thickness</h4>
+              <div className="flex flex-col gap-2.5">
+                {[
+                  { value: 'all', label: 'All Thicknesses' },
+                  { value: '4-inch', label: '4 inch' },
+                  { value: '5-inch', label: '5 inch' },
+                  { value: '6-inch', label: '6 inch' },
+                  { value: '8-inch', label: '8 inch' },
+                  { value: '10-inch', label: '10 inch' },
+                ].map((opt) => (
+                  <label key={opt.value} className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer font-medium">
+                    <input
+                      type="radio"
+                      name="thickness-filter-desktop"
+                      value={opt.value}
+                      checked={selectedThickness === opt.value}
+                      onChange={() => setSelectedThickness(opt.value)}
+                      className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43]/30 cursor-pointer accent-[#7C5F43] transition-all duration-200"
+                    />
+                    <span className={selectedThickness === opt.value ? 'text-[#2A211D] font-bold' : ''}>
+                      {opt.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
             </div>
-            
-            <div className="border-t border-border pt-4">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-primary mb-3">Price Range</h4>
-              {renderPriceSlider()}
+
+            {/* Warranty */}
+            <div className="border-t border-[#EADFC9]/25 pt-4">
+              <h4 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3">Warranty</h4>
+              <div className="flex flex-col gap-2.5">
+                {[
+                  { value: 'all', label: 'All Warranties' },
+                  { value: '5 year', label: '5 Years' },
+                  { value: '7 year', label: '7 Years' },
+                  { value: '10 year', label: '10 Years' },
+                ].map((opt) => (
+                  <label key={opt.value} className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer font-medium">
+                    <input
+                      type="radio"
+                      name="warranty-filter-desktop"
+                      value={opt.value}
+                      checked={selectedWarranty === opt.value}
+                      onChange={() => setSelectedWarranty(opt.value)}
+                      className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43]/30 cursor-pointer accent-[#7C5F43] transition-all duration-200"
+                    />
+                    <span className={selectedWarranty === opt.value ? 'text-[#2A211D] font-bold' : ''}>
+                      {opt.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Availability */}
+            <div className="border-t border-[#EADFC9]/25 pt-4">
+              <h4 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3">Availability</h4>
+              <label className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer font-medium">
+                <input
+                  type="checkbox"
+                  checked={onlyAvailable}
+                  onChange={(e) => setOnlyAvailable(e.target.checked)}
+                  className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] rounded focus:ring-[#7C5F43]/30 cursor-pointer accent-[#7C5F43] transition-all duration-200"
+                />
+                <span className={onlyAvailable ? 'text-[#2A211D] font-bold' : ''}>
+                  In Stock / Available Only
+                </span>
+              </label>
             </div>
           </div>
         </aside>
 
         {/* Right side Products Grid */}
-        <div className="col-span-1 lg:col-span-3">
+        <div className="w-full">
           
           {/* Product Grid Header */}
-          <div className="hidden md:flex justify-between items-center mb-6">
-            <div className="text-text-muted text-xs font-semibold lg:block hidden">
-              Showing <strong className="text-primary font-extrabold">{sortedProducts.length}</strong> Products
+          <div className="hidden lg:flex justify-between items-center mb-4 border-b border-[#EADFC9]/30 pb-3 text-xs">
+            <div className="text-[#8E7D75] font-semibold">
+              Showing <strong className="text-[#2A211D]">{sortedProducts.length}</strong> Premium Mattresses
             </div>
-            <div className="text-text-muted text-xs font-semibold lg:hidden block">
-              {/* Spacer */}
-            </div>
-            
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-text-muted font-bold">Sort By</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[#8E7D75] font-bold uppercase tracking-wider text-[10px]">Sort By</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-white border border-border rounded py-1.5 px-3 text-xs font-semibold focus:outline-none focus:border-accent text-primary cursor-pointer hover:border-accent/40 transition-colors shadow-xs"
+                className="bg-white border border-[#EADFC9]/60 py-1 px-3 text-xs font-semibold focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
               >
                 <option value="featured">Featured</option>
-                <option value="price-low-to-high">Price Low To High</option>
-                <option value="price-high-to-low">Price High To Low</option>
-                <option value="most-popular">Most Popular</option>
-                <option value="highest-rated">Highest Rated</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Mobile Sort Dropdown Bar */}
-          <div className="flex md:hidden justify-between items-center mb-4 text-xs">
-            <div className="flex items-center gap-1.5 w-full">
-              <span className="text-text-muted font-bold whitespace-nowrap">Sort By</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full bg-white border border-border rounded py-2 px-3 text-xs font-semibold focus:outline-none focus:border-accent text-primary cursor-pointer transition-colors shadow-xs"
-              >
-                <option value="featured">Featured</option>
-                <option value="price-low-to-high">Price Low To High</option>
-                <option value="price-high-to-low">Price High To Low</option>
+                <option value="price-low-to-high">Price: Low to High</option>
+                <option value="price-high-to-low">Price: High to Low</option>
                 <option value="most-popular">Most Popular</option>
                 <option value="highest-rated">Highest Rated</option>
               </select>
@@ -434,7 +375,7 @@ const Mattresses = () => {
           {/* Product Cards Grid */}
           {sortedProducts.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="premium-product-grid">
                 {sortedProducts.slice(0, visibleLimit).map((product) => (
                   <ProductCard 
                     key={product._id} 
@@ -445,10 +386,10 @@ const Mattresses = () => {
               </div>
 
               {sortedProducts.length > visibleLimit && (
-                <div className="mt-8 text-center animate-fade-in">
+                <div className="mt-16 text-center animate-fade-in">
                   <button 
                     onClick={() => setVisibleLimit(prev => prev + 6)}
-                    className="bg-primary hover:bg-primary-light text-white text-xs font-bold py-3 px-8 rounded shadow-md tracking-wider transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5 focus:outline-none"
+                    className="inline-block border border-[#7C5F43] text-[#7C5F43] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3.5 px-8 hover:bg-[#7C5F43] hover:text-white transition-all duration-300 focus:outline-none"
                   >
                     View More Products
                   </button>
@@ -456,15 +397,15 @@ const Mattresses = () => {
               )}
             </>
           ) : (
-            <div className="text-center py-20 border border-dashed border-border rounded-md bg-white">
+            <div className="text-center py-24 border border-dashed border-[#EADFC9]/50 bg-white">
               <span className="block text-4xl mb-4">🔍</span>
-              <h3 className="text-lg font-bold font-display text-primary mb-2">No Matching Mattresses Found</h3>
-              <p className="text-xs text-text-muted max-w-sm mx-auto mb-6">
-                Try adjusting your specifications or reset filters to see all available factory direct mattresses.
+              <h3 className="text-lg font-serif font-bold text-[#2A211D] mb-2">No Matching Mattresses Found</h3>
+              <p className="text-xs text-[#8E7D75] max-w-sm mx-auto mb-6">
+                Try adjusting your search terms or filter constraints to see all available factory direct mattresses.
               </p>
               <button 
                 onClick={handleResetFilters}
-                className="bg-primary text-white font-bold text-xs py-2.5 px-6 rounded-sm hover:bg-primary-light transition-colors focus:outline-none"
+                className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold text-xs py-3 px-6 uppercase tracking-wider focus:outline-none"
               >
                 Show All Products
               </button>
@@ -476,65 +417,198 @@ const Mattresses = () => {
 
       {/* --- MOBILE SLIDE-IN FILTER DRAWER --- */}
       {isMobileDrawerOpen && (
-        <div className="fixed inset-0 z-[2000] flex block md:hidden animate-fade-in">
+        <div className="fixed inset-0 z-[2000] flex block lg:hidden animate-fade-in">
           {/* Backdrop overlay */}
           <div 
             onClick={() => setIsMobileDrawerOpen(false)}
-            className="absolute inset-0 bg-black/55 backdrop-blur-xs transition-opacity duration-300"
+            className="absolute inset-0 bg-black/45 backdrop-blur-xs transition-opacity duration-300"
           ></div>
           
           {/* Drawer Menu */}
-          <div className="relative w-4/5 max-w-[320px] h-full bg-white shadow-xl flex flex-col z-10 animate-slide-in">
+          <div className="relative w-4/5 max-w-[320px] h-full bg-[#FAF8F5] shadow-xl flex flex-col z-10 animate-slide-in border-r border-[#EADFC9]/30">
             {/* Header */}
-            <div className="flex justify-between items-center p-4 border-b border-border">
-              <h3 className="font-display font-bold text-sm text-primary uppercase tracking-wider">Filters</h3>
+            <div className="flex justify-between items-center p-4 border-b border-[#EADFC9]/30 bg-white">
+              <h3 className="font-serif font-bold text-sm text-[#2A211D] uppercase tracking-wider">Filters</h3>
               <button 
                 onClick={() => setIsMobileDrawerOpen(false)}
-                className="text-primary hover:text-accent font-bold text-lg focus:outline-none"
+                className="text-[#7C5F43] font-bold text-xl focus:outline-none"
               >
                 &times;
               </button>
             </div>
             
             {/* Scrollable Filters */}
-            <div className="flex-grow overflow-y-auto p-4 space-y-6 select-none">
+            <div className="flex-grow overflow-y-auto p-4 space-y-6 select-none bg-white">
+              {/* Search */}
               <div>
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-primary mb-3">Core Material</h4>
-                {renderCoreFilters()}
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#2A211D] mb-2.5">Search</h4>
+                <input
+                  type="text"
+                  placeholder="Search mattresses..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-[#FAF5EF] border border-[#EADFC9]/60 py-2 px-3 text-xs text-[#2A211D] placeholder-[#8E7D75] focus:outline-none focus:border-[#7C5F43]"
+                />
+              </div>
+
+              {/* Core Material */}
+              <div className="border-t border-[#EADFC9]/25 pt-4">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#2A211D] mb-3">Core Material</h4>
+                <div className="flex flex-col gap-2">
+                  {[
+                    { value: 'all', label: 'All Materials' },
+                    { value: 'ortho', label: 'Memory Foam' },
+                    { value: 'latex', label: 'Natural Latex' },
+                    { value: 'spring', label: 'Pocket Spring' },
+                    { value: 'coir', label: 'Coir' },
+                    { value: 'dual', label: 'Hybrid' },
+                  ].map((opt) => (
+                    <label key={opt.value} className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer">
+                      <input
+                        type="radio"
+                        name="core-filter-mobile"
+                        value={opt.value}
+                        checked={selectedCore === opt.value}
+                        onChange={() => setSelectedCore(opt.value)}
+                        className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43] accent-[#7C5F43]"
+                      />
+                      <span className={selectedCore === opt.value ? 'text-[#2A211D] font-bold' : ''}>{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
               
-              <div className="border-t border-border pt-4">
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-primary mb-3">Bed Size</h4>
-                {renderSizeFilters()}
+              {/* Bed Size */}
+              <div className="border-t border-[#EADFC9]/25 pt-4">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#2A211D] mb-3">Bed Size</h4>
+                <div className="flex flex-col gap-2">
+                  {[
+                    { value: 'all', label: 'All Sizes' },
+                    { value: 'single', label: 'Single Bed' },
+                    { value: 'double', label: 'Double Bed' },
+                    { value: 'queen', label: 'Queen Size' },
+                    { value: 'king', label: 'King Size' },
+                    { value: 'custom', label: 'Custom Sizes' },
+                  ].map((opt) => (
+                    <label key={opt.value} className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer">
+                      <input
+                        type="radio"
+                        name="size-filter-mobile"
+                        value={opt.value}
+                        checked={selectedSize === opt.value}
+                        onChange={() => setSelectedSize(opt.value)}
+                        className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43] accent-[#7C5F43]"
+                      />
+                      <span className={selectedSize === opt.value ? 'text-[#2A211D] font-bold' : ''}>{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
               
-              <div className="border-t border-border pt-4">
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-primary mb-3">Thickness</h4>
-                {renderThicknessFilters()}
+              {/* Thickness */}
+              <div className="border-t border-[#EADFC9]/25 pt-4">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#2A211D] mb-3">Thickness</h4>
+                <div className="flex flex-col gap-2">
+                  {[
+                    { value: 'all', label: 'All Thicknesses' },
+                    { value: '4-inch', label: '4 inch' },
+                    { value: '5-inch', label: '5 inch' },
+                    { value: '6-inch', label: '6 inch' },
+                    { value: '8-inch', label: '8 inch' },
+                    { value: '10-inch', label: '10 inch' },
+                  ].map((opt) => (
+                    <label key={opt.value} className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer">
+                      <input
+                        type="radio"
+                        name="thickness-filter-mobile"
+                        value={opt.value}
+                        checked={selectedThickness === opt.value}
+                        onChange={() => setSelectedThickness(opt.value)}
+                        className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43] accent-[#7C5F43]"
+                      />
+                      <span className={selectedThickness === opt.value ? 'text-[#2A211D] font-bold' : ''}>{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Warranty */}
+              <div className="border-t border-[#EADFC9]/25 pt-4">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#2A211D] mb-3">Warranty</h4>
+                <div className="flex flex-col gap-2">
+                  {[
+                    { value: 'all', label: 'All Warranties' },
+                    { value: '5 year', label: '5 Years' },
+                    { value: '7 year', label: '7 Years' },
+                    { value: '10 year', label: '10 Years' },
+                  ].map((opt) => (
+                    <label key={opt.value} className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer">
+                      <input
+                        type="radio"
+                        name="warranty-filter-mobile"
+                        value={opt.value}
+                        checked={selectedWarranty === opt.value}
+                        onChange={() => setSelectedWarranty(opt.value)}
+                        className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43] accent-[#7C5F43]"
+                      />
+                      <span className={selectedWarranty === opt.value ? 'text-[#2A211D] font-bold' : ''}>{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
               
-              <div className="border-t border-border pt-4">
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-primary mb-3">Price Range</h4>
-                {renderPriceSlider()}
+              {/* Price Range */}
+              <div className="border-t border-[#EADFC9]/25 pt-4">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#2A211D] mb-3">Price Range</h4>
+                <div className="flex flex-col gap-2">
+                  <input
+                    type="range"
+                    min="2000"
+                    max="25000"
+                    step="500"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(Number(e.target.value))}
+                    className="w-full h-1 bg-[#EADFC9] rounded-lg appearance-none cursor-pointer accent-[#7C5F43]"
+                  />
+                  <div className="flex justify-between items-center text-[10px] font-bold text-[#8E7D75]">
+                    <span>₹2,000</span>
+                    <span className="text-[#7C5F43]">Max: ₹{maxPrice.toLocaleString('en-IN')}</span>
+                    <span>₹25,000</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Availability */}
+              <div className="border-t border-[#EADFC9]/25 pt-4">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#2A211D] mb-3">Availability</h4>
+                <label className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={onlyAvailable}
+                    onChange={(e) => setOnlyAvailable(e.target.checked)}
+                    className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43] accent-[#7C5F43]"
+                  />
+                  <span className={onlyAvailable ? 'text-[#2A211D] font-bold' : ''}>In Stock / Available Only</span>
+                </label>
               </div>
             </div>
             
             {/* Footer Buttons */}
-            <div className="p-4 border-t border-border bg-bg-light flex gap-3">
+            <div className="p-4 border-t border-[#EADFC9]/30 bg-[#FAF8F5] flex gap-3">
               <button
                 onClick={() => {
                   handleResetFilters();
                   setIsMobileDrawerOpen(false);
                 }}
-                className="flex-1 bg-border text-primary font-bold text-xs py-3 rounded text-center transition-colors"
+                className="flex-1 bg-white border border-[#EADFC9] text-[#7C5F43] font-bold text-xs py-3 uppercase tracking-wider rounded-none text-center transition-colors"
               >
-                Clear All
+                Clear
               </button>
               <button
                 onClick={() => setIsMobileDrawerOpen(false)}
-                className="flex-1 bg-primary text-white font-bold text-xs py-3 rounded text-center transition-colors hover:bg-primary-light"
+                className="flex-1 bg-[#7C5F43] text-white font-bold text-xs py-3 uppercase tracking-wider rounded-none text-center transition-colors hover:bg-[#5F4630]"
               >
-                Apply Filters
+                Apply
               </button>
             </div>
           </div>

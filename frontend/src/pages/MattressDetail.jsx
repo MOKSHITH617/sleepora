@@ -81,7 +81,7 @@ const MattressDetail = () => {
   const imagesList = product.images && product.images.length > 0 ? product.images : ['/images/ortho_mattress.png'];
 
   return (
-    <div className="max-w-[1200px] mx-auto px-6 py-12 select-none">
+    <div className="max-w-[1200px] mx-auto px-6 py-16 select-none bg-[#FAF8F5]">
       <MetaTags 
         title={product.name}
         description={product.shortDescription}
@@ -89,24 +89,24 @@ const MattressDetail = () => {
         productSchema={productSchema}
       />
 
-      <div className="mb-6">
-        <span className="text-xs font-bold text-text-muted">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link> &gt;{' '}
-          <Link to="/mattresses" className="hover:text-primary transition-colors">Mattresses</Link> &gt;{' '}
-          <span className="text-primary-light font-semibold">{product.name}</span>
+      <div className="mb-8 border-b border-[#EADFC9]/30 pb-4 text-xs">
+        <span className="text-xs text-[#8E7D75]">
+          <Link to="/" className="hover:text-[#2A211D] transition-colors">Home</Link> &nbsp;&gt;&nbsp;{' '}
+          <Link to="/mattresses" className="hover:text-[#2A211D] transition-colors">Mattresses</Link> &nbsp;&gt;&nbsp;{' '}
+          <span className="text-[#2A211D] font-bold">{product.name}</span>
         </span>
       </div>
 
       {/* --- PRODUCT PROFILE DETAILS --- */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20 items-start">
         
         {/* Left Column: Image Gallery */}
         <div className="lg:col-span-6 flex flex-col gap-4">
-          <div className="relative pt-[70%] bg-bg-light rounded-md border border-border shadow-sm overflow-hidden">
+          <div className="relative pt-[70%] bg-white border border-[#EADFC9]/45 shadow-sm overflow-hidden">
             <img 
               src={activeImage} 
               alt={product.name} 
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-300"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-103"
             />
           </div>
           
@@ -117,7 +117,7 @@ const MattressDetail = () => {
                 <button
                   key={index}
                   onClick={() => setActiveImage(img)}
-                  className={`w-20 h-16 rounded-sm border-2 overflow-hidden bg-bg-light transition-all flex-shrink-0 focus:outline-none ${activeImage === img ? 'border-accent' : 'border-border'}`}
+                  className={`w-20 h-16 border overflow-hidden bg-[#FAF5EF] transition-all flex-shrink-0 focus:outline-none ${activeImage === img ? 'border-[#7C5F43] ring-1 ring-[#7C5F43]' : 'border-[#EADFC9]/50 hover:border-[#7C5F43]/45'}`}
                 >
                   <img src={img} alt={`Gallery-${index}`} className="w-full h-full object-cover" />
                 </button>
@@ -128,22 +128,22 @@ const MattressDetail = () => {
 
         {/* Right Column: Descriptions & Specifications */}
         <div className="lg:col-span-6 flex flex-col justify-start">
-          <div className="border-b border-border pb-6 mb-6">
-            <h1 className="text-3xl font-extrabold font-display text-primary mb-3 leading-tight">{product.name}</h1>
-            <p className="text-sm text-text-muted leading-relaxed">{product.description}</p>
+          <div className="border-b border-[#EADFC9]/30 pb-6 mb-6">
+            <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#2A211D] mb-3 leading-tight">{product.name}</h1>
+            <p className="text-[13px] text-[#8E7D75] leading-relaxed">{product.description}</p>
           </div>
 
           {/* Specifications Table */}
           <div className="mb-6">
-            <h4 className="text-[11px] font-bold text-primary uppercase tracking-wider mb-3.5">Product Specifications</h4>
-            <div className="border border-border rounded-sm overflow-hidden text-xs">
+            <h4 className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-3.5">Product Specifications</h4>
+            <div className="border border-[#EADFC9]/35 overflow-hidden text-xs bg-white">
               {Object.entries(product.specifications || {}).map(([key, val], idx) => (
                 <div 
                   key={idx} 
-                  className={`grid grid-cols-2 p-3 ${idx % 2 === 0 ? 'bg-bg-light' : 'bg-white'} border-b border-border last:border-b-0`}
+                  className={`grid grid-cols-2 p-3 ${idx % 2 === 0 ? 'bg-[#FAF8F5]' : 'bg-white'} border-b border-[#EADFC9]/25 last:border-b-0`}
                 >
-                  <span className="font-bold text-text-muted">{key}</span>
-                  <span className="text-primary font-medium">{val}</span>
+                  <span className="font-bold text-[#8E7D75]">{key}</span>
+                  <span className="text-[#2A211D] font-medium">{val}</span>
                 </div>
               ))}
             </div>
@@ -151,12 +151,12 @@ const MattressDetail = () => {
 
           {/* Benefits Bullet Points */}
           {product.benefits && product.benefits.length > 0 && (
-            <div>
-              <h4 className="text-[11px] font-bold text-primary uppercase tracking-wider mb-3">Key Design Benefits</h4>
-              <ul className="flex flex-col gap-2.5 text-xs text-text-muted">
+            <div className="mb-6">
+              <h4 className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-3">Key Design Benefits</h4>
+              <ul className="flex flex-col gap-2.5 text-xs text-[#8E7D75]">
                 {product.benefits.map((benefit, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-accent mt-0.5">✓</span>
+                    <span className="text-[#7C5F43] mt-0.5">✓</span>
                     <span>{benefit}</span>
                   </li>
                 ))}
@@ -164,15 +164,50 @@ const MattressDetail = () => {
             </div>
           )}
 
+          {/* Quality Standards & Certification Badges */}
+          <div className="mt-6 pt-6 border-t border-[#EADFC9]/30">
+            <h4 className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-4">Quality & Safety Standards</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center gap-3 bg-white p-3.5 border border-[#EADFC9]/40">
+                <span className="text-xl">🌿</span>
+                <div>
+                  <span className="block text-xs font-bold text-[#2A211D]">100% Organic</span>
+                  <span className="block text-[10px] text-[#8E7D75]">Natural Latex Layers</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-white p-3.5 border border-[#EADFC9]/40">
+                <span className="text-xl">🛡️</span>
+                <div>
+                  <span className="block text-xs font-bold text-[#2A211D]">CertiPUR-US®</span>
+                  <span className="block text-[10px] text-[#8E7D75]">Tested Support Foams</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-white p-3.5 border border-[#EADFC9]/40">
+                <span className="text-xl">🧵</span>
+                <div>
+                  <span className="block text-xs font-bold text-[#2A211D]">Oeko-Tex® 100</span>
+                  <span className="block text-[10px] text-[#8E7D75]">Hypoallergenic Fabrics</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-white p-3.5 border border-[#EADFC9]/40">
+                <span className="text-xl">🏭</span>
+                <div>
+                  <span className="block text-xs font-bold text-[#2A211D]">Factory Direct</span>
+                  <span className="block text-[10px] text-[#8E7D75]">Direct Manufacturer Warranty</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
       {/* --- CONFIGURATOR ANCHOR WIDGET --- */}
-      <section className="border-t border-border pt-12" id="visualizer-target">
-        <div className="text-center max-w-[600px] mx-auto mb-10">
-          <span className="text-xs font-bold text-accent uppercase tracking-wider mb-2 inline-block">Product Configurator</span>
-          <h2 className="text-3xl font-extrabold font-display mb-3">Customize Mattress Dimensions</h2>
-          <p className="text-xs text-text-muted leading-relaxed">
+      <section className="border-t border-[#EADFC9]/40 pt-16" id="visualizer-target">
+        <div className="text-center max-w-[600px] mx-auto mb-12 animate-fade-in">
+          <span className="text-xs font-bold text-[#7C5F43] uppercase tracking-[2px] mb-3 inline-block">Product Configurator</span>
+          <h2 className="text-3xl font-serif font-bold text-[#2A211D] mb-4">Customize Mattress Dimensions</h2>
+          <p className="text-[13px] text-[#8E7D75] leading-relaxed">
             Choose core support options, specify your bed dimensions, and slide the mattress depth to review dynamic factory rates.
           </p>
         </div>

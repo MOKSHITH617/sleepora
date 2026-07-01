@@ -501,17 +501,17 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="max-w-[1200px] mx-auto px-6 py-10 select-none">
+    <div className="max-w-[1200px] mx-auto px-6 py-16 select-none bg-[#FAF8F5]">
       <MetaTags title="Admin Management Dashboard" description="Configure mattress catalogs and leads." />
 
-      <div className="flex justify-between items-center border-b border-border pb-6 mb-8 flex-wrap gap-4">
+      <div className="flex justify-between items-center border-b border-[#EADFC9]/40 pb-6 mb-8 flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold font-display text-primary">Administration Portal</h1>
-          <p className="text-xs text-text-muted">Direct factory operations and configuration controllers</p>
+          <h1 className="text-3xl font-serif font-bold text-[#2A211D]">Administration Portal</h1>
+          <p className="text-xs text-[#8E7D75]">Direct factory operations and configuration controllers</p>
         </div>
         <button 
           onClick={logout}
-          className="bg-primary hover:bg-primary-light text-white font-bold text-xs py-2.5 px-6 rounded-sm transition-colors duration-200 focus:outline-none"
+          className="border border-[#7C5F43] text-[#7C5F43] hover:bg-[#FAF5EF] bg-transparent text-[11px] font-bold py-2.5 px-6 rounded-none uppercase tracking-wider transition-all duration-300 focus:outline-none"
         >
           Logout Session
         </button>
@@ -520,41 +520,41 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Sidebar Navigation */}
-        <div className="lg:col-span-3 flex flex-col gap-1.5 bg-white border border-border rounded-md p-4">
-          <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider px-3 mb-2 block">Control Modules</span>
+        <div className="lg:col-span-3 flex flex-col gap-1.5 bg-white border border-[#EADFC9]/40 rounded-none p-4 shadow-sm">
+          <span className="text-[10px] font-bold text-[#8E7D75] uppercase tracking-wider px-3 mb-2 block">Control Modules</span>
           <button 
             onClick={() => setActiveTab('leads')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'leads' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'leads' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
           >
             Leads Inbox ({leads.length})
           </button>
           <button 
             onClick={() => setActiveTab('products')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'products' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'products' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
           >
             Products Catalogue ({products.length})
           </button>
           <button 
             onClick={() => setActiveTab('mattress')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'mattress' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'mattress' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
           >
             Mattress Multipliers
           </button>
           <button 
             onClick={() => setActiveTab('sofa')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'sofa' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'sofa' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
           >
             Sofa Multipliers
           </button>
           <button 
             onClick={() => setActiveTab('testimonials')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'testimonials' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'testimonials' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
           >
             Testimonial Reviews
           </button>
           <button 
             onClick={() => setActiveTab('homepage')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'homepage' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'homepage' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
           >
             Homepage Content
           </button>
@@ -584,20 +584,20 @@ const AdminDashboard = () => {
           </button>
           <button 
             onClick={() => setActiveTab('profile')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'profile' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
+            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'profile' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
           >
             Profile Safety
           </button>
         </div>
 
         {/* Dynamic Panel */}
-        <div className="lg:col-span-9 bg-white border border-border rounded-md p-6 min-h-[480px]">
+        <div className="lg:col-span-9 bg-white border border-[#EADFC9]/40 rounded-none p-6 min-h-[480px] shadow-sm">
           
           {/* 1. LEADS INBOX MODULE */}
           {activeTab === 'leads' && (
             <div className="animate-fade-in">
-              <h3 className="text-xl font-bold font-display text-primary mb-1">Leads Inbox</h3>
-              <p className="text-xs text-text-muted mb-6">Manage customer configurations submitted through WhatsApp and forms</p>
+              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Leads Inbox</h3>
+              <p className="text-xs text-[#8E7D75] mb-6">Manage customer configurations submitted through WhatsApp and forms</p>
 
               {/* Filters */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -606,12 +606,12 @@ const AdminDashboard = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search lead name, product name or mobile..."
-                  className="bg-bg-light border border-border rounded-sm py-2 px-3.5 text-xs focus:outline-none text-primary"
+                  className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none text-[#2A211D] placeholder-[#8E7D75]"
                 />
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="bg-bg-light border border-border rounded-sm py-2 px-3 text-xs focus:outline-none text-primary cursor-pointer"
+                  className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3 text-xs focus:outline-none text-[#2A211D] cursor-pointer"
                 >
                   <option value="">All Categories</option>
                   <option value="mattress">Mattresses Only</option>
@@ -624,37 +624,37 @@ const AdminDashboard = () => {
               {filteredLeads.length > 0 ? (
                 <div className="space-y-4 max-h-[600px] overflow-y-auto pr-1">
                   {filteredLeads.map((lead) => (
-                    <div key={lead._id} className="border border-border rounded-sm p-4 bg-bg-light/40 flex justify-between items-start gap-4">
-                      <div className="text-xs space-y-1 text-primary">
+                    <div key={lead._id} className="border border-[#EADFC9]/40 rounded-none p-4 bg-[#FAF8F5]/40 flex justify-between items-start gap-4">
+                      <div className="text-xs space-y-1 text-[#2A211D]">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-sm text-primary">{lead.name}</span>
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${lead.category === 'mattress' ? 'bg-primary-light/10 text-primary-light' : lead.category === 'sofa' ? 'bg-accent-light text-primary' : 'bg-border text-text-muted'}`}>
+                          <span className="font-serif font-bold text-sm text-[#2A211D]">{lead.name}</span>
+                          <span className={`px-2 py-0.5 rounded-none text-[9px] font-bold uppercase ${lead.category === 'mattress' ? 'bg-[#7C5F43] text-white' : lead.category === 'sofa' ? 'bg-[#FAF5EF] text-[#7C5F43] border border-[#7C5F43]/30' : 'bg-stone-200 text-stone-600'}`}>
                             {lead.category}
                           </span>
                         </div>
                         <div><strong>Phone:</strong> {lead.phone} | <strong>Email:</strong> {lead.email}</div>
                         <div><strong>Product Name:</strong> {lead.productName}</div>
                         {lead.configuration && (
-                          <div className="bg-white p-2 border border-border text-[11px] rounded mt-2">
+                          <div className="bg-white p-2 border border-[#EADFC9]/30 text-[11px] rounded-none mt-2">
                             <strong>Configuration details:</strong>
                             <div className="grid grid-cols-2 gap-x-4 mt-1">
                               {Object.entries(lead.configuration).map(([key, val]) => (
-                                <span key={key}>{key}: <strong className="font-semibold text-primary">{val}</strong></span>
+                                <span key={key}>{key}: <strong className="font-semibold text-[#2A211D]">{val}</strong></span>
                               ))}
                             </div>
                           </div>
                         )}
-                        {lead.message && <div className="mt-2 text-text-muted italic">"{lead.message}"</div>}
-                        <div className="text-[10px] text-text-muted pt-2 border-t border-border/60">
+                        {lead.message && <div className="mt-2 text-[#8E7D75] italic">"{lead.message}"</div>}
+                        <div className="text-[10px] text-[#8E7D75] pt-2 border-t border-[#EADFC9]/25 mt-2">
                           Submitted on: {new Date(lead.createdAt).toLocaleString()}
                         </div>
                       </div>
                       
                       <div className="flex flex-col items-end gap-3 justify-between">
-                        <span className="text-lg font-black text-primary">₹{lead.quotedPrice.toLocaleString('en-IN')}</span>
+                        <span className="text-base font-serif font-bold text-[#2A211D]">₹{lead.quotedPrice.toLocaleString('en-IN')}</span>
                         <button 
                           onClick={() => handleDeleteLead(lead._id)}
-                          className="text-red-500 hover:text-red-700 text-xs font-bold focus:outline-none"
+                          className="text-red-600 hover:text-red-800 text-[11px] font-bold focus:outline-none uppercase tracking-wider"
                         >
                           Delete
                         </button>
@@ -663,7 +663,7 @@ const AdminDashboard = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-20 text-xs text-text-muted">
+                <div className="text-center py-20 text-xs text-[#8E7D75]">
                   No inquiries found matching search criteria.
                 </div>
               )}
@@ -673,45 +673,45 @@ const AdminDashboard = () => {
           {/* 2. PRODUCTS CATALOGUE MODULE */}
           {activeTab === 'products' && (
             <div className="animate-fade-in">
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center mb-6 border-b border-[#EADFC9]/30 pb-3">
                 <div>
-                  <h3 className="text-xl font-bold font-display text-primary mb-1">Products Catalogue</h3>
-                  <p className="text-xs text-text-muted">Add, edit, or delete mattresses and sofas catalogued items</p>
+                  <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Products Catalogue</h3>
+                  <p className="text-xs text-[#8E7D75]">Add, edit, or delete mattresses and sofas catalogued items</p>
                 </div>
                 <button 
                   onClick={resetProductForm}
-                  className="bg-accent hover:bg-accent-hover text-primary font-bold text-xs py-2 px-4 rounded-sm transition-all focus:outline-none shadow-sm"
+                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold text-[10px] uppercase tracking-wider py-2.5 px-4 rounded-none transition-all focus:outline-none shadow-xs"
                 >
                   + Add Product
                 </button>
               </div>
 
               {/* Product Form Section */}
-              <div className="bg-bg-light/40 border border-border p-5 rounded-sm mb-8">
-                <h4 className="font-bold text-xs text-primary mb-4 border-b border-border pb-2">
+              <div className="bg-[#FAF8F5] border border-[#EADFC9]/40 p-5 rounded-none mb-8">
+                <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-4 border-b border-[#EADFC9]/30 pb-2">
                   {editingProduct ? `Edit Product: ${editingProduct.name}` : 'Create New Product'}
                 </h4>
                 
                 <form onSubmit={handleSaveProduct} className="text-xs space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col">
-                      <label className="font-bold text-primary mb-1">Product Name</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Product Name</label>
                       <input 
                         type="text" 
                         value={productForm.name}
                         onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                         required
                         placeholder="e.g. Memory Foam Ortho"
-                        className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none text-primary"
+                        className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
                       />
                     </div>
                     
                     <div className="flex flex-col">
-                      <label className="font-bold text-primary mb-1">Category</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Category</label>
                       <select 
                         value={productForm.category}
                         onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
-                        className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none text-primary cursor-pointer"
+                        className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] cursor-pointer"
                       >
                         <option value="mattress">Mattress Range</option>
                         <option value="sofa">Sofa Collection</option>
@@ -721,36 +721,36 @@ const AdminDashboard = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="flex flex-col">
-                      <label className="font-bold text-primary mb-1">Starting Base Price (₹)</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Starting Base Price (₹)</label>
                       <input 
                         type="number" 
                         value={productForm.basePrice}
                         onChange={(e) => setProductForm({ ...productForm, basePrice: parseInt(e.target.value) || '' })}
                         required
                         placeholder="6500"
-                        className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none text-primary"
+                        className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
                       />
                     </div>
 
                     <div className="flex flex-col">
-                      <label className="font-bold text-primary mb-1">Showroom Price Multiplier</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Showroom Price Multiplier</label>
                       <input 
                         type="text" 
                         value={productForm.retailMultiplier}
                         onChange={(e) => setProductForm({ ...productForm, retailMultiplier: parseFloat(e.target.value) || 2.0 })}
                         required
                         placeholder="2.0"
-                        className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none text-primary"
+                        className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
                       />
                     </div>
 
                     <div className="flex flex-col">
-                      <label className="font-bold text-primary mb-1">Sub-Category Identifier</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Sub-Category Identifier</label>
                       {productForm.category === 'mattress' ? (
                         <select 
                           value={productForm.mattressCoreType}
                           onChange={(e) => setProductForm({ ...productForm, mattressCoreType: e.target.value })}
-                          className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none text-primary cursor-pointer"
+                          className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] cursor-pointer"
                         >
                           <option value="none">None</option>
                           <option value="ortho">Ortho Memory</option>
@@ -763,7 +763,7 @@ const AdminDashboard = () => {
                         <select 
                           value={productForm.sofaCategory}
                           onChange={(e) => setProductForm({ ...productForm, sofaCategory: e.target.value })}
-                          className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none text-primary cursor-pointer"
+                          className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] cursor-pointer"
                         >
                           <option value="none">None</option>
                           <option value="l-shape">L Shape Sofa</option>
@@ -778,48 +778,48 @@ const AdminDashboard = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="font-bold text-primary mb-1">Short Description</label>
+                    <label className="font-bold text-[#2A211D] mb-1">Short Description</label>
                     <input 
                       type="text" 
                       value={productForm.shortDescription}
                       onChange={(e) => setProductForm({ ...productForm, shortDescription: e.target.value })}
                       required
                       placeholder="Catchy tagline for product catalogue lists..."
-                      className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none text-primary"
+                      className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
                     />
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="font-bold text-primary mb-1">Detailed Description</label>
+                    <label className="font-bold text-[#2A211D] mb-1">Detailed Description</label>
                     <textarea 
                       rows="2"
                       value={productForm.description}
                       onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
                       required
                       placeholder="Detailed marketing breakdown for the details page..."
-                      className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none text-primary resize-none"
+                      className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] resize-none"
                     ></textarea>
                   </div>
 
                   {/* Multi-Image Upload Panel */}
-                  <div className="border border-border p-4 bg-white rounded">
-                    <label className="block font-bold text-primary mb-1.5">Product Images Gallery (Cloudinary/Local)</label>
+                  <div className="border border-[#EADFC9]/40 p-4 bg-white rounded-none">
+                    <label className="block font-bold text-[#2A211D] mb-1.5">Product Images Gallery (Cloudinary/Local)</label>
                     <input 
                       type="file" 
                       multiple 
                       onChange={handleImageUpload} 
-                      className="text-xs mb-3 block"
+                      className="text-xs mb-3 block cursor-pointer"
                     />
                     
                     {productForm.images.length > 0 && (
                       <div className="flex gap-2 flex-wrap">
                         {productForm.images.map((img, idx) => (
-                          <div key={idx} className="relative w-16 h-12 rounded border border-border overflow-hidden">
+                          <div key={idx} className="relative w-16 h-12 rounded-none border border-[#EADFC9]/45 overflow-hidden bg-[#FAF5EF]">
                             <img src={img} alt="preview" className="w-full h-full object-cover" />
                             <button 
                               type="button" 
                               onClick={() => setProductForm({ ...productForm, images: productForm.images.filter((_, i) => i !== idx) })}
-                              className="absolute top-0 right-0 bg-red-500 text-white w-4 h-4 flex items-center justify-center font-bold font-sans text-[8px] focus:outline-none"
+                              className="absolute top-0 right-0 bg-red-600 text-white w-4 h-4 flex items-center justify-center font-bold font-sans text-[8px] focus:outline-none"
                             >
                               &times;
                             </button>
@@ -830,27 +830,27 @@ const AdminDashboard = () => {
                   </div>
 
                   {/* Specifications key-value helper */}
-                  <div className="border border-border p-4 bg-white rounded">
-                    <label className="block font-bold text-primary mb-2">Technical Specifications</label>
+                  <div className="border border-[#EADFC9]/40 p-4 bg-white rounded-none">
+                    <label className="block font-bold text-[#2A211D] mb-2">Technical Specifications</label>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
                       <input 
                         type="text" 
                         placeholder="Feature Key (e.g. Firmness)" 
                         value={tempSpecKey}
                         onChange={(e) => setTempSpecKey(e.target.value)}
-                        className="bg-bg-light border border-border rounded-sm py-1.5 px-2.5 focus:outline-none"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/50 rounded-none py-1.5 px-2.5 focus:outline-none text-[#2A211D]"
                       />
                       <input 
                         type="text" 
                         placeholder="Value (e.g. Medium Soft)" 
                         value={tempSpecVal}
                         onChange={(e) => setTempSpecVal(e.target.value)}
-                        className="bg-bg-light border border-border rounded-sm py-1.5 px-2.5 focus:outline-none"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/50 rounded-none py-1.5 px-2.5 focus:outline-none text-[#2A211D]"
                       />
                       <button 
                         type="button" 
                         onClick={addSpecPair}
-                        className="bg-primary text-white font-bold py-1 px-3 rounded-sm hover:bg-primary-light transition-colors"
+                        className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-1 px-3 rounded-none uppercase tracking-wider text-[10px]"
                       >
                         Add Spec Pair
                       </button>
@@ -859,9 +859,9 @@ const AdminDashboard = () => {
                     {Object.keys(productForm.specifications).length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {Object.entries(productForm.specifications).map(([key, val]) => (
-                          <span key={key} className="bg-bg-light border border-border text-[10px] py-1 px-2.5 rounded flex items-center gap-1">
+                          <span key={key} className="bg-[#FAF8F5] border border-[#EADFC9]/45 text-[10px] py-1 px-2.5 rounded-none flex items-center gap-1 text-[#2A211D]">
                             <strong>{key}:</strong> {val}
-                            <button type="button" onClick={() => removeSpecKey(key)} className="text-red-500 font-bold hover:text-red-700 ml-1">&times;</button>
+                            <button type="button" onClick={() => removeSpecKey(key)} className="text-red-600 font-bold hover:text-red-800 ml-1 text-xs">&times;</button>
                           </span>
                         ))}
                       </div>
@@ -869,55 +869,55 @@ const AdminDashboard = () => {
                   </div>
 
                   {/* Design Benefits helpers */}
-                  <div className="border border-border p-4 bg-white rounded">
-                    <label className="block font-bold text-primary mb-2">Design Benefits Bullet Points</label>
+                  <div className="border border-[#EADFC9]/40 p-4 bg-white rounded-none">
+                    <label className="block font-bold text-[#2A211D] mb-2">Design Benefits Bullet Points</label>
                     <div className="flex gap-2 mb-3">
                       <input 
                         type="text" 
                         placeholder="Benefits bullet point summary..." 
                         value={tempBenefit}
                         onChange={(e) => setTempBenefit(e.target.value)}
-                        className="flex-grow bg-bg-light border border-border rounded-sm py-1.5 px-2.5 focus:outline-none"
+                        className="flex-grow bg-[#FAF8F5] border border-[#EADFC9]/50 rounded-none py-1.5 px-2.5 focus:outline-none text-[#2A211D]"
                       />
                       <button 
                         type="button" 
                         onClick={addBenefitItem}
-                        className="bg-primary text-white font-bold py-1 px-4 rounded-sm hover:bg-primary-light transition-colors"
+                        className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-1.5 px-4 rounded-none uppercase tracking-wider text-[10px]"
                       >
                         Add Point
                       </button>
                     </div>
 
                     {productForm.benefits.length > 0 && (
-                      <ul className="list-disc pl-5 space-y-1 text-text-muted">
+                      <ul className="list-disc pl-5 space-y-1 text-[#8E7D75]">
                         {productForm.benefits.map((b, idx) => (
-                          <li key={idx} className="flex justify-between items-center text-[10px]">
+                          <li key={idx} className="flex justify-between items-center text-[11px] border-b border-[#EADFC9]/15 pb-1">
                             <span>{b}</span>
-                            <button type="button" onClick={() => removeBenefitItem(idx)} className="text-red-500 font-bold hover:text-red-700">&times;</button>
+                            <button type="button" onClick={() => removeBenefitItem(idx)} className="text-red-600 font-bold hover:text-red-800 text-xs">&times;</button>
                           </li>
                         ))}
                       </ul>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#EADFC9]/30 pt-4">
                     <div className="flex items-center gap-6">
-                      <label className="flex items-center gap-2 font-bold text-primary cursor-pointer select-none">
+                      <label className="flex items-center gap-2 font-bold text-[#2A211D] cursor-pointer select-none">
                         <input 
                           type="checkbox" 
                           checked={productForm.isAvailable}
                           onChange={(e) => setProductForm({ ...productForm, isAvailable: e.target.checked })}
-                          className="cursor-pointer"
+                          className="cursor-pointer accent-[#7C5F43] w-4 h-4 border-[#EADFC9]"
                         />
                         In Availability Stock
                       </label>
                       
-                      <label className="flex items-center gap-2 font-bold text-primary cursor-pointer select-none">
+                      <label className="flex items-center gap-2 font-bold text-[#2A211D] cursor-pointer select-none">
                         <input 
                           type="checkbox" 
                           checked={productForm.isFeatured}
                           onChange={(e) => setProductForm({ ...productForm, isFeatured: e.target.checked })}
-                          className="cursor-pointer"
+                          className="cursor-pointer accent-[#7C5F43] w-4 h-4 border-[#EADFC9]"
                         />
                         Featured Product Highlight
                       </label>
@@ -927,7 +927,7 @@ const AdminDashboard = () => {
                       <button 
                         type="button" 
                         onClick={resetProductForm}
-                        className="border border-border py-2.5 px-5 rounded-sm hover:bg-bg-light transition-colors"
+                        className="border border-[#EADFC9]/50 py-2.5 px-5 rounded-none hover:bg-[#FAF5EF] text-[#8E7D75] transition-colors"
                       >
                         Reset Form
                       </button>
@@ -935,7 +935,7 @@ const AdminDashboard = () => {
                       <button 
                         type="submit" 
                         disabled={submitLoading}
-                        className="bg-primary hover:bg-primary-light text-white font-bold py-2.5 px-6 rounded-sm shadow-sm transition-colors disabled:opacity-50"
+                        className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-none shadow-xs transition-colors disabled:opacity-50"
                       >
                         {submitLoading ? 'Saving Product...' : 'Save Product Details'}
                       </button>
@@ -945,38 +945,38 @@ const AdminDashboard = () => {
               </div>
 
               {/* Products List Grid */}
-              <div className="border border-border rounded-sm overflow-hidden text-xs">
+              <div className="border border-[#EADFC9]/40 rounded-none overflow-hidden text-xs">
                 <table className="w-full text-left">
-                  <thead className="bg-bg-light border-b border-border">
+                  <thead className="bg-[#FAF5EF] border-b border-[#EADFC9]/40">
                     <tr>
-                      <th className="p-3 font-bold text-primary">Product Name</th>
-                      <th className="p-3 font-bold text-primary">Category</th>
-                      <th className="p-3 font-bold text-primary">Base Price</th>
-                      <th className="p-3 font-bold text-primary">Stock Status</th>
-                      <th className="p-3 font-bold text-primary text-right">Actions</th>
+                      <th className="p-3 font-serif font-bold text-[#2A211D]">Product Name</th>
+                      <th className="p-3 font-serif font-bold text-[#2A211D]">Category</th>
+                      <th className="p-3 font-serif font-bold text-[#2A211D]">Base Price</th>
+                      <th className="p-3 font-serif font-bold text-[#2A211D]">Stock Status</th>
+                      <th className="p-3 font-serif font-bold text-[#2A211D] text-right text-[10px] uppercase tracking-wider pr-4">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {products.map((p) => (
-                      <tr key={p._id} className="border-b border-border last:border-b-0 hover:bg-bg-light/20">
-                        <td className="p-3 font-semibold text-primary">{p.name}</td>
-                        <td className="p-3 capitalize text-text-muted">{p.category}</td>
-                        <td className="p-3 text-primary font-bold">₹{p.basePrice.toLocaleString('en-IN')}</td>
+                      <tr key={p._id} className="border-b border-[#EADFC9]/25 last:border-b-0 hover:bg-[#FAF8F5]/50 bg-white">
+                        <td className="p-3 font-semibold text-[#2A211D]">{p.name}</td>
+                        <td className="p-3 capitalize text-[#8E7D75]">{p.category}</td>
+                        <td className="p-3 text-[#2A211D] font-bold">₹{p.basePrice.toLocaleString('en-IN')}</td>
                         <td className="p-3">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${p.isAvailable ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'}`}>
+                          <span className={`px-2.5 py-0.5 rounded-none text-[9.5px] font-bold ${p.isAvailable ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'}`}>
                             {p.isAvailable ? 'Available' : 'Out of Stock'}
                           </span>
                         </td>
-                        <td className="p-3 text-right space-x-3">
+                        <td className="p-3 text-right space-x-3 pr-4">
                           <button 
                             onClick={() => handleEditProductClick(p)}
-                            className="text-primary hover:text-accent font-bold focus:outline-none"
+                            className="text-[#7C5F43] hover:text-[#2A211D] font-bold focus:outline-none uppercase tracking-wider text-[10.5px]"
                           >
                             Edit
                           </button>
                           <button 
                             onClick={() => handleDeleteProduct(p._id)}
-                            className="text-red-500 hover:text-red-700 font-bold focus:outline-none"
+                            className="text-red-500 hover:text-red-700 font-bold focus:outline-none uppercase tracking-wider text-[10.5px]"
                           >
                             Delete
                           </button>
@@ -992,16 +992,16 @@ const AdminDashboard = () => {
           {/* 3. MATTRESS CONFIG MODULE */}
           {activeTab === 'mattress' && mattressConfig && (
             <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-bold font-display text-primary mb-1">Mattress Multipliers & Cores</h3>
-              <p className="text-[11px] text-text-muted mb-6">Modify base rate prices, custom size dimensions, and 3D visualizer configurations</p>
+              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Mattress Multipliers & Cores</h3>
+              <p className="text-[11px] text-[#8E7D75] mb-6">Modify base rate prices, custom size dimensions, and 3D visualizer configurations</p>
 
               {/* Sizes Multipliers */}
-              <div className="border border-border p-4 bg-bg-light/30 rounded-sm mb-6">
-                <h4 className="font-bold text-xs text-primary mb-3">Sizing Dimensions Multipliers</h4>
+              <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none mb-6">
+                <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Sizing Dimensions Multipliers</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {mattressConfig.sizes.map((s, idx) => (
-                    <div key={idx} className="flex flex-col bg-white p-3 border border-border rounded">
-                      <span className="font-bold text-text-muted mb-1 block">{s.name}</span>
+                    <div key={idx} className="flex flex-col bg-white p-3 border border-[#EADFC9]/35 rounded-none">
+                      <span className="font-bold text-[#8E7D75] mb-1 block">{s.name}</span>
                       <input 
                         type="text" 
                         value={s.multiplier}
@@ -1010,7 +1010,7 @@ const AdminDashboard = () => {
                           updated[idx].multiplier = parseFloat(e.target.value) || 1.0;
                           setMattressConfig({ ...mattressConfig, sizes: updated });
                         }}
-                        className="bg-bg-light border border-border rounded p-1.5 focus:outline-none font-bold text-primary text-center"
+                        className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none p-1.5 focus:outline-none font-bold text-[#2A211D] text-center"
                       />
                     </div>
                   ))}
@@ -1018,12 +1018,12 @@ const AdminDashboard = () => {
               </div>
 
               {/* Thicknesses Multipliers */}
-              <div className="border border-border p-4 bg-bg-light/30 rounded-sm mb-6">
-                <h4 className="font-bold text-xs text-primary mb-3">Thickness Depth Multipliers</h4>
+              <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none mb-6">
+                <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Thickness Depth Multipliers</h4>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   {mattressConfig.thicknesses.map((t, idx) => (
-                    <div key={idx} className="flex flex-col bg-white p-3 border border-border rounded">
-                      <span className="font-bold text-text-muted mb-1 block">{t.name}</span>
+                    <div key={idx} className="flex flex-col bg-white p-3 border border-[#EADFC9]/35 rounded-none">
+                      <span className="font-bold text-[#8E7D75] mb-1 block">{t.name}</span>
                       <input 
                         type="text" 
                         value={t.multiplier}
@@ -1032,7 +1032,7 @@ const AdminDashboard = () => {
                           updated[idx].multiplier = parseFloat(e.target.value) || 1.0;
                           setMattressConfig({ ...mattressConfig, thicknesses: updated });
                         }}
-                        className="bg-bg-light border border-border rounded p-1.5 focus:outline-none font-bold text-primary text-center"
+                        className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none p-1.5 focus:outline-none font-bold text-[#2A211D] text-center"
                       />
                     </div>
                   ))}
@@ -1040,17 +1040,17 @@ const AdminDashboard = () => {
               </div>
 
               {/* Cores Prices */}
-              <div className="border border-border p-4 bg-bg-light/30 rounded-sm mb-6">
-                <h4 className="font-bold text-xs text-primary mb-3">Mattress Core Base Pricing</h4>
+              <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none mb-6">
+                <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Mattress Core Base Pricing</h4>
                 <div className="space-y-4">
                   {mattressConfig.cores.map((c, idx) => (
-                    <div key={idx} className="bg-white p-4 border border-border rounded grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <div key={idx} className="bg-white p-4 border border-[#EADFC9]/35 rounded-none grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                       <div>
-                        <span className="block font-bold text-sm text-primary leading-tight">{c.name}</span>
-                        <span className="block text-[10px] text-text-muted mt-1 italic">{c.type} core configuration</span>
+                        <span className="block font-serif font-bold text-sm text-[#2A211D] leading-tight">{c.name}</span>
+                        <span className="block text-[10px] text-[#8E7D75] mt-1 italic">{c.type} core configuration</span>
                       </div>
                       <div className="flex flex-col">
-                        <label className="font-bold text-text-muted mb-1">Base Price (₹)</label>
+                        <label className="font-bold text-[#8E7D75] mb-1">Base Price (₹)</label>
                         <input 
                           type="number" 
                           value={c.basePrice}
@@ -1059,11 +1059,11 @@ const AdminDashboard = () => {
                             updated[idx].basePrice = parseInt(e.target.value) || 0;
                             setMattressConfig({ ...mattressConfig, cores: updated });
                           }}
-                          className="bg-bg-light border border-border rounded p-1.5 focus:outline-none font-bold text-primary"
+                          className="bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none p-1.5 focus:outline-none font-bold text-[#2A211D]"
                         />
                       </div>
                       <div className="flex flex-col">
-                        <label className="font-bold text-text-muted mb-1">Retail Showroom Multiplier</label>
+                        <label className="font-bold text-[#8E7D75] mb-1">Retail Showroom Multiplier</label>
                         <input 
                           type="text" 
                           value={c.retailMultiplier}
@@ -1072,7 +1072,7 @@ const AdminDashboard = () => {
                             updated[idx].retailMultiplier = parseFloat(e.target.value) || 2.0;
                             setMattressConfig({ ...mattressConfig, cores: updated });
                           }}
-                          className="bg-bg-light border border-border rounded p-1.5 focus:outline-none font-bold text-primary"
+                          className="bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none p-1.5 focus:outline-none font-bold text-[#2A211D]"
                         />
                       </div>
                     </div>
@@ -1080,11 +1080,11 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end border-t border-border pt-4">
+              <div className="flex justify-end border-t border-[#EADFC9]/30 pt-4">
                 <button
                   onClick={() => handleSaveMattressConfig(mattressConfig)}
                   disabled={submitLoading}
-                  className="bg-primary hover:bg-primary-light text-white font-bold py-2.5 px-6 rounded-sm shadow-sm transition-colors disabled:opacity-50"
+                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-none shadow-xs transition-colors disabled:opacity-50"
                 >
                   {submitLoading ? 'Saving Configurations...' : 'Save Mattress Pricing Configurations'}
                 </button>
@@ -1096,16 +1096,16 @@ const AdminDashboard = () => {
           {/* 4. SOFA CONFIG MODULE */}
           {activeTab === 'sofa' && sofaConfig && (
             <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-bold font-display text-primary mb-1">Sofa Multipliers & Parameters</h3>
-              <p className="text-[11px] text-text-muted mb-6">Modify sofa layout multipliers, fabrics and color parameters</p>
+              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Sofa Multipliers & Parameters</h3>
+              <p className="text-[11px] text-[#8E7D75] mb-6">Modify sofa layout multipliers, fabrics and color parameters</p>
 
               {/* Types Multipliers */}
-              <div className="border border-border p-4 bg-bg-light/30 rounded-sm mb-6">
-                <h4 className="font-bold text-xs text-primary mb-3">Sofa Type Multipliers</h4>
+              <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none mb-6">
+                <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Sofa Type Multipliers</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {sofaConfig.sofaTypes.map((t, idx) => (
-                    <div key={idx} className="flex flex-col bg-white p-3 border border-border rounded">
-                      <span className="font-bold text-text-muted mb-1 block">{t.name}</span>
+                    <div key={idx} className="flex flex-col bg-white p-3 border border-[#EADFC9]/35 rounded-none">
+                      <span className="font-bold text-[#8E7D75] mb-1 block">{t.name}</span>
                       <input 
                         type="text" 
                         value={t.multiplier}
@@ -1114,7 +1114,7 @@ const AdminDashboard = () => {
                           updated[idx].multiplier = parseFloat(e.target.value) || 1.0;
                           setSofaConfig({ ...sofaConfig, sofaTypes: updated });
                         }}
-                        className="bg-bg-light border border-border rounded p-1.5 focus:outline-none font-bold text-primary text-center"
+                        className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none p-1.5 focus:outline-none font-bold text-[#2A211D] text-center"
                       />
                     </div>
                   ))}
@@ -1123,12 +1123,12 @@ const AdminDashboard = () => {
 
               {/* Materials & Fabric Modifiers */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="border border-border p-4 bg-bg-light/30 rounded-sm">
-                  <h4 className="font-bold text-xs text-primary mb-3">Material Cost Modifiers (₹)</h4>
+                <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none">
+                  <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Material Cost Modifiers (₹)</h4>
                   <div className="space-y-3">
                     {sofaConfig.materials.map((m, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-white p-2.5 border border-border rounded">
-                        <span className="font-bold text-text-muted">{m.name}</span>
+                      <div key={idx} className="flex justify-between items-center bg-white p-2.5 border border-[#EADFC9]/30 rounded-none">
+                        <span className="font-bold text-[#8E7D75]">{m.name}</span>
                         <input 
                           type="number" 
                           value={m.priceModifier}
@@ -1137,19 +1137,19 @@ const AdminDashboard = () => {
                             updated[idx].priceModifier = parseInt(e.target.value) || 0;
                             setSofaConfig({ ...sofaConfig, materials: updated });
                           }}
-                          className="w-24 bg-bg-light border border-border rounded p-1 text-center font-bold text-primary"
+                          className="w-24 bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none p-1 text-center font-bold text-[#2A211D]"
                         />
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="border border-border p-4 bg-bg-light/30 rounded-sm">
-                  <h4 className="font-bold text-xs text-primary mb-3">Fabric Cost Modifiers (₹)</h4>
+                <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none">
+                  <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Fabric Cost Modifiers (₹)</h4>
                   <div className="space-y-3">
                     {sofaConfig.fabrics.map((f, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-white p-2.5 border border-border rounded">
-                        <span className="font-bold text-text-muted">{f.name}</span>
+                      <div key={idx} className="flex justify-between items-center bg-white p-2.5 border border-[#EADFC9]/30 rounded-none">
+                        <span className="font-bold text-[#8E7D75]">{f.name}</span>
                         <input 
                           type="number" 
                           value={f.priceModifier}
@@ -1158,7 +1158,7 @@ const AdminDashboard = () => {
                             updated[idx].priceModifier = parseInt(e.target.value) || 0;
                             setSofaConfig({ ...sofaConfig, fabrics: updated });
                           }}
-                          className="w-24 bg-bg-light border border-border rounded p-1 text-center font-bold text-primary"
+                          className="w-24 bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none p-1 text-center font-bold text-[#2A211D]"
                         />
                       </div>
                     ))}
@@ -1166,11 +1166,11 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end border-t border-border pt-4">
+              <div className="flex justify-end border-t border-[#EADFC9]/30 pt-4">
                 <button
                   onClick={() => handleSaveSofaConfig(sofaConfig)}
                   disabled={submitLoading}
-                  className="bg-primary hover:bg-primary-light text-white font-bold py-2.5 px-6 rounded-sm shadow-sm transition-colors disabled:opacity-50"
+                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-none shadow-xs transition-colors disabled:opacity-50"
                 >
                   {submitLoading ? 'Saving Configurations...' : 'Save Sofa Pricing Configurations'}
                 </button>
@@ -1182,45 +1182,45 @@ const AdminDashboard = () => {
           {/* 5. TESTIMONIALS MODULE */}
           {activeTab === 'testimonials' && (
             <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-bold font-display text-primary mb-1">Testimonial Reviews</h3>
-              <p className="text-[11px] text-text-muted mb-6">Manage customer reviews showing in reviews sliders</p>
+              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Testimonial Reviews</h3>
+              <p className="text-[11px] text-[#8E7D75] mb-6">Manage customer reviews showing in reviews sliders</p>
 
               {/* Review add form */}
-              <div className="bg-bg-light/40 border border-border p-4 rounded-sm mb-6">
-                <h4 className="font-bold text-xs text-primary mb-3 border-b border-border pb-1.5">
+              <div className="bg-[#FAF8F5] border border-[#EADFC9]/40 p-4 rounded-none mb-6">
+                <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-3 border-b border-[#EADFC9]/30 pb-1.5">
                   {editingTestimonial ? `Edit Testimonial: ${editingTestimonial.name}` : 'Create Customer Testimonial'}
                 </h4>
                 
                 <form onSubmit={handleSaveTestimonial} className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                     <div className="flex flex-col">
-                      <label className="font-bold text-primary mb-1">Customer Name</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Customer Name</label>
                       <input 
                         type="text" 
                         value={testimonialForm.name}
                         onChange={(e) => setTestimonialForm({ ...testimonialForm, name: e.target.value })}
                         required
                         placeholder="Rajesh Kumar"
-                        className="bg-white border border-border rounded-sm p-1.5 focus:outline-none"
+                        className="bg-white border border-[#EADFC9]/45 rounded-none p-1.5 focus:outline-none text-[#2A211D]"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <label className="font-bold text-primary mb-1">Location (e.g. "Mumbai")</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Location (e.g. "Mumbai")</label>
                       <input 
                         type="text" 
                         value={testimonialForm.location}
                         onChange={(e) => setTestimonialForm({ ...testimonialForm, location: e.target.value })}
                         required
                         placeholder="Mumbai"
-                        className="bg-white border border-border rounded-sm p-1.5 focus:outline-none"
+                        className="bg-white border border-[#EADFC9]/45 rounded-none p-1.5 focus:outline-none text-[#2A211D]"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <label className="font-bold text-primary mb-1">Rating Stars (1-5)</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Rating Stars (1-5)</label>
                       <select 
                         value={testimonialForm.rating}
                         onChange={(e) => setTestimonialForm({ ...testimonialForm, rating: parseInt(e.target.value) })}
-                        className="bg-white border border-border rounded-sm p-1.5 focus:outline-none cursor-pointer"
+                        className="bg-white border border-[#EADFC9]/45 rounded-none p-1.5 focus:outline-none cursor-pointer text-[#2A211D]"
                       >
                         <option value="5">5 Stars</option>
                         <option value="4">4 Stars</option>
@@ -1228,42 +1228,42 @@ const AdminDashboard = () => {
                       </select>
                     </div>
                     <div className="flex flex-col">
-                      <label className="font-bold text-primary mb-1">Date Text (e.g. "2 weeks ago")</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Date Text (e.g. "2 weeks ago")</label>
                       <input 
                         type="text" 
                         value={testimonialForm.dateText}
                         onChange={(e) => setTestimonialForm({ ...testimonialForm, dateText: e.target.value })}
                         required
                         placeholder="2 weeks ago"
-                        className="bg-white border border-border rounded-sm p-1.5 focus:outline-none"
+                        className="bg-white border border-[#EADFC9]/45 rounded-none p-1.5 focus:outline-none text-[#2A211D]"
                       />
                     </div>
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="font-bold text-primary mb-1">Review Content</label>
+                    <label className="font-bold text-[#2A211D] mb-1">Review Content</label>
                     <textarea 
                       rows="2"
                       value={testimonialForm.text}
                       onChange={(e) => setTestimonialForm({ ...testimonialForm, text: e.target.value })}
                       required
                       placeholder="Enter the customer review narrative here..."
-                      className="bg-white border border-border rounded-sm p-2 focus:outline-none resize-none"
+                      className="bg-white border border-[#EADFC9]/45 rounded-none p-2 focus:outline-none resize-none text-[#2A211D]"
                     ></textarea>
                   </div>
 
-                  <div className="flex justify-end gap-2 border-t border-border/60 pt-3">
+                  <div className="flex justify-end gap-2 border-t border-[#EADFC9]/30 pt-3">
                     <button 
                       type="button" 
                       onClick={resetTestimonialForm}
-                      className="border border-border py-1.5 px-4 rounded-sm hover:bg-bg-light transition-colors"
+                      className="border border-[#EADFC9]/50 py-1.5 px-4 rounded-none hover:bg-[#FAF5EF] text-[#8E7D75] transition-colors"
                     >
                       Reset Form
                     </button>
                     <button 
                       type="submit"
                       disabled={submitLoading}
-                      className="bg-primary text-white font-bold py-1.5 px-5 rounded-sm hover:bg-primary-light transition-colors disabled:opacity-50"
+                      className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-1.5 px-5 rounded-none transition-colors disabled:opacity-50"
                     >
                       {editingTestimonial ? 'Update Testimonial' : 'Save Testimonial'}
                     </button>
@@ -1274,30 +1274,30 @@ const AdminDashboard = () => {
               {/* Testimonials List */}
               <div className="space-y-3">
                 {testimonials.map((t) => (
-                  <div key={t._id} className="border border-border p-3 rounded bg-bg-light/20 flex justify-between items-start gap-4">
+                  <div key={t._id} className="border border-[#EADFC9]/40 p-3 rounded-none bg-[#FAF8F5]/40 flex justify-between items-start gap-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="font-bold text-primary text-sm">{t.name}</span>
+                        <span className="font-bold text-[#2A211D] text-sm">{t.name}</span>
                         {t.location && (
-                          <span className="text-[10.5px] text-text-muted font-medium bg-border/40 px-1.5 py-0.5 rounded">
+                          <span className="text-[10.5px] text-[#8E7D75] font-medium bg-[#FAF5EF] border border-[#EADFC9]/20 px-1.5 py-0.5 rounded-none">
                             {t.location}
                           </span>
                         )}
-                        <span className="text-accent">{'★'.repeat(t.rating)}</span>
-                        <span className="text-[10px] text-text-muted">({t.dateText})</span>
+                        <span className="text-[#7C5F43]">{'★'.repeat(t.rating)}</span>
+                        <span className="text-[10px] text-[#8E7D75]">({t.dateText})</span>
                       </div>
-                      <p className="text-text-muted italic">"{t.text}"</p>
+                      <p className="text-[#8E7D75] italic">"{t.text}"</p>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 pr-2">
                       <button 
                         onClick={() => handleEditTestimonialClick(t)}
-                        className="text-primary hover:text-accent font-bold focus:outline-none"
+                        className="text-[#7C5F43] hover:text-[#2A211D] font-bold focus:outline-none uppercase tracking-wider text-[10.5px]"
                       >
                         Edit
                       </button>
                       <button 
                         onClick={() => handleDeleteTestimonial(t._id)}
-                        className="text-red-500 hover:text-red-700 font-bold focus:outline-none"
+                        className="text-red-500 hover:text-red-700 font-bold focus:outline-none uppercase tracking-wider text-[10.5px]"
                       >
                         Delete
                       </button>
@@ -1312,78 +1312,78 @@ const AdminDashboard = () => {
           {/* 6. HOMEPAGE CONTENT MODULE */}
           {activeTab === 'homepage' && (
             <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-bold font-display text-primary mb-1">Homepage Content Manager</h3>
-              <p className="text-[11px] text-text-muted mb-6">Modify main headlines, subheadings and call-to-actions dynamic copy</p>
+              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Homepage Content Manager</h3>
+              <p className="text-[11px] text-[#8E7D75] mb-6">Modify main headlines, subheadings and call-to-actions dynamic copy</p>
 
               <form onSubmit={handleSaveHomepage} className="space-y-4">
                 
                 <div className="flex flex-col">
-                  <label className="font-bold text-primary mb-1">Hero Subheading</label>
+                  <label className="font-bold text-[#2A211D] mb-1">Hero Subheading</label>
                   <input 
                     type="text" 
                     value={homepageForm.heroSubheading}
                     onChange={(e) => setHomepageForm({ ...homepageForm, heroSubheading: e.target.value })}
                     required
                     placeholder="Direct Manufacturer Advantage"
-                    className="bg-bg-light border border-border rounded-sm py-2 px-3 focus:outline-none text-primary"
+                    className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
                   />
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="font-bold text-primary mb-1">Hero Heading Title</label>
+                  <label className="font-bold text-[#2A211D] mb-1">Hero Heading Title</label>
                   <input 
                     type="text" 
                     value={homepageForm.heroTitle}
                     onChange={(e) => setHomepageForm({ ...homepageForm, heroTitle: e.target.value })}
                     required
                     placeholder="Deep Sleep. Direct From The Factory."
-                    className="bg-bg-light border border-border rounded-sm py-2 px-3 focus:outline-none text-primary font-bold"
+                    className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] font-bold"
                   />
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="font-bold text-primary mb-1">Hero Subtitle Paragraph</label>
+                  <label className="font-bold text-[#2A211D] mb-1">Hero Subtitle Paragraph</label>
                   <textarea 
                     rows="3"
                     value={homepageForm.heroSubtitle}
                     onChange={(e) => setHomepageForm({ ...homepageForm, heroSubtitle: e.target.value })}
                     required
                     placeholder="Why pay 2x at retail showrooms..."
-                    className="bg-bg-light border border-border rounded-sm py-2 px-3 focus:outline-none text-primary resize-none leading-relaxed"
+                    className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] resize-none leading-relaxed"
                   ></textarea>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-border pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#EADFC9]/30 pt-4">
                   <div className="flex flex-col">
-                    <label className="font-bold text-primary mb-1">CTA Banner Title</label>
+                    <label className="font-bold text-[#2A211D] mb-1">CTA Banner Title</label>
                     <input 
                       type="text" 
                       value={homepageForm.ctaTitle}
                       onChange={(e) => setHomepageForm({ ...homepageForm, ctaTitle: e.target.value })}
                       required
                       placeholder="Ready for Better Sleep?"
-                      className="bg-bg-light border border-border rounded-sm py-2 px-3 focus:outline-none text-primary font-bold"
+                      className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] font-bold"
                     />
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="font-bold text-primary mb-1">CTA Subtitle Description</label>
+                    <label className="font-bold text-[#2A211D] mb-1">CTA Subtitle Description</label>
                     <input 
                       type="text" 
                       value={homepageForm.ctaSubtitle}
                       onChange={(e) => setHomepageForm({ ...homepageForm, ctaSubtitle: e.target.value })}
                       required
                       placeholder="Talk directly with the factory owner on WhatsApp..."
-                      className="bg-bg-light border border-border rounded-sm py-2 px-3 focus:outline-none text-primary"
+                      className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
                     />
                   </div>
                 </div>
 
-                <div className="flex justify-end border-t border-border pt-4">
+                <div className="flex justify-end border-t border-[#EADFC9]/30 pt-4">
                   <button 
                     type="submit"
                     disabled={submitLoading}
-                    className="bg-primary hover:bg-primary-light text-white font-bold py-2.5 px-6 rounded-sm shadow-sm transition-colors disabled:opacity-50"
+                    className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-none shadow-xs transition-colors disabled:opacity-50 uppercase tracking-wider"
                   >
                     {submitLoading ? 'Saving copy...' : 'Save Homepage Copy Headlines'}
                   </button>
@@ -1396,51 +1396,51 @@ const AdminDashboard = () => {
           {/* 7. PROFILE SAFETY MODULE */}
           {activeTab === 'profile' && (
             <div className="animate-fade-in text-xs max-w-md">
-              <h3 className="text-xl font-bold font-display text-primary mb-1">Profile Security</h3>
-              <p className="text-[11px] text-text-muted mb-6">Modify login email and session security password credentials</p>
+              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Profile Security</h3>
+              <p className="text-[11px] text-[#8E7D75] mb-6">Modify login email and session security password credentials</p>
 
               <form onSubmit={handleSaveProfile} className="space-y-4">
                 
                 <div className="flex flex-col">
-                  <label className="font-bold text-primary mb-1">Admin Email Address</label>
+                  <label className="font-bold text-[#2A211D] mb-1">Admin Email Address</label>
                   <input 
                     type="email" 
                     value={profileForm.email}
                     onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
                     required
                     placeholder="admin@example.com"
-                    className="bg-bg-light border border-border rounded-sm py-2.5 px-3.5 focus:outline-none text-primary font-medium"
+                    className="bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none py-2.5 px-3.5 focus:outline-none text-[#2A211D] font-medium placeholder-[#8E7D75]"
                   />
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="font-bold text-primary mb-1">New Security Password</label>
+                  <label className="font-bold text-[#2A211D] mb-1">New Security Password</label>
                   <input 
                     type="password" 
                     value={profileForm.password}
                     onChange={(e) => setProfileForm({ ...profileForm, password: e.target.value })}
                     required
                     placeholder="••••••••••••"
-                    className="bg-bg-light border border-border rounded-sm py-2.5 px-3.5 focus:outline-none text-primary"
+                    className="bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none py-2.5 px-3.5 focus:outline-none text-[#2A211D] placeholder-[#8E7D75]"
                   />
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="font-bold text-primary mb-1">Confirm New Password</label>
+                  <label className="font-bold text-[#2A211D] mb-1">Confirm New Password</label>
                   <input 
                     type="password" 
                     value={profileForm.confirmPassword}
                     onChange={(e) => setProfileForm({ ...profileForm, confirmPassword: e.target.value })}
                     required
                     placeholder="••••••••••••"
-                    className="bg-bg-light border border-border rounded-sm py-2.5 px-3.5 focus:outline-none text-primary"
+                    className="bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none py-2.5 px-3.5 focus:outline-none text-[#2A211D] placeholder-[#8E7D75]"
                   />
                 </div>
 
                 <button 
                   type="submit"
                   disabled={submitLoading}
-                  className="bg-primary hover:bg-primary-light text-white font-bold py-2.5 px-6 rounded-sm tracking-wide transition-colors duration-200 mt-2 shadow-sm disabled:opacity-50 focus:outline-none"
+                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-none tracking-wider uppercase mt-2 focus:outline-none"
                 >
                   {submitLoading ? 'Updating credentials...' : 'Update Login Credentials'}
                 </button>

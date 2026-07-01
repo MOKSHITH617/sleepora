@@ -14,11 +14,13 @@ import About from './pages/About';
 import Warranty from './pages/Warranty';
 import Stores from './pages/Stores';
 import { AuthProvider } from './context/AuthContext';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <MainLayout>
           <Routes>
             <Route path="/" element={<Home />} />

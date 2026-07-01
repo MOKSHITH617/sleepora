@@ -99,15 +99,15 @@ Please send me the price details and dispatch timeline!`;
   };
 
   return (
-    <div className="bg-white p-6 md:p-8 rounded-md border border-border shadow-md select-none">
-      <h3 className="text-xl font-bold font-display text-primary mb-1">Enquiry Details</h3>
-      <p className="text-xs text-text-muted mb-6">Receive custom sizes price configurations directly on WhatsApp</p>
-
+    <div className="bg-white p-6 md:p-8 rounded-none border border-[#EADFC9]/45 shadow-sm select-none">
+      <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Enquiry Details</h3>
+      <p className="text-xs text-[#8E7D75] mb-6">Receive custom sizes price configurations directly on WhatsApp</p>
+ 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col">
-            <label htmlFor="form-name" className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Full Name</label>
+            <label htmlFor="form-name" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Full Name</label>
             <input 
               id="form-name"
               type="text" 
@@ -115,12 +115,12 @@ Please send me the price details and dispatch timeline!`;
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Rajesh Kumar"
               required
-              className="bg-bg-light border border-border rounded-sm py-2 px-3 text-xs focus:outline-none focus:border-accent text-primary"
+              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
-
+ 
           <div className="flex flex-col">
-            <label htmlFor="form-phone" className="text-xs font-bold text-primary uppercase tracking-wider mb-1">WhatsApp Mobile</label>
+            <label htmlFor="form-phone" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">WhatsApp Mobile</label>
             <input 
               id="form-phone"
               type="tel" 
@@ -130,13 +130,13 @@ Please send me the price details and dispatch timeline!`;
               pattern="[0-9]{10}"
               title="Ten digit mobile number"
               required
-              className="bg-bg-light border border-border rounded-sm py-2 px-3 text-xs focus:outline-none focus:border-accent text-primary"
+              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
         </div>
-
+ 
         <div className="flex flex-col">
-          <label htmlFor="form-email" className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Email Address</label>
+          <label htmlFor="form-email" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Email Address</label>
           <input 
             id="form-email"
             type="email" 
@@ -144,13 +144,13 @@ Please send me the price details and dispatch timeline!`;
             onChange={(e) => setEmail(e.target.value)}
             placeholder="e.g. rajesh@example.com"
             required
-            className="bg-bg-light border border-border rounded-sm py-2 px-3 text-xs focus:outline-none focus:border-accent text-primary"
+            className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
           />
         </div>
-
+ 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col">
-            <label htmlFor="form-select-cat" className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Product Category</label>
+            <label htmlFor="form-select-cat" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Product Category</label>
             <select
               id="form-select-cat"
               value={category}
@@ -158,22 +158,22 @@ Please send me the price details and dispatch timeline!`;
                 setCategory(e.target.value);
                 setProductSelection(e.target.value === 'mattress' ? 'Ortho-Memory Foam' : 'Royal Sectional Sofa');
               }}
-              className="bg-bg-light border border-border rounded-sm py-2.5 px-3 text-xs focus:outline-none focus:border-accent text-primary cursor-pointer"
+              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
             >
               <option value="mattress">Mattress Range</option>
               <option value="sofa">Sofa Collection</option>
               <option value="general">General Inquiry</option>
             </select>
           </div>
-
+ 
           <div className="flex flex-col">
-            <label htmlFor="form-select-prod" className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Product Selection</label>
+            <label htmlFor="form-select-prod" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Product Selection</label>
             {category === 'mattress' ? (
               <select
                 id="form-select-prod"
                 value={productSelection}
                 onChange={(e) => setProductSelection(e.target.value)}
-                className="bg-bg-light border border-border rounded-sm py-2.5 px-3 text-xs focus:outline-none focus:border-accent text-primary cursor-pointer"
+                className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
               >
                 <option value="Ortho-Memory Foam">Ortho-Memory Foam</option>
                 <option value="Premium Natural Latex">Premium Natural Latex</option>
@@ -186,7 +186,7 @@ Please send me the price details and dispatch timeline!`;
                 id="form-select-prod"
                 value={productSelection}
                 onChange={(e) => setProductSelection(e.target.value)}
-                className="bg-bg-light border border-border rounded-sm py-2.5 px-3 text-xs focus:outline-none focus:border-accent text-primary cursor-pointer"
+                className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
               >
                 <option value="Royal Sectional Sofa">Royal Sectional Sofa (L-Shape)</option>
                 <option value="Plush Lounge Recliner">Plush Lounge Recliner</option>
@@ -201,15 +201,15 @@ Please send me the price details and dispatch timeline!`;
                 value={productSelection}
                 onChange={(e) => setProductSelection(e.target.value)}
                 placeholder="What product are you interested in?"
-                className="bg-bg-light border border-border rounded-sm py-2 px-3 text-xs focus:outline-none focus:border-accent text-primary"
+                className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
               />
             )}
           </div>
         </div>
-
+ 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col">
-            <label htmlFor="form-dimension" className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Dimensions Preferred</label>
+            <label htmlFor="form-dimension" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Dimensions Preferred</label>
             <select
               id="form-dimension"
               value={dimensionType}
@@ -222,7 +222,7 @@ Please send me the price details and dispatch timeline!`;
                   setDimension('');
                 }
               }}
-              className="bg-bg-light border border-border rounded-sm py-2.5 px-3 text-xs focus:outline-none focus:border-accent text-primary cursor-pointer mb-2.5"
+              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer mb-2.5"
             >
               <option value="Single Bed (72 x 36)">Single Bed (72" x 36")</option>
               <option value="Double Bed (72 x 48)">Double Bed (72" x 48")</option>
@@ -239,13 +239,13 @@ Please send me the price details and dispatch timeline!`;
                 onChange={(e) => setDimension(e.target.value)}
                 placeholder="e.g. custom 75x62 inches"
                 required
-                className="bg-bg-light border border-accent rounded-sm py-2 px-3 text-xs focus:outline-none text-primary animate-fade-in"
+                className="bg-[#FAF5EF] border border-[#7C5F43]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none text-[#2A211D] animate-fade-in placeholder-[#8E7D75]"
               />
             )}
           </div>
-
+ 
           <div className="flex flex-col">
-            <label htmlFor="form-qty" className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Required Quantity</label>
+            <label htmlFor="form-qty" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Required Quantity</label>
             <input 
               id="form-qty"
               type="number" 
@@ -253,50 +253,50 @@ Please send me the price details and dispatch timeline!`;
               value={quantity}
               onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
               required
-              className="bg-bg-light border border-border rounded-sm py-2 px-3 text-xs focus:outline-none focus:border-accent text-primary"
+              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
         </div>
-
+ 
         <div className="flex flex-col">
-          <label htmlFor="form-message" className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Special Sizing & Details</label>
+          <label htmlFor="form-message" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Special Sizing & Details</label>
           <textarea 
             id="form-message"
             rows="3"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="e.g. My bed frame is exactly 75x62 inches and I need an 8-inch thickness..."
-            className="bg-bg-light border border-border rounded-sm py-2 px-3 text-xs focus:outline-none focus:border-accent text-primary resize-none"
+            className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75] resize-none"
           ></textarea>
         </div>
-
+ 
         <button 
           type="submit" 
           disabled={loading}
-          className="w-full bg-whatsapp hover:bg-whatsapp-dark text-white font-bold text-sm py-3.5 rounded-sm shadow-md pulse-whatsapp-btn flex items-center justify-center gap-2 mt-2 transition-all duration-300 disabled:opacity-50 focus:outline-none"
+          className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-xs uppercase tracking-wider py-3.5 rounded-none shadow-md flex items-center justify-center gap-2 mt-2 transition-all duration-300 disabled:opacity-50 focus:outline-none"
         >
-          <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
             <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11.951 16.942l-1.378 5.244-5.244-1.378c.905.492 1.944.75 3.02.75 3.182 0 5.767-2.586 5.768-5.766 0-3.18-2.585-5.766-5.766-5.766z"/>
           </svg>
           {loading ? 'Submitting...' : 'Generate Invoice & Chat on WhatsApp'}
         </button>
-
+ 
       </form>
-
+ 
       {/* --- SUCCESS MODAL OVERLAY --- */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-primary/60 backdrop-blur-sm z-[2000] flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-md max-w-md w-full p-6 text-center border border-border shadow-lg relative">
-            <div className="w-16 h-16 bg-whatsapp text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 pulse-whatsapp-btn">
+        <div className="fixed inset-0 bg-[#2A211D]/60 backdrop-blur-xs z-[2000] flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-none max-w-md w-full p-6 text-center border border-[#EADFC9]/45 shadow-xl relative">
+            <div className="w-16 h-16 bg-[#25D366] text-white rounded-none flex items-center justify-center text-3xl mx-auto mb-4">
               ✓
             </div>
-            <h3 className="text-xl font-bold font-display text-primary mb-1">Enquiry Registered!</h3>
-            <p className="text-xs text-text-muted mb-5">
+            <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Enquiry Registered!</h3>
+            <p className="text-xs text-[#8E7D75] mb-5">
               We have successfully registered your inquiry in our database. Click below to initiate direct WhatsApp chat with our factory owner to complete dispatch.
             </p>
-
+ 
             {savedLead && (
-              <div className="bg-bg-light border border-border text-left p-4 rounded-sm text-xs space-y-1.5 mb-6 text-primary select-none">
+              <div className="bg-[#FAF8F5] border border-[#EADFC9]/30 text-left p-4 rounded-none text-xs space-y-1.5 mb-6 text-[#2A211D] select-none">
                 <div><strong>Inquirer Name:</strong> {savedLead.name}</div>
                 <div><strong>Mobile Contact:</strong> {savedLead.phone}</div>
                 <div><strong>Configured Selection:</strong> {savedLead.productName}</div>
@@ -304,17 +304,17 @@ Please send me the price details and dispatch timeline!`;
                 <div><strong>Quantity Ordered:</strong> {savedLead.configuration?.quantity}</div>
               </div>
             )}
-
+ 
             <div className="flex flex-col gap-2">
               <button 
                 onClick={handleWhatsAppRedirect}
-                className="w-full bg-whatsapp hover:bg-whatsapp-dark text-white font-bold text-sm py-3 rounded-sm flex items-center justify-center gap-2 focus:outline-none"
+                className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-xs uppercase tracking-wider py-3 rounded-none flex items-center justify-center gap-2 focus:outline-none"
               >
                 Connect with Factory Owner Now
               </button>
               <button 
                 onClick={() => setModalOpen(false)}
-                className="w-full text-text-muted hover:text-primary font-bold text-xs py-2 mt-1 focus:outline-none"
+                className="w-full text-[#8E7D75] hover:text-[#2A211D] font-bold text-[10px] uppercase tracking-wider py-2 mt-1 focus:outline-none"
               >
                 Cancel & Modify Layout
               </button>
@@ -322,7 +322,7 @@ Please send me the price details and dispatch timeline!`;
           </div>
         </div>
       )}
-
+ 
     </div>
   );
 };

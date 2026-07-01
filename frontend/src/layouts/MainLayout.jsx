@@ -48,45 +48,32 @@ const MainLayout = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col bg-bg-light text-primary">
       
-      {/* --- PREMIUM NAVIGATION BAR --- */}
-      <header className={`fixed top-0 left-0 w-full z-[1000] border-b bg-primary text-white border-primary-light transition-all duration-300 ${scrolled ? 'shadow-lg py-3.5' : 'shadow-md py-5'}`}>
+      {/* --- PREMIUM NAVIGATION BAR (WOODNEST STYLE) --- */}
+      <header className={`fixed top-0 left-0 w-full z-[1000] border-b bg-[#FAF8F5]/95 backdrop-blur-md text-[#4A3E3D] border-[#EADFC9]/40 transition-all duration-300 ${scrolled ? 'shadow-sm py-2.5' : 'py-4'}`}>
         <div className="max-w-[1200px] mx-auto px-6 flex justify-between items-center">
           
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-[42px] h-[42px] bg-gradient-to-br from-accent to-[#B3860B] rounded-[50%_50%_50%_0] flex items-center justify-center text-primary font-extrabold text-xl">
-              TW
-            </div>
-            <div>
-              <span className="block text-2xl font-extrabold font-display tracking-tight text-white transition-colors duration-300">TimeWell</span>
-              <span className="block text-[10px] font-semibold tracking-[2.5px] uppercase text-accent leading-none -mt-0.5">Mattress Factory</span>
-            </div>
+          <Link to="/" className="font-serif text-[30px] font-bold tracking-wide text-[#7C5F43] transition-colors duration-300 hover:text-[#5F4630] select-none">
+            TimeWell
           </Link>
 
           {/* Nav links */}
-          <nav className={`fixed lg:static top-[70px] ${menuActive ? 'left-0' : '-left-full'} w-full lg:w-auto h-[calc(100vh-70px)] lg:h-auto border-t lg:border-t-0 flex flex-col lg:flex-row items-center lg:gap-8 gap-6 pt-10 lg:pt-0 transition-all duration-300 ease-in-out z-50 bg-primary border-primary-light lg:bg-transparent`}>
-            <Link to="/" className="text-[17px] font-bold tracking-wide transition-colors duration-200 text-white hover:text-accent">Home</Link>
-            <Link to="/mattresses" className="text-[17px] font-bold tracking-wide transition-colors duration-200 text-white hover:text-accent">Mattresses</Link>
-            <Link to="/sofas" className="text-[17px] font-bold tracking-wide transition-colors duration-200 text-white hover:text-accent">Sofas</Link>
-            <Link to="/factory" className="text-[17px] font-bold tracking-wide transition-colors duration-200 text-white hover:text-accent">Our Factory</Link>
-            <Link to="/contact" className="text-[17px] font-bold tracking-wide transition-colors duration-200 text-white hover:text-accent">Contact Us</Link>
+          <nav className={`fixed lg:static top-[68px] lg:top-auto ${menuActive ? 'left-0' : '-left-full'} w-full lg:w-auto h-[calc(100vh-68px)] lg:h-auto border-t lg:border-t-0 flex flex-col lg:flex-row items-center lg:gap-10 gap-8 pt-10 lg:pt-0 transition-all duration-300 ease-in-out z-50 bg-[#FAF8F5] border-[#EADFC9]/30 lg:bg-transparent`}>
+            <Link to="/" className={`text-[14px] font-semibold tracking-wide transition-all duration-200 pb-1.5 relative ${location.pathname === '/' ? 'text-[#7C5F43] after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-[#7C5F43]' : 'text-[#4A3E3D] hover:text-[#7C5F43]'}`}>Home</Link>
+            <Link to="/sofas" className={`text-[14px] font-semibold tracking-wide transition-all duration-200 pb-1.5 relative ${location.pathname === '/sofas' ? 'text-[#7C5F43] after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-[#7C5F43]' : 'text-[#4A3E3D] hover:text-[#7C5F43]'}`}>Sofas</Link>
+            <Link to="/mattresses" className={`text-[14px] font-semibold tracking-wide transition-all duration-200 pb-1.5 relative ${location.pathname === '/mattresses' ? 'text-[#7C5F43] after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-[#7C5F43]' : 'text-[#4A3E3D] hover:text-[#7C5F43]'}`}>Mattresses</Link>
+            <Link to="/factory" className={`text-[14px] font-semibold tracking-wide transition-all duration-200 pb-1.5 relative ${location.pathname === '/factory' ? 'text-[#7C5F43] after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-[#7C5F43]' : 'text-[#4A3E3D] hover:text-[#7C5F43]'}`}>About</Link>
+            <Link to="/contact" className={`text-[14px] font-semibold tracking-wide transition-all duration-200 pb-1.5 relative ${location.pathname === '/contact' ? 'text-[#7C5F43] after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-[#7C5F43]' : 'text-[#4A3E3D] hover:text-[#7C5F43]'}`}>Contact</Link>
             
-            <a href="tel:+919876543210" className="lg:hidden flex items-center gap-2.5 text-accent font-bold text-lg mt-4 whitespace-nowrap">
-              <svg className="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
+            <a href="tel:+919876543210" className="lg:hidden flex items-center gap-2.5 text-[#7C5F43] font-semibold text-base mt-4 whitespace-nowrap px-5 py-2 border border-[#7C5F43]/30 rounded-sm">
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
               +91 98765 43210
             </a>
           </nav>
 
-          <div className="hidden lg:flex items-center gap-4">
-            <a href="tel:+919876543210" className="font-bold text-[17px] flex items-center gap-2 transition-colors duration-300 text-accent hover:text-white whitespace-nowrap">
-              <svg className="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-              +91 98765 43210
-            </a>
-          </div>
-
           {/* Hamburger Mobile Toggle */}
           <button 
             onClick={() => setMenuActive(!menuActive)}
-            className="block lg:hidden text-2xl focus:outline-none transition-colors text-white"
+            className="block lg:hidden text-[#7C5F43] hover:text-[#5F4630] text-2xl focus:outline-none transition-colors"
             aria-label="Toggle Menu"
           >
             {menuActive ? (
@@ -99,7 +86,7 @@ const MainLayout = ({ children }) => {
       </header>
 
       {/* Main Page Area */}
-      <main className="flex-grow pt-[84px]">
+      <main className="flex-grow pt-[72px]">
         {children}
       </main>
 
@@ -120,68 +107,65 @@ const MainLayout = ({ children }) => {
       </div>
 
       {/* --- FOOTER --- */}
-      <footer className="bg-primary text-text-light pt-20 pb-8 mt-auto">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-white/10">
+      <footer className="bg-[#181311] text-stone-300 pt-16 pb-6 mt-auto border-t-2 border-[#7C5F43]/20">
+        <div className="max-w-[1480px] mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/5">
             
-            <div className="flex flex-col gap-4">
-              <Link to="/" className="flex items-center gap-2">
-                <div className="w-[38px] h-[38px] bg-gradient-to-br from-accent to-[#B3860B] rounded-[50%_50%_50%_0] flex items-center justify-center text-primary font-extrabold text-lg">
-                  TW
-                </div>
-                <span className="text-2xl font-extrabold font-display tracking-tight text-white">TimeWell</span>
+            <div className="flex flex-col gap-3">
+              <Link to="/" className="font-serif text-[26px] font-bold tracking-wide text-[#E3D8C4] hover:text-white transition-colors select-none">
+                TimeWell
               </Link>
-              <p className="text-white/60 text-sm leading-relaxed mt-2">
+              <p className="text-stone-400 text-xs leading-relaxed">
                 Direct manufacturers of high-performance orthopaedic sleep foam, organic natural latex, and independent pocket coil hybrid systems. Comfort and durability, straight from the assembly floor.
               </p>
             </div>
-
+ 
             <div>
-              <h3 className="font-display font-semibold text-lg text-white mb-6">Our Products</h3>
-              <ul className="flex flex-col gap-3.5 text-sm text-white/75">
-                <li><Link to="/mattresses" className="hover:text-accent transition-colors duration-200">Ortho-Memory Foam</Link></li>
-                <li><Link to="/mattresses" className="hover:text-accent transition-colors duration-200">Premium Natural Latex</Link></li>
-                <li><Link to="/mattresses" className="hover:text-accent transition-colors duration-200">Luxury Pocket Spring</Link></li>
-                <li><Link to="/sofas" className="hover:text-accent transition-colors duration-200">Custom Sectional Sofas</Link></li>
+              <h3 className="font-serif font-semibold text-sm uppercase tracking-wider text-[#C7A36B] mb-5">Our Products</h3>
+              <ul className="flex flex-col gap-3 text-xs text-stone-400">
+                <li><Link to="/mattresses" className="hover:text-[#E3D8C4] hover:translate-x-1 transition-all duration-200 inline-block">Ortho-Memory Foam</Link></li>
+                <li><Link to="/mattresses" className="hover:text-[#E3D8C4] hover:translate-x-1 transition-all duration-200 inline-block">Premium Natural Latex</Link></li>
+                <li><Link to="/mattresses" className="hover:text-[#E3D8C4] hover:translate-x-1 transition-all duration-200 inline-block">Luxury Pocket Spring</Link></li>
+                <li><Link to="/sofas" className="hover:text-[#E3D8C4] hover:translate-x-1 transition-all duration-200 inline-block">Custom Sectional Sofas</Link></li>
               </ul>
             </div>
-
+ 
             <div>
-              <h3 className="font-display font-semibold text-lg text-white mb-6">Quick Links</h3>
-              <ul className="flex flex-col gap-3.5 text-sm text-white/75">
-                <li><Link to="/factory" className="hover:text-accent transition-colors duration-200">Dynamic Factory Tour</Link></li>
-                <li><Link to="/contact" className="hover:text-accent transition-colors duration-200">Verify Our Locations</Link></li>
-                <li><Link to="/contact" className="hover:text-accent transition-colors duration-200">Request Custom Quotation</Link></li>
+              <h3 className="font-serif font-semibold text-sm uppercase tracking-wider text-[#C7A36B] mb-5">Quick Links</h3>
+              <ul className="flex flex-col gap-3 text-xs text-stone-400">
+                <li><Link to="/factory" className="hover:text-[#E3D8C4] hover:translate-x-1 transition-all duration-200 inline-block">Dynamic Factory Tour</Link></li>
+                <li><Link to="/contact" className="hover:text-[#E3D8C4] hover:translate-x-1 transition-all duration-200 inline-block">Verify Our Locations</Link></li>
+                <li><Link to="/contact" className="hover:text-[#E3D8C4] hover:translate-x-1 transition-all duration-200 inline-block">Request Custom Quotation</Link></li>
               </ul>
             </div>
-
+ 
             <div>
-              <h3 className="font-display font-semibold text-lg text-white mb-6">Contact Information</h3>
-              <ul className="flex flex-col gap-4 text-sm text-white/75">
+              <h3 className="font-serif font-semibold text-sm uppercase tracking-wider text-[#C7A36B] mb-5">Contact Information</h3>
+              <ul className="flex flex-col gap-3.5 text-xs text-stone-400">
                 <li className="flex items-start gap-2.5">
-                  <span className="text-accent mt-0.5">
+                  <span className="text-[#C7A36B] mt-0.5 flex-shrink-0">
                     <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                   </span>
                   <span>Plot No. 42, Industrial Area, Sector 5, New Delhi, Pin 110015</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <span className="text-accent">
+                  <span className="text-[#C7A36B] flex-shrink-0">
                     <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.57c-2.83-1.48-5.13-3.77-6.59-6.59l1.57-1.57c.27-.27.35-.65.24-1-.36-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.18c-.54 0-.99.45-.99.99C3.19 14.19 10.18 21 19 21c.54 0 .99-.45.99-.99v-3.64c0-.54-.45-.99-.98-.99z"/></svg>
                   </span>
                   <span>+91 98765 43210</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <span className="text-accent">
+                  <span className="text-[#C7A36B] flex-shrink-0">
                     <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
                   </span>
                   <span>sales@timewellfactory.com</span>
                 </li>
               </ul>
             </div>
-
+ 
           </div>
-
-          <div className="flex flex-col sm:flex-row justify-between items-center pt-8 text-xs text-white/50 gap-4">
+ 
+          <div className="flex flex-col sm:flex-row justify-between items-center pt-6 text-[10.5px] text-stone-500 gap-3">
             <p>&copy; {new Date().getFullYear()} TimeWell Mattress Factory. All rights reserved.</p>
             <p className="flex items-center gap-1">
               <span>Handcrafted for premium quality. Direct From Factory.</span>
@@ -189,11 +173,9 @@ const MainLayout = ({ children }) => {
           </div>
         </div>
       </footer>
-
       <VoiceAssistant />
-
     </div>
   );
 };
-
+ 
 export default MainLayout;

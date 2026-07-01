@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,23 +6,23 @@
 
 /* Custom branding root variables matching the original design */
 :root {
-  --primary: #0B192C;
-  --primary-light: #1E3E62;
-  --primary-lighter: #2E5A88;
-  --accent: #E6B325;
-  --accent-hover: #F3C63F;
-  --accent-light: #FEF9C3;
+  --primary: #2A211D;
+  --primary-light: #3E322D;
+  --primary-lighter: #5C4C44;
+  --accent: #7C5F43;
+  --accent-hover: #9E7B5B;
+  --accent-light: #FAF5EF;
   --whatsapp: #25D366;
   --whatsapp-dark: #128C7E;
   
-  --bg-dark: #070F19;
-  --bg-light: #F8FAFC;
+  --bg-dark: #1C1613;
+  --bg-light: #FAF8F5;
   --bg-white: #FFFFFF;
-  --text-dark: #0B192C;
-  --text-light: #F8FAFC;
-  --text-muted: #64748B;
-  --border: #E2E8F0;
-  --border-dark: #1E293B;
+  --text-dark: #2A211D;
+  --text-light: #FAF8F5;
+  --text-muted: #8E7D75;
+  --border: #EADFC9;
+  --border-dark: #3E322D;
 
   --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -154,3 +154,25 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Premium product catalog grid styling */
+.premium-product-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  justify-content: start;
+}
+
+@media (min-width: 640px) {
+  .premium-product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .premium-product-grid {
+    grid-template-columns: repeat(3, minmax(340px, 380px));
+  }
+}
+
+

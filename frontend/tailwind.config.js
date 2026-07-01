@@ -8,27 +8,28 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#0B192C',
-          light: '#1E3E62',
-          lighter: '#2E5A88',
+          DEFAULT: '#2A211D', // Luxury Dark Espresso
+          light: '#3E322D',   // Medium-dark brown
+          lighter: '#5C4C44', // Soft medium-brown
         },
         accent: {
-          DEFAULT: '#E6B325',
-          hover: '#F3C63F',
-          light: '#FEF9C3',
+          DEFAULT: '#7C5F43', // Rich Wood Brown
+          hover: '#9E7B5B',   // Warm highlight
+          light: '#FAF5EF',   // Very light cream/sand
         },
         whatsapp: {
           DEFAULT: '#25D366',
           dark: '#128C7E',
         },
         bg: {
-          dark: '#070F19',
-          light: '#F8FAFC',
+          dark: '#1C1613',    // Dark Espresso base
+          light: '#FAF8F5',   // Showroom Cream background
         }
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         display: ['Outfit', 'sans-serif'],
+        serif: ['"Cormorant Garamond"', 'serif'],
       },
       borderRadius: {
         sm: '8px',
