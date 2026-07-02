@@ -70,6 +70,11 @@ const createProduct = async (req, res) => {
       productData.slug = generateSlug(productData.name);
     }
 
+    // Auto-generate shortDescription if missing
+    if (!productData.shortDescription && productData.description) {
+      productData.shortDescription = productData.description.substring(0, 160);
+    }
+
     // Support incoming JSON string properties from multipart forms
     if (typeof productData.specifications === 'string') {
       productData.specifications = JSON.parse(productData.specifications);
@@ -103,6 +108,11 @@ const updateProduct = async (req, res) => {
 
     if (productData.name && !productData.slug) {
       productData.slug = generateSlug(productData.name);
+    }
+
+    // Auto-generate shortDescription if missing
+    if (!productData.shortDescription && productData.description) {
+      productData.shortDescription = productData.description.substring(0, 160);
     }
 
     // Support incoming JSON strings

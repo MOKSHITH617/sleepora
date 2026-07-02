@@ -74,8 +74,29 @@ const deleteLead = async (req, res) => {
   }
 };
 
+// @desc    Update a lead record (e.g. status)
+// @route   PUT /api/leads/:id
+// @access  Private (Admin)
+const updateLead = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const lead = await Lead.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true, runValidators: true }
+    );
+    if (!lead) {
+      return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+    return res.json({ success: true, lead });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   createLead,
   getLeads,
-  deleteLead
+  deleteLead,
+  updateLead
 };

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createLead, getLeads, deleteLead } = require('../controllers/leadController');
+const { createLead, getLeads, deleteLead, updateLead } = require('../controllers/leadController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.route('/')
@@ -8,6 +8,7 @@ router.route('/')
   .get(protect, getLeads);
 
 router.route('/:id')
+  .put(protect, updateLead)
   .delete(protect, deleteLead);
 
 module.exports = router;
