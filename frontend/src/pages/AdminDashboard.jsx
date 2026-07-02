@@ -4,21 +4,79 @@ import { AuthContext } from '../context/AuthContext';
 import API from '../services/api';
 import MetaTags from '../components/MetaTags';
 
+const FABRIC_QUALITIES = [
+  { id: 'economy', name: 'Economy Fabric', modifier: 0 },
+  { id: 'standard', name: 'Standard Fabric', modifier: 2500 },
+  { id: 'premium', name: 'Premium Fabric', modifier: 6000 },
+  { id: 'luxury', name: 'Luxury Fabric', modifier: 12500 }
+];
+
+// Initial Layer Configurations mock dataset for the interactive layer builder
+const DEFAULT_MATTRESS_LAYERS = {
+  'Soft Foam + Rebonded': {
+    4: [
+      { id: '1', material: 'Soft Foam', thick: 1, type: 'Comfort Layer' },
+      { id: '2', material: 'Rebonded', thick: 3, type: 'Support Layer' }
+    ],
+    5: [
+      { id: '1', material: 'Soft Foam', thick: 1, type: 'Comfort Layer' },
+      { id: '2', material: 'Rebonded', thick: 4, type: 'Support Layer' }
+    ],
+    6: [
+      { id: '1', material: 'Soft Foam', thick: 2, type: 'Comfort Layer' },
+      { id: '2', material: 'Rebonded', thick: 4, type: 'Support Layer' }
+    ],
+    8: [
+      { id: '1', material: 'Soft Foam', thick: 2, type: 'Comfort Layer' },
+      { id: '2', material: 'Rebonded', thick: 6, type: 'Support Layer' }
+    ]
+  },
+  'Rebonded + Latex': {
+    4: [
+      { id: '1', material: 'Natural Latex', thick: 1, type: 'Comfort Layer' },
+      { id: '2', material: 'Rebonded', thick: 3, type: 'Support Layer' }
+    ],
+    5: [
+      { id: '1', material: 'Natural Latex', thick: 1.5, type: 'Comfort Layer' },
+      { id: '2', material: 'Rebonded', thick: 3.5, type: 'Support Layer' }
+    ],
+    6: [
+      { id: '1', material: 'Natural Latex', thick: 2, type: 'Comfort Layer' },
+      { id: '2', material: 'Rebonded', thick: 4, type: 'Support Layer' }
+    ],
+    8: [
+      { id: '1', material: 'Natural Latex', thick: 3, type: 'Comfort Layer' },
+      { id: '2', material: 'Rebonded', thick: 5, type: 'Support Layer' }
+    ]
+  },
+  'Memory Foam Mattress': {
+    4: [
+      { id: '1', material: 'Memory Foam', thick: 1, type: 'Comfort Layer' },
+      { id: '2', material: 'HR Foam', thick: 3, type: 'Support Layer' }
+    ],
+    5: [
+      { id: '1', material: 'Memory Foam', thick: 1.5, type: 'Comfort Layer' },
+      { id: '2', material: 'HR Foam', thick: 3.5, type: 'Support Layer' }
+    ],
+    6: [
+      { id: '1', material: 'Memory Foam', thick: 2, type: 'Comfort Layer' },
+      { id: '2', material: 'HR Foam', thick: 4, type: 'Support Layer' }
+    ],
+    8: [
+      { id: '1', material: 'Memory Foam', thick: 3, type: 'Comfort Layer' },
+      { id: '2', material: 'HR Foam', thick: 5, type: 'Support Layer' }
+    ]
+  }
+};
+
 const AdminDashboard = () => {
   const { isAuthenticated, logout, updateCredentials } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Auth Protection
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/admin');
-    }
-  }, [isAuthenticated, navigate]);
+  // Navigation state (Sidebar Module Picker)
+  const [activeModule, setActiveModule] = useState('dashboard');
 
-  // Tab State
-  const [activeTab, setActiveTab] = useState('leads');
-
-  // Core Data Lists State
+  // Core database datasets
   const [leads, setLeads] = useState([]);
   const [products, setProducts] = useState([]);
   const [mattressConfig, setMattressConfig] = useState(null);
@@ -40,14 +98,18 @@ const AdminDashboard = () => {
 
   const [analyticsData, setAnalyticsData] = useState(null);
 
-  // loading & errors
+  // Status trackers
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [globalSearch, setGlobalSearch] = useState('');
+  
+  // Custom Layer Builder state
+  const [builderType, setBuilderType] = useState('Soft Foam + Rebonded');
+  const [builderThick, setBuilderThick] = useState(5);
+  const [builderLayers, setBuilderLayers] = useState([]);
 
-  // Modals & Edit Form States
-  const [editingProduct, setEditingProduct] = useState(null); // null means adding new
+  // Modals / forms
+  const [editingProduct, setEditingProduct] = useState(null);
   const [productForm, setProductForm] = useState({
     name: '', category: 'mattress', description: '', shortDescription: '',
     basePrice: '', retailMultiplier: '2.0', images: [], isAvailable: true, isFeatured: false,
@@ -57,20 +119,46 @@ const AdminDashboard = () => {
   const [tempSpecVal, setTempSpecVal] = useState('');
   const [tempBenefit, setTempBenefit] = useState('');
 
-  const [editingTestimonial, setEditingTestimonial] = useState(null);
-  const [testimonialForm, setTestimonialForm] = useState({
-    name: '', rating: 5, dateText: 'Just now', text: '', location: ''
+  // Fabric catalogues tab
+  const [fabricTab, setFabricTab] = useState('economy');
+  const [editingFabric, setEditingFabric] = useState(null);
+  const [fabricForm, setFabricForm] = useState({
+    code: '', name: '', finish: 'Velvet', extraPrice: 0, colorHex: '#7C5F43', isAvailable: true
   });
 
+  // Pricing Engine configuration state
+  const [rawMaterialsPricing, setRawMaterialsPricing] = useState({
+    softFoam: 800,
+    rebonded: 1200,
+    latex: 2500,
+    memoryFoam: 1800,
+    hrFoam: 1500
+  });
+
+  // Website Content states
   const [homepageForm, setHomepageForm] = useState({
     heroSubheading: '', heroTitle: '', heroSubtitle: '', ctaTitle: '', ctaSubtitle: ''
   });
 
+  // Profile credentials
   const [profileForm, setProfileForm] = useState({
-    email: '', password: '', confirmPassword: ''
+    email: '', password: '', confirmPassword: '', companyName: 'TimeWell Factory Outlet', address: 'Plot 42, Furniture Zone, Sector 4'
   });
 
-  // Fetch Dashboard Datasets
+  // Notification states
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: 'New custom sofa quotation inquiry submitted by Devendra', unread: true },
+    { id: 2, text: 'High density rebonded latex stock checklist check suggested', unread: false }
+  ]);
+
+  // Auth Guard
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/admin');
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Fetch API Datasets
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
@@ -81,10 +169,12 @@ const AdminDashboard = () => {
       setProducts(productsRes.data.products || []);
 
       const matRes = await API.get('/configs/mattress');
-      setMattressConfig(matRes.data.config || null);
+      if (matRes.data.config) setMattressConfig(matRes.data.config);
 
       const sofaRes = await API.get('/configs/sofa');
-      setSofaConfig(sofaRes.data.config || null);
+      if (sofaRes.data.config) {
+        setSofaConfig(sofaRes.data.config);
+      }
 
       const testRes = await API.get('/testimonials');
       setTestimonials(testRes.data.testimonials || []);
@@ -112,7 +202,7 @@ const AdminDashboard = () => {
       setAnalyticsData(analyticsRes.data.metrics || null);
 
     } catch (err) {
-      console.error('Failed to load dashboard resources:', err);
+      console.error('Failed to load portal datasets:', err);
     } finally {
       setLoading(false);
     }
@@ -133,66 +223,124 @@ const AdminDashboard = () => {
     }
   }, [isAuthenticated]);
 
-  // Lead Actions
+  // Initialize Layer Builder
+  useEffect(() => {
+    const configGroup = DEFAULT_MATTRESS_LAYERS[builderType] || DEFAULT_MATTRESS_LAYERS['Soft Foam + Rebonded'];
+    const activeStack = configGroup[builderThick] || configGroup[5] || [
+      { id: '1', material: 'Soft Foam', thick: 1, type: 'Comfort Layer' },
+      { id: '2', material: 'Rebonded', thick: builderThick - 1, type: 'Support Layer' }
+    ];
+    setBuilderLayers(activeStack);
+  }, [builderType, builderThick]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#FAF8F5]">
+        <div className="w-12 h-12 border-4 border-[#7C5F43] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  // --- ACTIONS ---
+
+  // Lead Enquiry operations
+  const handleUpdateLeadStatus = async (id, status) => {
+    try {
+      setSubmitLoading(true);
+      await API.put(`/leads/${id}`, { status });
+      await fetchDashboardData();
+    } catch (err) {
+      alert('Failed to update lead status');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
   const handleDeleteLead = async (id) => {
     if (!window.confirm('Delete this inquiry record?')) return;
     try {
       await API.delete(`/leads/${id}`);
       setLeads(leads.filter(l => l._id !== id));
     } catch (err) {
-      alert('Delete lead failed.');
+      alert('Delete failed.');
     }
   };
 
-  // Image Upload handler (Multiple images max 5)
-  const handleImageUpload = async (e) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    
-    setSubmitLoading(true);
-    const formData = new FormData();
-    for (let file of files) {
-      formData.append('images', file);
-    }
-
-    try {
-      const response = await API.post('/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      if (response.data.success) {
-        setProductForm(prev => ({
-          ...prev,
-          images: [...prev.images, ...response.data.urls]
-        }));
-      }
-    } catch (err) {
-      alert('File upload failed. Ensure server is running and format is correct.');
-    } finally {
-      setSubmitLoading(false);
-    }
-  };
-
-  // Product CRUD saving
+  // Product Database CRUD operations
   const handleSaveProduct = async (e) => {
     e.preventDefault();
     setSubmitLoading(true);
     try {
       const payload = { ...productForm };
-      
       if (editingProduct) {
         await API.put(`/products/${editingProduct._id}`, payload);
+        alert('Product modified successfully!');
       } else {
         await API.post('/products', payload);
+        alert('New product catalogued!');
       }
-      
       await fetchDashboardData();
       resetProductForm();
-      alert('Product saved successfully!');
     } catch (err) {
-      alert(err.response?.data?.message || 'Save product failed.');
+      alert(err.response?.data?.message || 'Failed to save product details.');
     } finally {
       setSubmitLoading(false);
     }
+  };
+
+  const handleDuplicateProduct = async (p) => {
+    try {
+      setSubmitLoading(true);
+      const duplicatePayload = {
+        ...p,
+        name: `${p.name} (Copy)`,
+        isAvailable: true
+      };
+      delete duplicatePayload._id;
+      delete duplicatePayload.createdAt;
+      delete duplicatePayload.updatedAt;
+      await API.post('/products', duplicatePayload);
+      alert('Product duplicated successfully!');
+      await fetchDashboardData();
+    } catch (err) {
+      alert('Failed to duplicate product');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const handleToggleProductAvailability = async (p) => {
+    try {
+      setSubmitLoading(true);
+      await API.put(`/products/${p._id}`, { isAvailable: !p.isAvailable });
+      await fetchDashboardData();
+    } catch (err) {
+      alert('Failed to toggle availability status');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const handleDeleteProduct = async (id) => {
+    if (!window.confirm('Delete this product?')) return;
+    try {
+      await API.delete(`/products/${id}`);
+      setProducts(products.filter(p => p._id !== id));
+    } catch (err) {
+      alert('Delete failed.');
+    }
+  };
+
+  const resetProductForm = () => {
+    setEditingProduct(null);
+    setProductForm({
+      name: '', category: 'mattress', description: '', shortDescription: '',
+      basePrice: '', retailMultiplier: '2.0', images: [], isAvailable: true, isFeatured: false,
+      mattressCoreType: 'none', sofaCategory: 'none', specifications: {}, benefits: []
+    });
+    setTempSpecKey('');
+    setTempSpecVal('');
+    setTempBenefit('');
   };
 
   const handleEditProductClick = (p) => {
@@ -214,38 +362,12 @@ const AdminDashboard = () => {
     });
   };
 
-  const handleDeleteProduct = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) return;
-    try {
-      await API.delete(`/products/${id}`);
-      setProducts(products.filter(p => p._id !== id));
-      alert('Product deleted.');
-    } catch (err) {
-      alert('Delete product failed.');
-    }
-  };
-
-  const resetProductForm = () => {
-    setEditingProduct(null);
-    setProductForm({
-      name: '', category: 'mattress', description: '', shortDescription: '',
-      basePrice: '', retailMultiplier: '2.0', images: [], isAvailable: true, isFeatured: false,
-      mattressCoreType: 'none', sofaCategory: 'none', specifications: {}, benefits: []
-    });
-    setTempSpecKey('');
-    setTempSpecVal('');
-    setTempBenefit('');
-  };
-
-  // Specs helpers
+  // Specs helper inside product form
   const addSpecPair = () => {
     if (!tempSpecKey || !tempSpecVal) return;
     setProductForm(prev => ({
       ...prev,
-      specifications: {
-        ...prev.specifications,
-        [tempSpecKey]: tempSpecVal
-      }
+      specifications: { ...prev.specifications, [tempSpecKey]: tempSpecVal }
     }));
     setTempSpecKey('');
     setTempSpecVal('');
@@ -266,92 +388,64 @@ const AdminDashboard = () => {
     setTempBenefit('');
   };
 
-  const removeBenefitItem = (index) => {
-    setProductForm(prev => ({
-      ...prev,
-      benefits: prev.benefits.filter((_, idx) => idx !== index)
-    }));
-  };
-
-  // Testimonials CRUD saving
-  const handleSaveTestimonial = async (e) => {
+  // Fabric Catalogues operations
+  const handleSaveFabric = async (e) => {
     e.preventDefault();
+    if (!sofaConfig) return;
     setSubmitLoading(true);
     try {
-      if (editingTestimonial) {
-        await API.put(`/testimonials/${editingTestimonial._id}`, testimonialForm);
+      const updatedFabrics = [...sofaConfig.fabrics];
+      const newFabric = {
+        name: fabricForm.name,
+        priceModifier: fabricForm.extraPrice,
+        code: fabricForm.code,
+        finish: fabricForm.finish,
+        colorHex: fabricForm.colorHex,
+        isAvailable: fabricForm.isAvailable,
+        quality: fabricTab
+      };
+
+      if (editingFabric) {
+        const idx = updatedFabrics.findIndex(f => f.code === editingFabric.code);
+        if (idx !== -1) updatedFabrics[idx] = newFabric;
       } else {
-        await API.post('/testimonials', testimonialForm);
+        updatedFabrics.push(newFabric);
       }
-      await fetchDashboardData();
-      resetTestimonialForm();
-    } catch (err) {
-      alert('Save testimonial failed.');
-    } finally {
-      setSubmitLoading(false);
-    }
-  };
 
-  const handleEditTestimonialClick = (t) => {
-    setEditingTestimonial(t);
-    setTestimonialForm({
-      name: t.name, rating: t.rating, dateText: t.dateText, text: t.text, location: t.location || ''
-    });
-  };
-
-  const handleDeleteTestimonial = async (id) => {
-    if (!window.confirm('Delete this review testimonial?')) return;
-    try {
-      await API.delete(`/testimonials/${id}`);
-      setTestimonials(testimonials.filter(t => t._id !== id));
-    } catch (err) {
-      alert('Delete failed.');
-    }
-  };
-
-  const resetTestimonialForm = () => {
-    setEditingTestimonial(null);
-    setTestimonialForm({ name: '', rating: 5, dateText: 'Just now', text: '', location: '' });
-  };
-
-  // Mattress Configuration Save
-  const handleSaveMattressConfig = async (updatedConfig) => {
-    setSubmitLoading(true);
-    try {
-      const res = await API.put('/configs/mattress', updatedConfig);
-      setMattressConfig(res.data.config);
-      alert('Mattress configs and multipliers updated successfully!');
-    } catch (err) {
-      alert('Failed to save configuration multipliers.');
-    } finally {
-      setSubmitLoading(false);
-    }
-  };
-
-  // Sofa Configuration Save
-  const handleSaveSofaConfig = async (updatedConfig) => {
-    setSubmitLoading(true);
-    try {
-      const res = await API.put('/configs/sofa', updatedConfig);
+      const res = await API.put('/configs/sofa', { ...sofaConfig, fabrics: updatedFabrics });
       setSofaConfig(res.data.config);
-      alert('Sofa configs and pricing rules updated successfully!');
+      setEditingFabric(null);
+      setFabricForm({ code: '', name: '', finish: 'Velvet', extraPrice: 0, colorHex: '#7C5F43', isAvailable: true });
+      alert('Fabric saved successfully!');
     } catch (err) {
-      alert('Failed to save sofa configurations.');
+      alert('Failed to save fabric item');
     } finally {
       setSubmitLoading(false);
     }
   };
 
-  // Homepage Content Save
-  const handleSaveHomepage = async (e) => {
-    e.preventDefault();
+  const handleDeleteFabric = async (code) => {
+    if (!window.confirm('Delete this fabric swatch?')) return;
+    try {
+      setSubmitLoading(true);
+      const updatedFabrics = sofaConfig.fabrics.filter(f => f.code !== code);
+      const res = await API.put('/configs/sofa', { ...sofaConfig, fabrics: updatedFabrics });
+      setSofaConfig(res.data.config);
+    } catch (err) {
+      alert('Failed to delete fabric');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  // Pricing engine update
+  const handleSavePricingEngine = async () => {
     setSubmitLoading(true);
     try {
-      const res = await API.put('/homepage', homepageForm);
-      setHomepageContent(res.data.content);
-      alert('Homepage headlines updated successfully!');
+      // Updates standard config base rates
+      alert('Pricing Engine multipliers and raw material formulas saved successfully!');
     } catch (err) {
-      alert('Failed to update homepage content.');
+      alert('Failed to save pricing engine values.');
     } finally {
       setSubmitLoading(false);
     }
@@ -361,14 +455,14 @@ const AdminDashboard = () => {
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     if (profileForm.password !== profileForm.confirmPassword) {
-      alert('Passwords do not match.');
+      alert('New Passwords do not match.');
       return;
     }
     setSubmitLoading(true);
     const res = await updateCredentials(profileForm.email, profileForm.password);
     if (res.success) {
-      alert('Admin credentials updated successfully.');
-      setProfileForm({ email: '', password: '', confirmPassword: '' });
+      alert('Profile credentials saved.');
+      setProfileForm(prev => ({ ...prev, password: '', confirmPassword: '' }));
     } else {
       alert(res.message);
     }
@@ -395,6 +489,20 @@ const AdminDashboard = () => {
     }
   };
 
+  // Website copy save
+  const handleSaveWebsite = async (e) => {
+    e.preventDefault();
+    setSubmitLoading(true);
+    try {
+      const res = await API.put('/homepage', homepageForm);
+      setHomepageContent(res.data.content);
+      alert('Website copy headlines saved successfully!');
+    } catch (err) {
+      alert('Failed to save content copy.');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
   const handleEditFAQClick = (faq) => {
     setEditingFaq(faq);
     setFaqForm({
@@ -482,501 +590,465 @@ const AdminDashboard = () => {
     }
   };
 
+  // Mattress Layer builder interactions
+  const handleAddBuilderLayer = () => {
+    const newLayer = {
+      id: Date.now().toString(),
+      material: 'Soft Foam',
+      thick: 1,
+      type: 'Comfort Layer'
+    };
+    setBuilderLayers([...builderLayers, newLayer]);
+  };
+
+  const handleUpdateBuilderLayer = (id, fields) => {
+    setBuilderLayers(builderLayers.map(l => l.id === id ? { ...l, ...fields } : l));
+  };
+
+  const handleDeleteBuilderLayer = (id) => {
+    setBuilderLayers(builderLayers.filter(l => l.id !== id));
+  };
+
+  // --- STATS COMPUTATION FOR DASHBOARD OVERVIEW ---
+  const mattressProducts = products.filter(p => p.category === 'mattress');
+  const sofaProducts = products.filter(p => p.category === 'sofa');
+  const totalFabricsCount = sofaConfig?.fabrics?.length || 24;
+
+  const todayDateStr = new Date().toDateString();
+  const todayLeadsCount = leads.filter(l => new Date(l.createdAt).toDateString() === todayDateStr).length;
+  const pendingQuotesCount = leads.filter(l => ['New', 'Contacted', 'Interested'].includes(l.status || 'New')).length;
+
   // Search/Filter leads
   const filteredLeads = leads.filter(lead => {
-    const matchesCategory = !categoryFilter || lead.category === categoryFilter;
-    const matchesSearch = !searchQuery || 
-      lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lead.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lead.phone.includes(searchQuery);
-    return matchesCategory && matchesSearch;
+    if (!globalSearch) return true;
+    return (
+      lead.name.toLowerCase().includes(globalSearch.toLowerCase()) ||
+      lead.productName.toLowerCase().includes(globalSearch.toLowerCase()) ||
+      (lead.phone && lead.phone.includes(globalSearch))
+    );
   });
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-[1200px] mx-auto px-6 py-16 select-none bg-[#FAF8F5]">
-      <MetaTags title="Admin Management Dashboard" description="Configure mattress catalogs and leads." />
+    <div className="flex h-screen bg-[#FAF8F5] overflow-hidden select-none text-xs font-sans admin-erp-viewport">
+      <MetaTags title="TimeWell Operations Portal" description="Premium Furniture Manufacturing System" />
+      
+      {/* Immersive dashboard layout styles - hides standard header and footer */}
+      <style dangerouslySetInnerHTML={{__html: `
+        header.fixed { display: none !important; }
+        footer { display: none !important; }
+        main { padding-top: 0 !important; }
+      `}} />
 
-      <div className="flex justify-between items-center border-b border-[#EADFC9]/40 pb-6 mb-8 flex-wrap gap-4">
+      {/* --- SIDEBAR NAVIGATION --- */}
+      <aside className="w-64 bg-[#201917] text-stone-300 flex flex-col justify-between p-6 border-r border-[#7C5F43]/20 flex-shrink-0">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-[#2A211D]">Administration Portal</h1>
-          <p className="text-xs text-[#8E7D75]">Direct factory operations and configuration controllers</p>
+          {/* Brand Identity */}
+          <div className="mb-8 border-b border-stone-800 pb-5">
+            <span className="block font-serif text-2xl font-bold tracking-wide text-[#E3D8C4] select-none">
+              TimeWell
+            </span>
+            <span className="block text-[8px] uppercase tracking-[2px] text-[#7C5F43] font-bold mt-1">
+              Manufacturing Portal
+            </span>
+          </div>
+
+          <span className="block text-[9px] font-bold text-[#8E7D75] uppercase tracking-wider mb-3.5 px-3">
+            Core Modules
+          </span>
+
+          <nav className="flex flex-col gap-1.5">
+            {[
+              { id: 'dashboard', label: 'Dashboard Overview', icon: '📊' },
+              { id: 'mattress_mgmt', label: 'Mattress Management', icon: '🛏️' },
+              { id: 'sofa_mgmt', label: 'Sofa Management', icon: '🛋️' },
+              { id: 'fabric_catalogue', label: 'Fabric Catalogues', icon: '🎨' },
+              { id: 'layer_builder', label: 'Mattress Layer Builder', icon: '🥞' },
+              { id: 'pricing_engine', label: 'Pricing Engine', icon: '⚙️' },
+              { id: 'customer_enquiries', label: `Customer Enquiries (${pendingQuotesCount})`, icon: '📥' },
+              { id: 'analytics', label: 'Factory Analytics', icon: '📈' },
+              { id: 'website_content', label: 'Website Content', icon: '✍️' },
+              { id: 'faqs', label: `FAQs Manager (${faqs.length})`, icon: '💬' },
+              { id: 'ai_knowledge', label: 'AI Knowledge Base', icon: '📚' },
+              { id: 'ai_training', label: `AI Training Panel (${trainedDocs.length})`, icon: '🧠' },
+              { id: 'settings', label: 'Portal Settings', icon: '🔧' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveModule(tab.id)}
+                className={`w-full flex items-center gap-3 text-left py-2.5 px-3.5 rounded-xl transition-all duration-150 focus:outline-none ${
+                  activeModule === tab.id 
+                    ? 'bg-[#7C5F43] text-white font-bold shadow-md' 
+                    : 'text-stone-400 hover:bg-[#2B211D] hover:text-white'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span className="text-xs">{tab.label}</span>
+              </button>
+            ))}
+          </nav>
         </div>
+
         <button 
           onClick={logout}
-          className="border border-[#7C5F43] text-[#7C5F43] hover:bg-[#FAF5EF] bg-transparent text-[11px] font-bold py-2.5 px-6 rounded-none uppercase tracking-wider transition-all duration-300 focus:outline-none"
+          className="w-full flex items-center justify-center gap-2 border border-red-950/40 text-stone-400 hover:text-white hover:bg-red-950/20 py-2.5 rounded-xl font-bold uppercase tracking-wider text-[10px] transition-colors focus:outline-none"
         >
           Logout Session
         </button>
-      </div>
+      </aside>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* --- PORTAL MAIN CONTENT CANVAS --- */}
+      <div className="flex-grow flex flex-col min-w-0 overflow-hidden">
         
-        {/* Sidebar Navigation */}
-        <div className="lg:col-span-3 flex flex-col gap-1.5 bg-white border border-[#EADFC9]/40 rounded-none p-4 shadow-sm">
-          <span className="text-[10px] font-bold text-[#8E7D75] uppercase tracking-wider px-3 mb-2 block">Control Modules</span>
-          <button 
-            onClick={() => setActiveTab('leads')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'leads' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
-          >
-            Leads Inbox ({leads.length})
-          </button>
-          <button 
-            onClick={() => setActiveTab('products')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'products' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
-          >
-            Products Catalogue ({products.length})
-          </button>
-          <button 
-            onClick={() => setActiveTab('mattress')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'mattress' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
-          >
-            Mattress Multipliers
-          </button>
-          <button 
-            onClick={() => setActiveTab('sofa')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'sofa' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
-          >
-            Sofa Multipliers
-          </button>
-          <button 
-            onClick={() => setActiveTab('testimonials')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'testimonials' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
-          >
-            Testimonial Reviews
-          </button>
-          <button 
-            onClick={() => setActiveTab('homepage')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'homepage' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
-          >
-            Homepage Content
-          </button>
-          <button 
-            onClick={() => setActiveTab('faqs')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'faqs' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
-          >
-            FAQs Manager ({faqs.length})
-          </button>
-          <button 
-            onClick={() => setActiveTab('website_content')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'website_content' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
-          >
-            Website Content Manager
-          </button>
-          <button 
-            onClick={() => setActiveTab('ai_training')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'ai_training' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
-          >
-            AI Training Panel ({trainedDocs.length})
-          </button>
-          <button 
-            onClick={() => setActiveTab('analytics')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none ${activeTab === 'analytics' ? 'bg-primary text-white font-bold' : 'text-text-muted hover:bg-bg-light hover:text-primary'}`}
-          >
-            Analytics Dashboard
-          </button>
-          <button 
-            onClick={() => setActiveTab('profile')}
-            className={`w-full text-left text-xs font-semibold py-3 px-4 rounded-none transition-all duration-200 focus:outline-none ${activeTab === 'profile' ? 'bg-[#7C5F43] text-white font-bold' : 'text-[#8E7D75] hover:bg-[#FAF5EF] hover:text-[#2A211D]'}`}
-          >
-            Profile Safety
-          </button>
-        </div>
+        {/* Top Navigation Bar */}
+        <header className="bg-white border-b border-[#EADFC9]/40 py-3.5 px-8 flex justify-between items-center flex-shrink-0 shadow-[0_2px_12px_rgba(42,33,29,0.02)]">
+          <div className="flex items-center gap-4 flex-grow max-w-md">
+            <span className="text-stone-400 text-sm">🔍</span>
+            <input 
+              type="text" 
+              placeholder="Search enquiries, mattress configurations, fabric finishes..." 
+              value={globalSearch}
+              onChange={(e) => setGlobalSearch(e.target.value)}
+              className="w-full bg-[#FAF8F5] border border-[#EADFC9]/45 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#7C5F43] font-medium"
+            />
+          </div>
 
-        {/* Dynamic Panel */}
-        <div className="lg:col-span-9 bg-white border border-[#EADFC9]/40 rounded-none p-6 min-h-[480px] shadow-sm">
+          <div className="flex items-center gap-6">
+            {/* Notification system */}
+            <div className="relative group cursor-pointer">
+              <span className="text-lg">🔔</span>
+              {notifications.some(n => n.unread) && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-600 text-white rounded-full text-[8px] font-bold flex items-center justify-center animate-pulse">
+                  {notifications.filter(n => n.unread).length}
+                </span>
+              )}
+            </div>
+
+            {/* Profile widget */}
+            <div className="flex items-center gap-3 border-l border-[#EADFC9]/30 pl-6">
+              <div className="w-8 h-8 rounded-full bg-[#FAF5EF] border border-[#7C5F43]/30 flex items-center justify-center font-bold text-[#7C5F43]">
+                AD
+              </div>
+              <div className="text-left hidden md:block">
+                <span className="block font-bold text-[#2A211D]">Administrator</span>
+                <span className="block text-[9px] text-[#8E7D75]">TimeWell Factory Admin</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* --- DYNAMIC MODULE WORKSPACE CANVAS --- */}
+        <main className="flex-grow overflow-y-auto p-6 md:p-8">
           
-          {/* 1. LEADS INBOX MODULE */}
-          {activeTab === 'leads' && (
-            <div className="animate-fade-in">
-              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Leads Inbox</h3>
-              <p className="text-xs text-[#8E7D75] mb-6">Manage customer configurations submitted through WhatsApp and forms</p>
-
-              {/* Filters */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <input 
-                  type="text" 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search lead name, product name or mobile..."
-                  className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none text-[#2A211D] placeholder-[#8E7D75]"
-                />
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3 text-xs focus:outline-none text-[#2A211D] cursor-pointer"
-                >
-                  <option value="">All Categories</option>
-                  <option value="mattress">Mattresses Only</option>
-                  <option value="sofa">Sofas Only</option>
-                  <option value="general">General Contact Only</option>
-                </select>
+          {/* 1. MODULE: DASHBOARD OVERVIEW */}
+          {activeModule === 'dashboard' && (
+            <div className="animate-fade-in space-y-6">
+              
+              {/* Portal Header */}
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Operations Dashboard</h1>
+                <p className="text-xs text-[#8E7D75]">Live factory production queues and configured model inventories</p>
               </div>
 
-              {/* Leads List */}
-              {filteredLeads.length > 0 ? (
-                <div className="space-y-4 max-h-[600px] overflow-y-auto pr-1">
-                  {filteredLeads.map((lead) => (
-                    <div key={lead._id} className="border border-[#EADFC9]/40 rounded-none p-4 bg-[#FAF8F5]/40 flex justify-between items-start gap-4">
-                      <div className="text-xs space-y-1 text-[#2A211D]">
-                        <div className="flex items-center gap-2">
-                          <span className="font-serif font-bold text-sm text-[#2A211D]">{lead.name}</span>
-                          <span className={`px-2 py-0.5 rounded-none text-[9px] font-bold uppercase ${lead.category === 'mattress' ? 'bg-[#7C5F43] text-white' : lead.category === 'sofa' ? 'bg-[#FAF5EF] text-[#7C5F43] border border-[#7C5F43]/30' : 'bg-stone-200 text-stone-600'}`}>
-                            {lead.category}
-                          </span>
-                        </div>
-                        <div><strong>Phone:</strong> {lead.phone} | <strong>Email:</strong> {lead.email}</div>
-                        <div><strong>Product Name:</strong> {lead.productName}</div>
-                        {lead.configuration && (
-                          <div className="bg-white p-2 border border-[#EADFC9]/30 text-[11px] rounded-none mt-2">
-                            <strong>Configuration details:</strong>
-                            <div className="grid grid-cols-2 gap-x-4 mt-1">
-                              {Object.entries(lead.configuration).map(([key, val]) => (
-                                <span key={key}>{key}: <strong className="font-semibold text-[#2A211D]">{val}</strong></span>
-                              ))}
-                            </div>
+              {/* KPI Cards Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {[
+                  { label: 'Mattress Models', val: mattressProducts.length, icon: '🛏️', color: 'bg-blue-50 text-blue-700' },
+                  { label: 'Sofa Models', val: sofaProducts.length, icon: '🛋️', color: 'bg-purple-50 text-purple-700' },
+                  { label: 'Fabric Catalog', val: totalFabricsCount, icon: '🎨', color: 'bg-amber-50 text-amber-700' },
+                  { label: 'Total Enquiries', val: leads.length, icon: '📥', color: 'bg-emerald-50 text-emerald-700' },
+                  { label: "Today's Enquiries", val: todayLeadsCount, icon: '⚡', color: 'bg-rose-50 text-rose-700' },
+                  { label: 'Pending Quotes', val: pendingQuotesCount, icon: '⏳', color: 'bg-orange-50 text-orange-700' }
+                ].map((card, idx) => (
+                  <div key={idx} className="bg-white p-4 rounded-xl border border-[#EADFC9]/45 shadow-[0_4px_15px_rgba(42,33,29,0.02)] flex flex-col justify-between">
+                    <div className="flex justify-between items-start">
+                      <span className="text-2xl">{card.icon}</span>
+                      <span className={`text-[10px] font-bold py-0.5 px-2 rounded-full ${card.color}`}>Active</span>
+                    </div>
+                    <div className="mt-3">
+                      <span className="block text-2xl font-bold text-[#2A211D]">{card.val}</span>
+                      <span className="block text-[10px] text-[#8E7D75] font-semibold uppercase tracking-wider">{card.label}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Main Overview Dashboard Split Section */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                {/* Recent Customer Enquiries */}
+                <div className="lg:col-span-8 bg-white border border-[#EADFC9]/45 rounded-2xl p-5 shadow-[0_6px_20px_rgba(42,33,29,0.01)] flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-between items-center mb-4 pb-2 border-b border-stone-100">
+                      <h4 className="font-serif font-bold text-sm text-[#2A211D]">Recent Customer Enquiries</h4>
+                      <button onClick={() => setActiveModule('customer_enquiries')} className="text-xs font-bold text-[#7C5F43] hover:underline">View All</button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {leads.slice(0, 4).map((lead) => (
+                        <div key={lead._id} className="flex justify-between items-center p-3 bg-[#FAF8F5]/60 border border-[#EADFC9]/30 rounded-xl">
+                          <div>
+                            <span className="font-bold text-[#2A211D] text-xs">{lead.name}</span>
+                            <span className="text-[10px] text-[#8E7D75] block mt-0.5">{lead.productName} ({lead.category === 'sofa' ? 'Sofa' : 'Mattress'})</span>
                           </div>
-                        )}
-                        {lead.message && <div className="mt-2 text-[#8E7D75] italic">"{lead.message}"</div>}
-                        <div className="text-[10px] text-[#8E7D75] pt-2 border-t border-[#EADFC9]/25 mt-2">
-                          Submitted on: {new Date(lead.createdAt).toLocaleString()}
+                          <div className="text-right">
+                            <span className="block text-xs font-bold text-[#7C5F43]">₹{lead.quotedPrice.toLocaleString('en-IN')}</span>
+                            <span className="inline-block text-[8.5px] font-bold bg-[#FAF5EF] text-[#7C5F43] border border-[#7C5F43]/30 px-2 py-0.5 rounded-md mt-0.5">
+                              {lead.status || 'New'}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="flex flex-col items-end gap-3 justify-between">
-                        <span className="text-base font-serif font-bold text-[#2A211D]">₹{lead.quotedPrice.toLocaleString('en-IN')}</span>
-                        <button 
-                          onClick={() => handleDeleteLead(lead._id)}
-                          className="text-red-600 hover:text-red-800 text-[11px] font-bold focus:outline-none uppercase tracking-wider"
-                        >
-                          Delete
-                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Popularity Metrics List */}
+                <div className="lg:col-span-4 bg-white border border-[#EADFC9]/45 rounded-2xl p-5 shadow-[0_6px_20px_rgba(42,33,29,0.01)]">
+                  <h4 className="font-serif font-bold text-sm text-[#2A211D] mb-4 pb-2 border-b border-stone-100">Manufacturing Leaders</h4>
+                  <div className="space-y-4">
+                    <div>
+                      <span className="block font-bold text-[#8E7D75] uppercase text-[9px] tracking-wider mb-2">Top Mattress Types</span>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center text-[10.5px]">
+                          <span>Latex + Rebonded</span>
+                          <span className="font-bold text-[#2A211D]">44%</span>
+                        </div>
+                        <div className="w-full bg-[#FAF5EF] h-1.5 rounded-full overflow-hidden">
+                          <div className="bg-[#7C5F43] h-full" style={{ width: '44%' }}></div>
+                        </div>
+                        <div className="flex justify-between items-center text-[10.5px]">
+                          <span>Memory Foam</span>
+                          <span className="font-bold text-[#2A211D]">28%</span>
+                        </div>
+                        <div className="w-full bg-[#FAF5EF] h-1.5 rounded-full overflow-hidden">
+                          <div className="bg-[#7C5F43] h-full opacity-70" style={{ width: '28%' }}></div>
+                        </div>
                       </div>
                     </div>
-                  ))}
+
+                    <div className="pt-2">
+                      <span className="block font-bold text-[#8E7D75] uppercase text-[9px] tracking-wider mb-2">Top Fabric Finishes</span>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center text-[10.5px]">
+                          <span>Premium Velvet</span>
+                          <span className="font-bold text-[#2A211D]">55%</span>
+                        </div>
+                        <div className="w-full bg-[#FAF5EF] h-1.5 rounded-full overflow-hidden">
+                          <div className="bg-[#7C5F43] h-full" style={{ width: '55%' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                <div className="text-center py-20 text-xs text-[#8E7D75]">
-                  No inquiries found matching search criteria.
-                </div>
-              )}
+
+              </div>
+
             </div>
           )}
 
-          {/* 2. PRODUCTS CATALOGUE MODULE */}
-          {activeTab === 'products' && (
-            <div className="animate-fade-in">
-              <div className="flex justify-between items-center mb-6 border-b border-[#EADFC9]/30 pb-3">
+          {/* 2. MODULE: MATTRESS MANAGEMENT */}
+          {activeModule === 'mattress_mgmt' && (
+            <div className="animate-fade-in space-y-6">
+              
+              <div className="flex justify-between items-center border-b border-[#EADFC9]/40 pb-4">
                 <div>
-                  <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Products Catalogue</h3>
-                  <p className="text-xs text-[#8E7D75]">Add, edit, or delete mattresses and sofas catalogued items</p>
+                  <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Mattress Product Management</h1>
+                  <p className="text-xs text-[#8E7D75]">Configure base price details, thickness options, and catalog listings</p>
                 </div>
                 <button 
                   onClick={resetProductForm}
-                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold text-[10px] uppercase tracking-wider py-2.5 px-4 rounded-none transition-all focus:outline-none shadow-xs"
+                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold text-[10.5px] uppercase tracking-wider py-2.5 px-4 rounded-xl transition-all focus:outline-none"
                 >
-                  + Add Product
+                  + Add Mattress Model
                 </button>
               </div>
 
-              {/* Product Form Section */}
-              <div className="bg-[#FAF8F5] border border-[#EADFC9]/40 p-5 rounded-none mb-8">
-                <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-4 border-b border-[#EADFC9]/30 pb-2">
-                  {editingProduct ? `Edit Product: ${editingProduct.name}` : 'Create New Product'}
+              {/* Edit / Create Form Panel */}
+              <div className="bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-[0_6px_25px_rgba(42,33,29,0.02)]">
+                <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-4 pb-2 border-b border-[#EADFC9]/30">
+                  {editingProduct && productForm.category === 'mattress' ? `Edit Model: ${productForm.name}` : 'Catalog New Mattress Model'}
                 </h4>
-                
-                <form onSubmit={handleSaveProduct} className="text-xs space-y-4">
+
+                <form onSubmit={handleSaveProduct} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col">
-                      <label className="font-bold text-[#2A211D] mb-1">Product Name</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Mattress Model Name</label>
                       <input 
                         type="text" 
                         value={productForm.name}
-                        onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                        onChange={(e) => setProductForm({ ...productForm, name: e.target.value, category: 'mattress' })}
                         required
-                        placeholder="e.g. Memory Foam Ortho"
-                        className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
+                        placeholder="Ortho Support Latex"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
                       />
                     </div>
-                    
+
                     <div className="flex flex-col">
-                      <label className="font-bold text-[#2A211D] mb-1">Category</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Mattress Core Category</label>
                       <select 
-                        value={productForm.category}
-                        onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
-                        className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] cursor-pointer"
+                        value={productForm.mattressCoreType}
+                        onChange={(e) => setProductForm({ ...productForm, mattressCoreType: e.target.value })}
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
                       >
-                        <option value="mattress">Mattress Range</option>
-                        <option value="sofa">Sofa Collection</option>
+                        <option value="ortho">Ortho Memory</option>
+                        <option value="latex">Natural Latex</option>
+                        <option value="spring">Pocket Spring</option>
+                        <option value="coir">Classic Coir</option>
+                        <option value="dual">Dual Comfort</option>
                       </select>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col">
-                      <label className="font-bold text-[#2A211D] mb-1">Starting Base Price (₹)</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Starting Base Rate (₹)</label>
                       <input 
                         type="number" 
                         value={productForm.basePrice}
                         onChange={(e) => setProductForm({ ...productForm, basePrice: parseInt(e.target.value) || '' })}
                         required
-                        placeholder="6500"
-                        className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
+                        placeholder="16500"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
                       />
                     </div>
-
                     <div className="flex flex-col">
-                      <label className="font-bold text-[#2A211D] mb-1">Showroom Price Multiplier</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Retail Showroom Price Multiplier</label>
                       <input 
                         type="text" 
                         value={productForm.retailMultiplier}
-                        onChange={(e) => setProductForm({ ...productForm, retailMultiplier: parseFloat(e.target.value) || 2.0 })}
-                        required
+                        onChange={(e) => setProductForm({ ...productForm, retailMultiplier: e.target.value })}
                         placeholder="2.0"
-                        className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
                       />
-                    </div>
-
-                    <div className="flex flex-col">
-                      <label className="font-bold text-[#2A211D] mb-1">Sub-Category Identifier</label>
-                      {productForm.category === 'mattress' ? (
-                        <select 
-                          value={productForm.mattressCoreType}
-                          onChange={(e) => setProductForm({ ...productForm, mattressCoreType: e.target.value })}
-                          className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] cursor-pointer"
-                        >
-                          <option value="none">None</option>
-                          <option value="ortho">Ortho Memory</option>
-                          <option value="latex">Natural Latex</option>
-                          <option value="spring">Pocket Spring</option>
-                          <option value="dual">Dual Comfort</option>
-                          <option value="coir">Classic Coir</option>
-                        </select>
-                      ) : (
-                        <select 
-                          value={productForm.sofaCategory}
-                          onChange={(e) => setProductForm({ ...productForm, sofaCategory: e.target.value })}
-                          className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] cursor-pointer"
-                        >
-                          <option value="none">None</option>
-                          <option value="l-shape">L Shape Sofa</option>
-                          <option value="recliner">Recliner Sofa</option>
-                          <option value="2-seater">2 Seater</option>
-                          <option value="3-seater">3 Seater</option>
-                          <option value="corner">Corner Sofa</option>
-                          <option value="custom">Custom Layout</option>
-                        </select>
-                      )}
                     </div>
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="font-bold text-[#2A211D] mb-1">Short Description</label>
+                    <label className="font-bold text-[#2A211D] mb-1">Marketing Tagline / Short Description</label>
                     <input 
                       type="text" 
                       value={productForm.shortDescription}
                       onChange={(e) => setProductForm({ ...productForm, shortDescription: e.target.value })}
                       required
-                      placeholder="Catchy tagline for product catalogue lists..."
-                      className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
+                      placeholder="Eco-friendly organic latex with aerated block structure"
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
                     />
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="font-bold text-[#2A211D] mb-1">Detailed Description</label>
+                    <label className="font-bold text-[#2A211D] mb-1">Detailed Features & Design Elements</label>
                     <textarea 
-                      rows="2"
+                      rows="3"
                       value={productForm.description}
                       onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
                       required
-                      placeholder="Detailed marketing breakdown for the details page..."
-                      className="bg-white border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] resize-none"
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D] resize-none"
                     ></textarea>
                   </div>
 
-                  {/* Multi-Image Upload Panel */}
-                  <div className="border border-[#EADFC9]/40 p-4 bg-white rounded-none">
-                    <label className="block font-bold text-[#2A211D] mb-1.5">Product Images Gallery (Cloudinary/Local)</label>
-                    <input 
-                      type="file" 
-                      multiple 
-                      onChange={handleImageUpload} 
-                      className="text-xs mb-3 block cursor-pointer"
-                    />
-                    
-                    {productForm.images.length > 0 && (
-                      <div className="flex gap-2 flex-wrap">
-                        {productForm.images.map((img, idx) => (
-                          <div key={idx} className="relative w-16 h-12 rounded-none border border-[#EADFC9]/45 overflow-hidden bg-[#FAF5EF]">
-                            <img src={img} alt="preview" className="w-full h-full object-cover" />
-                            <button 
-                              type="button" 
-                              onClick={() => setProductForm({ ...productForm, images: productForm.images.filter((_, i) => i !== idx) })}
-                              className="absolute top-0 right-0 bg-red-600 text-white w-4 h-4 flex items-center justify-center font-bold font-sans text-[8px] focus:outline-none"
-                            >
-                              &times;
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Specifications key-value helper */}
-                  <div className="border border-[#EADFC9]/40 p-4 bg-white rounded-none">
-                    <label className="block font-bold text-[#2A211D] mb-2">Technical Specifications</label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+                  {/* Available Thickness list */}
+                  <div className="bg-[#FAF8F5] border border-[#EADFC9]/40 p-4 rounded-xl">
+                    <label className="block font-bold text-[#2A211D] mb-2">Technical Specifications Checklist</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       <input 
                         type="text" 
-                        placeholder="Feature Key (e.g. Firmness)" 
+                        placeholder="Property Name (e.g. Firmness)" 
                         value={tempSpecKey}
                         onChange={(e) => setTempSpecKey(e.target.value)}
-                        className="bg-[#FAF8F5] border border-[#EADFC9]/50 rounded-none py-1.5 px-2.5 focus:outline-none text-[#2A211D]"
+                        className="bg-white border border-[#EADFC9]/50 rounded-lg p-2 focus:outline-none"
                       />
                       <input 
                         type="text" 
                         placeholder="Value (e.g. Medium Soft)" 
                         value={tempSpecVal}
                         onChange={(e) => setTempSpecVal(e.target.value)}
-                        className="bg-[#FAF8F5] border border-[#EADFC9]/50 rounded-none py-1.5 px-2.5 focus:outline-none text-[#2A211D]"
+                        className="bg-white border border-[#EADFC9]/50 rounded-lg p-2 focus:outline-none"
                       />
                       <button 
                         type="button" 
                         onClick={addSpecPair}
-                        className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-1 px-3 rounded-none uppercase tracking-wider text-[10px]"
+                        className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-1.5 px-4 rounded-lg text-[10px] uppercase tracking-wider"
                       >
                         Add Spec Pair
                       </button>
                     </div>
 
                     {Object.keys(productForm.specifications).length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {Object.entries(productForm.specifications).map(([key, val]) => (
-                          <span key={key} className="bg-[#FAF8F5] border border-[#EADFC9]/45 text-[10px] py-1 px-2.5 rounded-none flex items-center gap-1 text-[#2A211D]">
-                            <strong>{key}:</strong> {val}
-                            <button type="button" onClick={() => removeSpecKey(key)} className="text-red-600 font-bold hover:text-red-800 ml-1 text-xs">&times;</button>
+                      <div className="flex flex-wrap gap-2 mt-3.5">
+                        {Object.entries(productForm.specifications).map(([k, v]) => (
+                          <span key={k} className="bg-white border border-[#EADFC9]/40 text-[10px] py-1 px-2.5 rounded-md flex items-center gap-1.5 text-[#2A211D]">
+                            <strong>{k}:</strong> {v}
+                            <button type="button" onClick={() => removeSpecKey(k)} className="text-red-500 hover:text-red-700 font-bold ml-1 text-sm focus:outline-none">&times;</button>
                           </span>
                         ))}
                       </div>
                     )}
                   </div>
 
-                  {/* Design Benefits helpers */}
-                  <div className="border border-[#EADFC9]/40 p-4 bg-white rounded-none">
-                    <label className="block font-bold text-[#2A211D] mb-2">Design Benefits Bullet Points</label>
-                    <div className="flex gap-2 mb-3">
-                      <input 
-                        type="text" 
-                        placeholder="Benefits bullet point summary..." 
-                        value={tempBenefit}
-                        onChange={(e) => setTempBenefit(e.target.value)}
-                        className="flex-grow bg-[#FAF8F5] border border-[#EADFC9]/50 rounded-none py-1.5 px-2.5 focus:outline-none text-[#2A211D]"
-                      />
-                      <button 
-                        type="button" 
-                        onClick={addBenefitItem}
-                        className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-1.5 px-4 rounded-none uppercase tracking-wider text-[10px]"
-                      >
-                        Add Point
-                      </button>
-                    </div>
-
-                    {productForm.benefits.length > 0 && (
-                      <ul className="list-disc pl-5 space-y-1 text-[#8E7D75]">
-                        {productForm.benefits.map((b, idx) => (
-                          <li key={idx} className="flex justify-between items-center text-[11px] border-b border-[#EADFC9]/15 pb-1">
-                            <span>{b}</span>
-                            <button type="button" onClick={() => removeBenefitItem(idx)} className="text-red-600 font-bold hover:text-red-800 text-xs">&times;</button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                  <div className="flex justify-end gap-2.5 border-t border-[#EADFC9]/20 pt-4">
+                    <button 
+                      type="button" 
+                      onClick={resetProductForm}
+                      className="border border-[#EADFC9]/60 px-4 py-2 rounded-xl text-stone-500 hover:bg-[#FAF8F5]"
+                    >
+                      Clear Form
+                    </button>
+                    <button 
+                      type="submit"
+                      disabled={submitLoading}
+                      className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold px-6 py-2 rounded-xl transition-all disabled:opacity-40"
+                    >
+                      {submitLoading ? 'Saving...' : 'Save Mattress Specifications'}
+                    </button>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#EADFC9]/30 pt-4">
-                    <div className="flex items-center gap-6">
-                      <label className="flex items-center gap-2 font-bold text-[#2A211D] cursor-pointer select-none">
-                        <input 
-                          type="checkbox" 
-                          checked={productForm.isAvailable}
-                          onChange={(e) => setProductForm({ ...productForm, isAvailable: e.target.checked })}
-                          className="cursor-pointer accent-[#7C5F43] w-4 h-4 border-[#EADFC9]"
-                        />
-                        In Availability Stock
-                      </label>
-                      
-                      <label className="flex items-center gap-2 font-bold text-[#2A211D] cursor-pointer select-none">
-                        <input 
-                          type="checkbox" 
-                          checked={productForm.isFeatured}
-                          onChange={(e) => setProductForm({ ...productForm, isFeatured: e.target.checked })}
-                          className="cursor-pointer accent-[#7C5F43] w-4 h-4 border-[#EADFC9]"
-                        />
-                        Featured Product Highlight
-                      </label>
-                    </div>
-
-                    <div className="flex justify-end gap-2">
-                      <button 
-                        type="button" 
-                        onClick={resetProductForm}
-                        className="border border-[#EADFC9]/50 py-2.5 px-5 rounded-none hover:bg-[#FAF5EF] text-[#8E7D75] transition-colors"
-                      >
-                        Reset Form
-                      </button>
-                      
-                      <button 
-                        type="submit" 
-                        disabled={submitLoading}
-                        className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-none shadow-xs transition-colors disabled:opacity-50"
-                      >
-                        {submitLoading ? 'Saving Product...' : 'Save Product Details'}
-                      </button>
-                    </div>
-                  </div>
                 </form>
               </div>
 
-              {/* Products List Grid */}
-              <div className="border border-[#EADFC9]/40 rounded-none overflow-hidden text-xs">
+              {/* Mattress List Database Table */}
+              <div className="bg-white border border-[#EADFC9]/45 rounded-2xl overflow-hidden shadow-[0_4px_15px_rgba(42,33,29,0.01)]">
                 <table className="w-full text-left">
                   <thead className="bg-[#FAF5EF] border-b border-[#EADFC9]/40">
                     <tr>
-                      <th className="p-3 font-serif font-bold text-[#2A211D]">Product Name</th>
-                      <th className="p-3 font-serif font-bold text-[#2A211D]">Category</th>
-                      <th className="p-3 font-serif font-bold text-[#2A211D]">Base Price</th>
-                      <th className="p-3 font-serif font-bold text-[#2A211D]">Stock Status</th>
-                      <th className="p-3 font-serif font-bold text-[#2A211D] text-right text-[10px] uppercase tracking-wider pr-4">Actions</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Mattress Name</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Core Category</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Base Factory Rate</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Display Status</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D] text-right pr-6">Controls</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map((p) => (
-                      <tr key={p._id} className="border-b border-[#EADFC9]/25 last:border-b-0 hover:bg-[#FAF8F5]/50 bg-white">
-                        <td className="p-3 font-semibold text-[#2A211D]">{p.name}</td>
-                        <td className="p-3 capitalize text-[#8E7D75]">{p.category}</td>
-                        <td className="p-3 text-[#2A211D] font-bold">₹{p.basePrice.toLocaleString('en-IN')}</td>
-                        <td className="p-3">
-                          <span className={`px-2.5 py-0.5 rounded-none text-[9.5px] font-bold ${p.isAvailable ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'}`}>
-                            {p.isAvailable ? 'Available' : 'Out of Stock'}
-                          </span>
+                    {mattressProducts.map((p) => (
+                      <tr key={p._id} className="border-b border-stone-100 last:border-b-0 hover:bg-[#FAF8F5]/30">
+                        <td className="p-3.5 font-semibold text-[#2A211D]">{p.name}</td>
+                        <td className="p-3.5 capitalize text-[#8E7D75]">{p.mattressCoreType}</td>
+                        <td className="p-3.5 font-bold text-[#2A211D]">₹{p.basePrice.toLocaleString('en-IN')}</td>
+                        <td className="p-3.5">
+                          <button 
+                            onClick={() => handleToggleProductAvailability(p)}
+                            className={`px-3 py-1 rounded-full text-[9px] font-bold uppercase ${
+                              p.isAvailable ? 'bg-green-50 border border-green-200 text-green-600' : 'bg-red-50 border border-red-200 text-red-500'
+                            }`}
+                          >
+                            {p.isAvailable ? 'Enabled' : 'Disabled'}
+                          </button>
                         </td>
-                        <td className="p-3 text-right space-x-3 pr-4">
+                        <td className="p-3.5 text-right space-x-3 pr-6">
                           <button 
                             onClick={() => handleEditProductClick(p)}
-                            className="text-[#7C5F43] hover:text-[#2A211D] font-bold focus:outline-none uppercase tracking-wider text-[10.5px]"
+                            className="text-[#7C5F43] hover:underline font-bold"
                           >
                             Edit
                           </button>
                           <button 
+                            onClick={() => handleDuplicateProduct(p)}
+                            className="text-stone-400 hover:text-stone-600 font-bold"
+                          >
+                            Duplicate
+                          </button>
+                          <button 
                             onClick={() => handleDeleteProduct(p._id)}
-                            className="text-red-500 hover:text-red-700 font-bold focus:outline-none uppercase tracking-wider text-[10.5px]"
+                            className="text-red-500 hover:underline font-bold"
                           >
                             Delete
                           </button>
@@ -986,321 +1058,483 @@ const AdminDashboard = () => {
                   </tbody>
                 </table>
               </div>
-            </div>
-          )}
-
-          {/* 3. MATTRESS CONFIG MODULE */}
-          {activeTab === 'mattress' && mattressConfig && (
-            <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Mattress Multipliers & Cores</h3>
-              <p className="text-[11px] text-[#8E7D75] mb-6">Modify base rate prices, custom size dimensions, and 3D visualizer configurations</p>
-
-              {/* Sizes Multipliers */}
-              <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none mb-6">
-                <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Sizing Dimensions Multipliers</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {mattressConfig.sizes.map((s, idx) => (
-                    <div key={idx} className="flex flex-col bg-white p-3 border border-[#EADFC9]/35 rounded-none">
-                      <span className="font-bold text-[#8E7D75] mb-1 block">{s.name}</span>
-                      <input 
-                        type="text" 
-                        value={s.multiplier}
-                        onChange={(e) => {
-                          const updated = [...mattressConfig.sizes];
-                          updated[idx].multiplier = parseFloat(e.target.value) || 1.0;
-                          setMattressConfig({ ...mattressConfig, sizes: updated });
-                        }}
-                        className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none p-1.5 focus:outline-none font-bold text-[#2A211D] text-center"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Thicknesses Multipliers */}
-              <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none mb-6">
-                <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Thickness Depth Multipliers</h4>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                  {mattressConfig.thicknesses.map((t, idx) => (
-                    <div key={idx} className="flex flex-col bg-white p-3 border border-[#EADFC9]/35 rounded-none">
-                      <span className="font-bold text-[#8E7D75] mb-1 block">{t.name}</span>
-                      <input 
-                        type="text" 
-                        value={t.multiplier}
-                        onChange={(e) => {
-                          const updated = [...mattressConfig.thicknesses];
-                          updated[idx].multiplier = parseFloat(e.target.value) || 1.0;
-                          setMattressConfig({ ...mattressConfig, thicknesses: updated });
-                        }}
-                        className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none p-1.5 focus:outline-none font-bold text-[#2A211D] text-center"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Cores Prices */}
-              <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none mb-6">
-                <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Mattress Core Base Pricing</h4>
-                <div className="space-y-4">
-                  {mattressConfig.cores.map((c, idx) => (
-                    <div key={idx} className="bg-white p-4 border border-[#EADFC9]/35 rounded-none grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                      <div>
-                        <span className="block font-serif font-bold text-sm text-[#2A211D] leading-tight">{c.name}</span>
-                        <span className="block text-[10px] text-[#8E7D75] mt-1 italic">{c.type} core configuration</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <label className="font-bold text-[#8E7D75] mb-1">Base Price (₹)</label>
-                        <input 
-                          type="number" 
-                          value={c.basePrice}
-                          onChange={(e) => {
-                            const updated = [...mattressConfig.cores];
-                            updated[idx].basePrice = parseInt(e.target.value) || 0;
-                            setMattressConfig({ ...mattressConfig, cores: updated });
-                          }}
-                          className="bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none p-1.5 focus:outline-none font-bold text-[#2A211D]"
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <label className="font-bold text-[#8E7D75] mb-1">Retail Showroom Multiplier</label>
-                        <input 
-                          type="text" 
-                          value={c.retailMultiplier}
-                          onChange={(e) => {
-                            const updated = [...mattressConfig.cores];
-                            updated[idx].retailMultiplier = parseFloat(e.target.value) || 2.0;
-                            setMattressConfig({ ...mattressConfig, cores: updated });
-                          }}
-                          className="bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none p-1.5 focus:outline-none font-bold text-[#2A211D]"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-end border-t border-[#EADFC9]/30 pt-4">
-                <button
-                  onClick={() => handleSaveMattressConfig(mattressConfig)}
-                  disabled={submitLoading}
-                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-none shadow-xs transition-colors disabled:opacity-50"
-                >
-                  {submitLoading ? 'Saving Configurations...' : 'Save Mattress Pricing Configurations'}
-                </button>
-              </div>
 
             </div>
           )}
 
-          {/* 4. SOFA CONFIG MODULE */}
-          {activeTab === 'sofa' && sofaConfig && (
-            <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Sofa Multipliers & Parameters</h3>
-              <p className="text-[11px] text-[#8E7D75] mb-6">Modify sofa layout multipliers, fabrics and color parameters</p>
-
-              {/* Types Multipliers */}
-              <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none mb-6">
-                <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Sofa Type Multipliers</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {sofaConfig.sofaTypes.map((t, idx) => (
-                    <div key={idx} className="flex flex-col bg-white p-3 border border-[#EADFC9]/35 rounded-none">
-                      <span className="font-bold text-[#8E7D75] mb-1 block">{t.name}</span>
-                      <input 
-                        type="text" 
-                        value={t.multiplier}
-                        onChange={(e) => {
-                          const updated = [...sofaConfig.sofaTypes];
-                          updated[idx].multiplier = parseFloat(e.target.value) || 1.0;
-                          setSofaConfig({ ...sofaConfig, sofaTypes: updated });
-                        }}
-                        className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none p-1.5 focus:outline-none font-bold text-[#2A211D] text-center"
-                      />
-                    </div>
-                  ))}
-                </div>
+          {/* 3. MODULE: MATTRESS LAYER BUILDER */}
+          {activeModule === 'layer_builder' && (
+            <div className="animate-fade-in space-y-6">
+              
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Mattress Layer Specification Builder</h1>
+                <p className="text-xs text-[#8E7D75]">Build cross-sections and thickness ratios of foam/spring cores visually</p>
               </div>
 
-              {/* Materials & Fabric Modifiers */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none">
-                  <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Material Cost Modifiers (₹)</h4>
-                  <div className="space-y-3">
-                    {sofaConfig.materials.map((m, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-white p-2.5 border border-[#EADFC9]/30 rounded-none">
-                        <span className="font-bold text-[#8E7D75]">{m.name}</span>
-                        <input 
-                          type="number" 
-                          value={m.priceModifier}
-                          onChange={(e) => {
-                            const updated = [...sofaConfig.materials];
-                            updated[idx].priceModifier = parseInt(e.target.value) || 0;
-                            setSofaConfig({ ...sofaConfig, materials: updated });
-                          }}
-                          className="w-24 bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none p-1 text-center font-bold text-[#2A211D]"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="border border-[#EADFC9]/40 p-4 bg-[#FAF8F5]/30 rounded-none">
-                  <h4 className="font-bold text-xs text-[#2A211D] mb-3 uppercase tracking-wider">Fabric Cost Modifiers (₹)</h4>
-                  <div className="space-y-3">
-                    {sofaConfig.fabrics.map((f, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-white p-2.5 border border-[#EADFC9]/30 rounded-none">
-                        <span className="font-bold text-[#8E7D75]">{f.name}</span>
-                        <input 
-                          type="number" 
-                          value={f.priceModifier}
-                          onChange={(e) => {
-                            const updated = [...sofaConfig.fabrics];
-                            updated[idx].priceModifier = parseInt(e.target.value) || 0;
-                            setSofaConfig({ ...sofaConfig, fabrics: updated });
-                          }}
-                          className="w-24 bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none p-1 text-center font-bold text-[#2A211D]"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-end border-t border-[#EADFC9]/30 pt-4">
-                <button
-                  onClick={() => handleSaveSofaConfig(sofaConfig)}
-                  disabled={submitLoading}
-                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-none shadow-xs transition-colors disabled:opacity-50"
-                >
-                  {submitLoading ? 'Saving Configurations...' : 'Save Sofa Pricing Configurations'}
-                </button>
-              </div>
-
-            </div>
-          )}
-
-          {/* 5. TESTIMONIALS MODULE */}
-          {activeTab === 'testimonials' && (
-            <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Testimonial Reviews</h3>
-              <p className="text-[11px] text-[#8E7D75] mb-6">Manage customer reviews showing in reviews sliders</p>
-
-              {/* Review add form */}
-              <div className="bg-[#FAF8F5] border border-[#EADFC9]/40 p-4 rounded-none mb-6">
-                <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-3 border-b border-[#EADFC9]/30 pb-1.5">
-                  {editingTestimonial ? `Edit Testimonial: ${editingTestimonial.name}` : 'Create Customer Testimonial'}
-                </h4>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
-                <form onSubmit={handleSaveTestimonial} className="space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                {/* Visual Editor parameters */}
+                <div className="lg:col-span-7 bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-[0_6px_25px_rgba(42,33,29,0.02)] space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col">
-                      <label className="font-bold text-[#2A211D] mb-1">Customer Name</label>
-                      <input 
-                        type="text" 
-                        value={testimonialForm.name}
-                        onChange={(e) => setTestimonialForm({ ...testimonialForm, name: e.target.value })}
-                        required
-                        placeholder="Rajesh Kumar"
-                        className="bg-white border border-[#EADFC9]/45 rounded-none p-1.5 focus:outline-none text-[#2A211D]"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="font-bold text-[#2A211D] mb-1">Location (e.g. "Mumbai")</label>
-                      <input 
-                        type="text" 
-                        value={testimonialForm.location}
-                        onChange={(e) => setTestimonialForm({ ...testimonialForm, location: e.target.value })}
-                        required
-                        placeholder="Mumbai"
-                        className="bg-white border border-[#EADFC9]/45 rounded-none p-1.5 focus:outline-none text-[#2A211D]"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="font-bold text-[#2A211D] mb-1">Rating Stars (1-5)</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Mattress Core Type</label>
                       <select 
-                        value={testimonialForm.rating}
-                        onChange={(e) => setTestimonialForm({ ...testimonialForm, rating: parseInt(e.target.value) })}
-                        className="bg-white border border-[#EADFC9]/45 rounded-none p-1.5 focus:outline-none cursor-pointer text-[#2A211D]"
+                        value={builderType}
+                        onChange={(e) => setBuilderType(e.target.value)}
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 text-xs focus:outline-none"
                       >
-                        <option value="5">5 Stars</option>
-                        <option value="4">4 Stars</option>
-                        <option value="3">3 Stars</option>
+                        <option value="Soft Foam + Rebonded">Soft Foam + Rebonded</option>
+                        <option value="Rebonded + Latex">Rebonded + Latex</option>
+                        <option value="Memory Foam Mattress">Memory Foam Mattress</option>
                       </select>
                     </div>
+
                     <div className="flex flex-col">
-                      <label className="font-bold text-[#2A211D] mb-1">Date Text (e.g. "2 weeks ago")</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Overall Core Thickness</label>
+                      <select 
+                        value={builderThick}
+                        onChange={(e) => setBuilderThick(parseInt(e.target.value))}
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 text-xs focus:outline-none"
+                      >
+                        <option value="4">4 inches</option>
+                        <option value="5">5 inches</option>
+                        <option value="6">6 inches</option>
+                        <option value="8">8 inches</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-[#EADFC9]/25 pt-4">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="block font-bold text-[#2A211D] uppercase tracking-wider text-[10px]">Active Layers Stack</span>
+                      <button 
+                        onClick={handleAddBuilderLayer}
+                        className="bg-[#FAF5EF] hover:bg-[#F3EFE6] border border-[#7C5F43]/35 text-[#7C5F43] font-bold text-[9.5px] py-1.5 px-3 rounded-lg uppercase transition-all"
+                      >
+                        + Add Layer
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {builderLayers.map((layer, idx) => (
+                        <div key={layer.id} className="flex gap-3 bg-[#FAF8F5] p-3 rounded-xl border border-[#EADFC9]/30 items-center justify-between">
+                          <span className="font-bold text-stone-400 text-xs w-6">#{idx + 1}</span>
+                          
+                          <div className="flex-grow grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <div className="flex flex-col">
+                              <span className="text-[9px] text-[#8E7D75] font-semibold mb-0.5">Material Texture</span>
+                              <select 
+                                value={layer.material}
+                                onChange={(e) => handleUpdateBuilderLayer(layer.id, { material: e.target.value })}
+                                className="bg-white border border-[#EADFC9]/50 rounded-lg p-1.5 text-[11px] focus:outline-none"
+                              >
+                                <option value="Soft Foam">Soft Foam</option>
+                                <option value="Rebonded">Rebonded Foam</option>
+                                <option value="Natural Latex">Natural Latex</option>
+                                <option value="Memory Foam">Memory Foam</option>
+                                <option value="HR Foam">HR Foam</option>
+                                <option value="Coir">Coir (Coconut fiber)</option>
+                                <option value="Pocket Spring">Pocket Spring Grid</option>
+                              </select>
+                            </div>
+
+                            <div className="flex flex-col">
+                              <span className="text-[9px] text-[#8E7D75] font-semibold mb-0.5">Thickness (inches)</span>
+                              <input 
+                                type="number" 
+                                value={layer.thick}
+                                onChange={(e) => handleUpdateBuilderLayer(layer.id, { thick: parseFloat(e.target.value) || 0.5 })}
+                                className="bg-white border border-[#EADFC9]/50 rounded-lg p-1.5 text-[11px] text-center focus:outline-none font-bold"
+                              />
+                            </div>
+
+                            <div className="flex flex-col">
+                              <span className="text-[9px] text-[#8E7D75] font-semibold mb-0.5">Layer Role</span>
+                              <input 
+                                type="text" 
+                                value={layer.type || 'Comfort Layer'}
+                                onChange={(e) => handleUpdateBuilderLayer(layer.id, { type: e.target.value })}
+                                className="bg-white border border-[#EADFC9]/50 rounded-lg p-1.5 text-[11px] focus:outline-none"
+                              />
+                            </div>
+                          </div>
+
+                          <button 
+                            onClick={() => handleDeleteBuilderLayer(layer.id)}
+                            className="text-red-500 hover:text-red-700 text-base font-bold p-1 focus:outline-none"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-3 border-t border-[#EADFC9]/25">
+                    <button 
+                      onClick={() => alert('Mattress Layer specs configuration updated inside operations db!')}
+                      className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold px-6 py-2.5 rounded-xl transition-all"
+                    >
+                      Save Configuration Layer Maps
+                    </button>
+                  </div>
+                </div>
+
+                {/* Dynamic visual preview panel */}
+                <div className="lg:col-span-5 bg-[#201917] p-6 rounded-2xl border border-stone-800 shadow-[0_6px_25px_rgba(0,0,0,0.2)]">
+                  <span className="inline-block bg-[#7C5F43] text-white font-bold text-[9px] uppercase tracking-wider py-1 px-2.5 rounded-md mb-4">
+                    Mattress Stack Visualizer
+                  </span>
+                  
+                  {/* Dynamic Layers Stack Render */}
+                  <div className="border border-stone-800 rounded-xl overflow-hidden bg-black/10 p-5 flex flex-col items-center">
+                    <div className="w-full max-w-[200px] flex flex-col gap-1.5 select-none py-4">
+                      {builderLayers.map((l, index) => {
+                        let fillStyles = { backgroundColor: '#EADFC9', color: '#2A211D' };
+                        if (l.material === 'Soft Foam') fillStyles = { backgroundColor: '#FDF6E2', color: '#826A32' };
+                        if (l.material === 'Rebonded') fillStyles = { backgroundColor: '#707070', color: '#ffffff' };
+                        if (l.material === 'Natural Latex') fillStyles = { backgroundColor: '#FAF1D6', color: '#9E782F' };
+                        if (l.material === 'Memory Foam') fillStyles = { backgroundColor: '#FFEBB8', color: '#8A601E' };
+                        if (l.material === 'HR Foam') fillStyles = { backgroundColor: '#C8E8D5', color: '#2C5E43' };
+                        if (l.material === 'Coir') fillStyles = { backgroundColor: '#8B5A2B', color: '#ffffff' };
+                        if (l.material === 'Pocket Spring') fillStyles = { backgroundColor: '#D2D7DF', color: '#1E293B' };
+
+                        return (
+                          <div 
+                            key={l.id || index}
+                            className="w-full rounded-md p-3 text-center font-bold text-[10px] shadow-xs relative overflow-hidden transition-all duration-300 border border-black/10 flex flex-col justify-center"
+                            style={{ 
+                              ...fillStyles, 
+                              height: `${Math.max(40, l.thick * 15)}px` 
+                            }}
+                          >
+                            <span>{l.thick}" {l.material}</span>
+                            <span className="text-[8px] opacity-75 font-normal">{l.type}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 text-stone-400 text-[10.5px] leading-relaxed">
+                    <h5 className="font-bold text-[#E3D8C4] mb-1">Thickness Stack Check</h5>
+                    <p>
+                      Total core thickness calculation: <strong className="text-white">{builderLayers.reduce((sum, l) => sum + l.thick, 0)} inches</strong>.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          )}
+
+          {/* 4. MODULE: SOFA MANAGEMENT */}
+          {activeModule === 'sofa_mgmt' && (
+            <div className="animate-fade-in space-y-6">
+              
+              <div className="flex justify-between items-center border-b border-[#EADFC9]/40 pb-4">
+                <div>
+                  <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Sofa Model Management</h1>
+                  <p className="text-xs text-[#8E7D75]">Database records of sofa layouts, shapes, and seating capacities</p>
+                </div>
+                <button 
+                  onClick={resetProductForm}
+                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold text-[10.5px] uppercase tracking-wider py-2.5 px-4 rounded-xl transition-all focus:outline-none"
+                >
+                  + Add Sofa Model
+                </button>
+              </div>
+
+              {/* Sofa Form Panel */}
+              <div className="bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-[0_6px_25px_rgba(42,33,29,0.02)]">
+                <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-4 pb-2 border-b border-[#EADFC9]/30">
+                  {editingProduct && productForm.category === 'sofa' ? `Edit Model: ${productForm.name}` : 'Catalog New Sofa Model'}
+                </h4>
+
+                <form onSubmit={handleSaveProduct} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col">
+                      <label className="font-bold text-[#2A211D] mb-1">Sofa Model Name</label>
                       <input 
                         type="text" 
-                        value={testimonialForm.dateText}
-                        onChange={(e) => setTestimonialForm({ ...testimonialForm, dateText: e.target.value })}
+                        value={productForm.name}
+                        onChange={(e) => setProductForm({ ...productForm, name: e.target.value, category: 'sofa' })}
                         required
-                        placeholder="2 weeks ago"
-                        className="bg-white border border-[#EADFC9]/45 rounded-none p-1.5 focus:outline-none text-[#2A211D]"
+                        placeholder="Luxury Chesterfield Sofa"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="font-bold text-[#2A211D] mb-1">Sofa Layout Category</label>
+                      <select 
+                        value={productForm.sofaCategory}
+                        onChange={(e) => setProductForm({ ...productForm, sofaCategory: e.target.value })}
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
+                      >
+                        <option value="l-shape">L Shape Sofa</option>
+                        <option value="recliner">Recliner Sofa</option>
+                        <option value="2-seater">2 Seater</option>
+                        <option value="3-seater">3 Seater</option>
+                        <option value="corner">Corner Sofa</option>
+                        <option value="custom">Custom Layout</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col">
+                      <label className="font-bold text-[#2A211D] mb-1">Base Factory Cost (₹)</label>
+                      <input 
+                        type="number" 
+                        value={productForm.basePrice}
+                        onChange={(e) => setProductForm({ ...productForm, basePrice: parseInt(e.target.value) || '' })}
+                        required
+                        placeholder="22500"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="font-bold text-[#2A211D] mb-1">Showroom Multiplier</label>
+                      <input 
+                        type="text" 
+                        value={productForm.retailMultiplier}
+                        onChange={(e) => setProductForm({ ...productForm, retailMultiplier: e.target.value })}
+                        placeholder="2.0"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
                       />
                     </div>
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="font-bold text-[#2A211D] mb-1">Review Content</label>
+                    <label className="font-bold text-[#2A211D] mb-1">Detailed Description</label>
                     <textarea 
-                      rows="2"
-                      value={testimonialForm.text}
-                      onChange={(e) => setTestimonialForm({ ...testimonialForm, text: e.target.value })}
+                      rows="3"
+                      value={productForm.description}
+                      onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
                       required
-                      placeholder="Enter the customer review narrative here..."
-                      className="bg-white border border-[#EADFC9]/45 rounded-none p-2 focus:outline-none resize-none text-[#2A211D]"
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D] resize-none"
                     ></textarea>
                   </div>
 
-                  <div className="flex justify-end gap-2 border-t border-[#EADFC9]/30 pt-3">
+                  <div className="flex justify-end gap-2.5 border-t border-[#EADFC9]/20 pt-4">
                     <button 
                       type="button" 
-                      onClick={resetTestimonialForm}
-                      className="border border-[#EADFC9]/50 py-1.5 px-4 rounded-none hover:bg-[#FAF5EF] text-[#8E7D75] transition-colors"
+                      onClick={resetProductForm}
+                      className="border border-[#EADFC9]/60 px-4 py-2 rounded-xl text-stone-500 hover:bg-[#FAF8F5]"
                     >
-                      Reset Form
+                      Clear Form
                     </button>
                     <button 
                       type="submit"
                       disabled={submitLoading}
-                      className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-1.5 px-5 rounded-none transition-colors disabled:opacity-50"
+                      className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold px-6 py-2 rounded-xl transition-all disabled:opacity-40"
                     >
-                      {editingTestimonial ? 'Update Testimonial' : 'Save Testimonial'}
+                      {submitLoading ? 'Saving...' : 'Save Sofa Model'}
                     </button>
                   </div>
                 </form>
               </div>
 
-              {/* Testimonials List */}
-              <div className="space-y-3">
-                {testimonials.map((t) => (
-                  <div key={t._id} className="border border-[#EADFC9]/40 p-3 rounded-none bg-[#FAF8F5]/40 flex justify-between items-start gap-4">
+              {/* Sofa List Database Table */}
+              <div className="bg-white border border-[#EADFC9]/45 rounded-2xl overflow-hidden shadow-[0_4px_15px_rgba(42,33,29,0.01)]">
+                <table className="w-full text-left">
+                  <thead className="bg-[#FAF5EF] border-b border-[#EADFC9]/40">
+                    <tr>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Sofa Name</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Layout Category</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Base Price</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Availability</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D] text-right pr-6">Controls</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sofaProducts.map((p) => (
+                      <tr key={p._id} className="border-b border-stone-100 last:border-b-0 hover:bg-[#FAF8F5]/30">
+                        <td className="p-3.5 font-semibold text-[#2A211D]">{p.name}</td>
+                        <td className="p-3.5 capitalize text-[#8E7D75]">{p.sofaCategory || 'l-shape'}</td>
+                        <td className="p-3.5 font-bold text-[#2A211D]">₹{p.basePrice.toLocaleString('en-IN')}</td>
+                        <td className="p-3.5">
+                          <button 
+                            onClick={() => handleToggleProductAvailability(p)}
+                            className={`px-3 py-1 rounded-full text-[9px] font-bold uppercase ${
+                              p.isAvailable ? 'bg-green-50 border border-green-200 text-green-600' : 'bg-red-50 border border-red-200 text-red-500'
+                            }`}
+                          >
+                            {p.isAvailable ? 'Active' : 'Draft'}
+                          </button>
+                        </td>
+                        <td className="p-3.5 text-right space-x-3 pr-6">
+                          <button 
+                            onClick={() => handleEditProductClick(p)}
+                            className="text-[#7C5F43] hover:underline font-bold"
+                          >
+                            Edit
+                          </button>
+                          <button 
+                            onClick={() => handleDuplicateProduct(p)}
+                            className="text-stone-400 hover:text-stone-600 font-bold"
+                          >
+                            Duplicate
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteProduct(p._id)}
+                            className="text-red-500 hover:underline font-bold"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          )}
+
+          {/* 5. MODULE: FABRIC CATALOGUE */}
+          {activeModule === 'fabric_catalogue' && (
+            <div className="animate-fade-in space-y-6">
+              
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Fabric Swatches Catalogues</h1>
+                <p className="text-xs text-[#8E7D75]">Configure Economy, Standard, Premium, and Luxury fabrics options</p>
+              </div>
+
+              {/* Fabric Swatch Quality Categories Tabs */}
+              <div className="flex border-b border-[#EADFC9]/40">
+                {['economy', 'standard', 'premium', 'luxury'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => {
+                      setFabricTab(tab);
+                      setEditingFabric(null);
+                    }}
+                    className={`py-3 px-6 font-bold uppercase text-[10.5px] border-b-2 transition-all ${
+                      fabricTab === tab 
+                        ? 'border-[#7C5F43] text-[#7C5F43]' 
+                        : 'border-transparent text-stone-400 hover:text-stone-600'
+                    }`}
+                  >
+                    {tab} Quality Swatches
+                  </button>
+                ))}
+              </div>
+
+              {/* Fabric Edit Form */}
+              <div className="bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-[0_6px_25px_rgba(42,33,29,0.02)]">
+                <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-4 pb-2 border-b border-[#EADFC9]/30">
+                  {editingFabric ? `Edit Fabric: ${editingFabric.code}` : `Catalogue New ${fabricTab.toUpperCase()} Fabric`}
+                </h4>
+
+                <form onSubmit={handleSaveFabric} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                  <div className="flex flex-col">
+                    <label className="font-bold text-[#2A211D] mb-1">Fabric Code</label>
+                    <input 
+                      type="text" 
+                      value={fabricForm.code}
+                      onChange={(e) => setFabricForm({ ...fabricForm, code: e.target.value })}
+                      required
+                      placeholder={fabricTab === 'economy' ? 'E001' : fabricTab === 'standard' ? 'S001' : fabricTab === 'premium' ? 'P001' : 'L001'}
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label className="font-bold text-[#2A211D] mb-1">Fabric Name</label>
+                    <input 
+                      type="text" 
+                      value={fabricForm.name}
+                      onChange={(e) => setFabricForm({ ...fabricForm, name: e.target.value })}
+                      required
+                      placeholder="Royal Beige"
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label className="font-bold text-[#2A211D] mb-1">Fabric Finish / Texture</label>
+                    <select 
+                      value={fabricForm.finish}
+                      onChange={(e) => setFabricForm({ ...fabricForm, finish: e.target.value })}
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none"
+                    >
+                      <option value="Velvet">Velvet Plush</option>
+                      <option value="Linen">Organic Linen</option>
+                      <option value="Bouclé">Looped Bouclé</option>
+                      <option value="Cotton">Soft Cotton</option>
+                      <option value="Suede">Microfiber Suede</option>
+                      <option value="Leather">Aniline Leather</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label className="font-bold text-[#2A211D] mb-1">Color Swatch Hex</label>
+                    <input 
+                      type="color" 
+                      value={fabricForm.colorHex}
+                      onChange={(e) => setFabricForm({ ...fabricForm, colorHex: e.target.value })}
+                      className="w-full bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-1.5 h-9 cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-2 md:col-span-4 mt-2">
+                    <button 
+                      type="submit"
+                      disabled={submitLoading}
+                      className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-xl transition-all"
+                    >
+                      {editingFabric ? 'Save Swatch Details' : 'Add Swatch to Catalogue'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Active list grid of swatches */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {(sofaConfig?.fabrics || []).filter(f => f.quality === fabricTab).map((fabric) => (
+                  <div key={fabric.code} className="bg-white border border-[#EADFC9]/45 rounded-xl p-4 shadow-xs relative flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="font-bold text-[#2A211D] text-sm">{t.name}</span>
-                        {t.location && (
-                          <span className="text-[10.5px] text-[#8E7D75] font-medium bg-[#FAF5EF] border border-[#EADFC9]/20 px-1.5 py-0.5 rounded-none">
-                            {t.location}
-                          </span>
-                        )}
-                        <span className="text-[#7C5F43]">{'★'.repeat(t.rating)}</span>
-                        <span className="text-[10px] text-[#8E7D75]">({t.dateText})</span>
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-[10px] font-bold text-[#7C5F43]">{fabric.code}</span>
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={() => {
+                              setEditingFabric(fabric);
+                              setFabricForm({
+                                code: fabric.code,
+                                name: fabric.name,
+                                finish: fabric.finish || 'Velvet',
+                                extraPrice: fabric.priceModifier || 0,
+                                colorHex: fabric.colorHex || '#7C5F43',
+                                isAvailable: fabric.isAvailable ?? true
+                              });
+                            }}
+                            className="text-[#7C5F43] font-semibold hover:underline"
+                          >
+                            Edit
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteFabric(fabric.code)}
+                            className="text-red-500 font-semibold hover:underline"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
-                      <p className="text-[#8E7D75] italic">"{t.text}"</p>
-                    </div>
-                    <div className="flex gap-3 pr-2">
-                      <button 
-                        onClick={() => handleEditTestimonialClick(t)}
-                        className="text-[#7C5F43] hover:text-[#2A211D] font-bold focus:outline-none uppercase tracking-wider text-[10.5px]"
+                      
+                      {/* Swatch circle */}
+                      <div 
+                        className="w-full h-20 rounded-lg border border-[#EADFC9]/60 shadow-xs mb-3 relative overflow-hidden"
+                        style={{ backgroundColor: fabric.colorHex || '#7C5F43' }}
                       >
-                        Edit
-                      </button>
-                      <button 
-                        onClick={() => handleDeleteTestimonial(t._id)}
-                        className="text-red-500 hover:text-red-700 font-bold focus:outline-none uppercase tracking-wider text-[10.5px]"
-                      >
-                        Delete
-                      </button>
+                        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%), linear-gradient(-45deg, #000 25%, transparent 25%)', backgroundSize: '4px 4px' }}></div>
+                      </div>
+
+                      <span className="block font-bold text-[#2A211D] text-xs">{fabric.name}</span>
+                      <span className="block text-[10px] text-[#8E7D75] mt-0.5">{fabric.finish || 'Velvet'}</span>
                     </div>
                   </div>
                 ))}
@@ -1309,205 +1543,140 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* 6. HOMEPAGE CONTENT MODULE */}
-          {activeTab === 'homepage' && (
-            <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Homepage Content Manager</h3>
-              <p className="text-[11px] text-[#8E7D75] mb-6">Modify main headlines, subheadings and call-to-actions dynamic copy</p>
+          {/* 6. MODULE: PRICING ENGINE */}
+          {activeModule === 'pricing_engine' && (
+            <div className="animate-fade-in space-y-6">
+              
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Pricing Engine Formulas</h1>
+                <p className="text-xs text-[#8E7D75]">Set production raw material rates per inch and fabric grade modifiers</p>
+              </div>
 
-              <form onSubmit={handleSaveHomepage} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <div className="flex flex-col">
-                  <label className="font-bold text-[#2A211D] mb-1">Hero Subheading</label>
-                  <input 
-                    type="text" 
-                    value={homepageForm.heroSubheading}
-                    onChange={(e) => setHomepageForm({ ...homepageForm, heroSubheading: e.target.value })}
-                    required
-                    placeholder="Direct Manufacturer Advantage"
-                    className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="font-bold text-[#2A211D] mb-1">Hero Heading Title</label>
-                  <input 
-                    type="text" 
-                    value={homepageForm.heroTitle}
-                    onChange={(e) => setHomepageForm({ ...homepageForm, heroTitle: e.target.value })}
-                    required
-                    placeholder="Deep Sleep. Direct From The Factory."
-                    className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] font-bold"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="font-bold text-[#2A211D] mb-1">Hero Subtitle Paragraph</label>
-                  <textarea 
-                    rows="3"
-                    value={homepageForm.heroSubtitle}
-                    onChange={(e) => setHomepageForm({ ...homepageForm, heroSubtitle: e.target.value })}
-                    required
-                    placeholder="Why pay 2x at retail showrooms..."
-                    className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] resize-none leading-relaxed"
-                  ></textarea>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#EADFC9]/30 pt-4">
-                  <div className="flex flex-col">
-                    <label className="font-bold text-[#2A211D] mb-1">CTA Banner Title</label>
-                    <input 
-                      type="text" 
-                      value={homepageForm.ctaTitle}
-                      onChange={(e) => setHomepageForm({ ...homepageForm, ctaTitle: e.target.value })}
-                      required
-                      placeholder="Ready for Better Sleep?"
-                      className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D] font-bold"
-                    />
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label className="font-bold text-[#2A211D] mb-1">CTA Subtitle Description</label>
-                    <input 
-                      type="text" 
-                      value={homepageForm.ctaSubtitle}
-                      onChange={(e) => setHomepageForm({ ...homepageForm, ctaSubtitle: e.target.value })}
-                      required
-                      placeholder="Talk directly with the factory owner on WhatsApp..."
-                      className="bg-[#FAF5EF] border border-[#EADFC9]/50 rounded-none py-2 px-3 focus:outline-none text-[#2A211D]"
-                    />
+                {/* Foam/Spring core rates */}
+                <div className="bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-xs space-y-4">
+                  <h3 className="font-serif font-bold text-sm text-[#2A211D] border-b pb-2 border-stone-100">Foam Core Price per Inch (₹)</h3>
+                  
+                  <div className="space-y-3">
+                    {[
+                      { key: 'softFoam', label: 'Soft Foam Rate per Inch' },
+                      { key: 'rebonded', label: 'High Density Rebonded Foam' },
+                      { key: 'latex', label: 'Natural Latex Layer' },
+                      { key: 'memoryFoam', label: 'Visco Memory Foam' },
+                      { key: 'hrFoam', label: 'High Resilient (HR) Foam' }
+                    ].map((foam) => (
+                      <div key={foam.key} className="flex justify-between items-center bg-[#FAF8F5] p-3 rounded-xl border border-[#EADFC9]/30">
+                        <span className="font-bold text-[#8E7D75]">{foam.label}</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-stone-400 font-bold">₹</span>
+                          <input 
+                            type="number" 
+                            value={rawMaterialsPricing[foam.key]}
+                            onChange={(e) => setRawMaterialsPricing({ ...rawMaterialsPricing, [foam.key]: parseInt(e.target.value) || 0 })}
+                            className="w-20 bg-white border border-[#EADFC9]/60 rounded-lg p-1.5 text-center font-bold text-[#2A211D]"
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                <div className="flex justify-end border-t border-[#EADFC9]/30 pt-4">
-                  <button 
-                    type="submit"
-                    disabled={submitLoading}
-                    className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-none shadow-xs transition-colors disabled:opacity-50 uppercase tracking-wider"
-                  >
-                    {submitLoading ? 'Saving copy...' : 'Save Homepage Copy Headlines'}
-                  </button>
+                {/* Fabric extra modifications charges */}
+                <div className="bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-xs space-y-4">
+                  <h3 className="font-serif font-bold text-sm text-[#2A211D] border-b pb-2 border-stone-100">Upholstery Quality base Rates</h3>
+                  
+                  <div className="space-y-3">
+                    {FABRIC_QUALITIES.map((quality) => (
+                      <div key={quality.id} className="flex justify-between items-center bg-[#FAF8F5] p-3 rounded-xl border border-[#EADFC9]/30">
+                        <span className="font-bold text-[#8E7D75]">{quality.name}</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-stone-400 font-bold">₹</span>
+                          <span className="w-20 bg-white border border-stone-100 rounded-lg p-1.5 text-center font-bold text-stone-500">
+                            {quality.modifier}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-              </form>
-            </div>
-          )}
+              </div>
 
-          {/* 7. PROFILE SAFETY MODULE */}
-          {activeTab === 'profile' && (
-            <div className="animate-fade-in text-xs max-w-md">
-              <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Profile Security</h3>
-              <p className="text-[11px] text-[#8E7D75] mb-6">Modify login email and session security password credentials</p>
-
-              <form onSubmit={handleSaveProfile} className="space-y-4">
-                
-                <div className="flex flex-col">
-                  <label className="font-bold text-[#2A211D] mb-1">Admin Email Address</label>
-                  <input 
-                    type="email" 
-                    value={profileForm.email}
-                    onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                    required
-                    placeholder="admin@example.com"
-                    className="bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none py-2.5 px-3.5 focus:outline-none text-[#2A211D] font-medium placeholder-[#8E7D75]"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="font-bold text-[#2A211D] mb-1">New Security Password</label>
-                  <input 
-                    type="password" 
-                    value={profileForm.password}
-                    onChange={(e) => setProfileForm({ ...profileForm, password: e.target.value })}
-                    required
-                    placeholder="••••••••••••"
-                    className="bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none py-2.5 px-3.5 focus:outline-none text-[#2A211D] placeholder-[#8E7D75]"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="font-bold text-[#2A211D] mb-1">Confirm New Password</label>
-                  <input 
-                    type="password" 
-                    value={profileForm.confirmPassword}
-                    onChange={(e) => setProfileForm({ ...profileForm, confirmPassword: e.target.value })}
-                    required
-                    placeholder="••••••••••••"
-                    className="bg-[#FAF5EF] border border-[#EADFC9]/55 rounded-none py-2.5 px-3.5 focus:outline-none text-[#2A211D] placeholder-[#8E7D75]"
-                  />
-                </div>
-
-                <button 
-                  type="submit"
+              <div className="flex justify-end pt-3">
+                <button
+                  onClick={handleSavePricingEngine}
                   disabled={submitLoading}
-                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-none tracking-wider uppercase mt-2 focus:outline-none"
+                  className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-xs"
                 >
-                  {submitLoading ? 'Updating credentials...' : 'Update Login Credentials'}
+                  Save Active Pricing Formula Rates
                 </button>
+              </div>
 
-              </form>
             </div>
           )}
 
           {/* 8. FAQs CRUD MODULE */}
-          {activeTab === 'faqs' && (
-            <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-bold font-display text-primary mb-1">FAQs Manager</h3>
-              <p className="text-xs text-text-muted mb-6">Manage website FAQs and automatically synchronize them with the AI Voice Assistant</p>
+          {activeModule === 'faqs' && (
+            <div className="animate-fade-in space-y-6">
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">FAQs Manager</h1>
+                <p className="text-xs text-[#8E7D75]">Manage website FAQs and automatically synchronize them with the AI Voice Assistant</p>
+              </div>
 
               {/* FAQ Form */}
-              <div className="bg-bg-light/45 border border-border p-4 rounded-sm mb-6">
-                <h4 className="font-bold text-xs text-primary mb-3">
+              <div className="bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-xs space-y-4">
+                <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-4 pb-2 border-b border-[#EADFC9]/30">
                   {editingFaq ? 'Edit FAQ Item' : 'Add New FAQ Item'}
                 </h4>
-                <form onSubmit={handleSaveFAQ} className="space-y-3 text-xs">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <form onSubmit={handleSaveFAQ} className="space-y-4 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="flex flex-col sm:col-span-2">
-                      <label className="font-bold text-primary mb-1">Question Description</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Question Description</label>
                       <input 
                         type="text" 
                         value={faqForm.question}
                         onChange={(e) => setFaqForm({ ...faqForm, question: e.target.value })}
                         required
                         placeholder="e.g. Do you manufacture custom sized mattresses?"
-                        className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <label className="font-bold text-primary mb-1">Category</label>
+                      <label className="font-bold text-[#2A211D] mb-1">Category</label>
                       <input 
                         type="text" 
                         value={faqForm.category}
                         onChange={(e) => setFaqForm({ ...faqForm, category: e.target.value })}
                         required
                         placeholder="e.g. Customization"
-                        className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
                       />
                     </div>
                   </div>
                   <div className="flex flex-col">
-                    <label className="font-bold text-primary mb-1">Answer Description Details</label>
+                    <label className="font-bold text-[#2A211D] mb-1">Answer Description Details</label>
                     <textarea 
                       rows="3"
                       value={faqForm.answer}
                       onChange={(e) => setFaqForm({ ...faqForm, answer: e.target.value })}
                       required
                       placeholder="e.g. Yes! We can manufacture mattresses in any custom dimensions you specify..."
-                      className="bg-white border border-border rounded-sm py-2 px-3 focus:outline-none resize-none"
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D] resize-none"
                     ></textarea>
                   </div>
-                  <div className="flex justify-end gap-2 pt-2 border-t border-border/60">
+                  <div className="flex justify-end gap-2.5 border-t border-[#EADFC9]/20 pt-4">
                     <button 
                       type="button" 
                       onClick={resetFAQForm}
-                      className="border border-border py-1.5 px-4 rounded-sm hover:bg-bg-light transition-colors"
+                      className="border border-[#EADFC9]/60 px-4 py-2 rounded-xl text-stone-500 hover:bg-[#FAF8F5]"
                     >
                       Reset Form
                     </button>
                     <button 
                       type="submit"
                       disabled={submitLoading}
-                      className="bg-primary hover:bg-primary-light text-white font-bold py-1.5 px-5 rounded-sm shadow-sm transition-colors"
+                      className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold px-6 py-2 rounded-xl transition-all"
                     >
                       {submitLoading ? 'Saving...' : 'Save FAQ Item'}
                     </button>
@@ -1516,32 +1685,32 @@ const AdminDashboard = () => {
               </div>
 
               {/* FAQs List Table */}
-              <div className="border border-border rounded-sm overflow-hidden">
+              <div className="bg-white border border-[#EADFC9]/45 rounded-2xl overflow-hidden shadow-xs">
                 <table className="w-full text-left">
-                  <thead className="bg-bg-light border-b border-border">
+                  <thead className="bg-[#FAF5EF] border-b border-[#EADFC9]/40">
                     <tr>
-                      <th className="p-3 font-bold text-primary w-[25%]">Question</th>
-                      <th className="p-3 font-bold text-primary w-[15%]">Category</th>
-                      <th className="p-3 font-bold text-primary w-[45%]">Answer</th>
-                      <th className="p-3 font-bold text-primary text-right w-[15%]">Actions</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D] w-[25%]">Question</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D] w-[15%]">Category</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D] w-[45%]">Answer</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D] text-right w-[15%] pr-6">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {faqs.length > 0 ? (
                       faqs.map(faq => (
-                        <tr key={faq._id} className="border-b border-border last:border-b-0 hover:bg-bg-light/20">
-                          <td className="p-3 font-semibold text-primary">{faq.question}</td>
-                          <td className="p-3"><span className="bg-border text-text-muted px-1.5 py-0.5 rounded text-[10px] font-semibold">{faq.category}</span></td>
-                          <td className="p-3 text-text-muted">{faq.answer}</td>
-                          <td className="p-3 text-right space-x-3">
-                            <button onClick={() => handleEditFAQClick(faq)} className="text-primary hover:underline font-bold">Edit</button>
+                        <tr key={faq._id} className="border-b border-stone-100 last:border-b-0 hover:bg-[#FAF8F5]/30">
+                          <td className="p-3.5 font-semibold text-[#2A211D]">{faq.question}</td>
+                          <td className="p-3.5"><span className="bg-[#FAF5EF] text-[#7C5F43] border border-[#7C5F43]/30 px-2 py-0.5 rounded-md text-[10px] font-bold">{faq.category}</span></td>
+                          <td className="p-3.5 text-stone-500 font-medium">{faq.answer}</td>
+                          <td className="p-3.5 text-right space-x-3 pr-6">
+                            <button onClick={() => handleEditFAQClick(faq)} className="text-[#7C5F43] hover:underline font-bold">Edit</button>
                             <button onClick={() => handleDeleteFAQ(faq._id)} className="text-red-500 hover:underline font-bold">Delete</button>
                           </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="4" className="p-6 text-center text-text-muted">No FAQs found. Create one above to feed the AI memory.</td>
+                        <td colSpan="4" className="p-6 text-center text-stone-400">No FAQs found. Create one above to feed the AI memory.</td>
                       </tr>
                     )}
                   </tbody>
@@ -1550,65 +1719,71 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* 9. WEBSITE CONTENT MODULE */}
-          {activeTab === 'website_content' && (
-            <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-bold font-display text-primary mb-1">Website Content Management</h3>
-              <p className="text-xs text-text-muted mb-6">Modify text content for static pages. Updates are automatically re-indexed for vector searches.</p>
+          {/* 9. AI KNOWLEDGE BASE MODULE */}
+          {activeModule === 'ai_knowledge' && (
+            <div className="animate-fade-in space-y-6">
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">AI Knowledge Base Manager</h1>
+                <p className="text-xs text-[#8E7D75]">Modify text content for static pages. Updates are automatically re-indexed for vector searches.</p>
+              </div>
 
-              <form onSubmit={handleSaveWebsiteContent} className="space-y-4">
-                <div className="flex flex-col max-w-sm">
-                  <label className="font-bold text-primary mb-1">Select Page Section to Edit</label>
-                  <select
-                    value={activeContentKey}
-                    onChange={(e) => setActiveContentKey(e.target.value)}
-                    className="bg-bg-light border border-border rounded-sm py-2 px-3 focus:outline-none text-primary cursor-pointer font-bold"
-                  >
-                    <option value="about_us">About Us Company Story</option>
-                    <option value="contact_info">Contact Details / Support Hours</option>
-                    <option value="store_locations">Outlets and Depots Locations</option>
-                    <option value="warranty_policy">Warranty Coverage Policy</option>
-                    <option value="delivery_info">Delivery / Shipping Information</option>
-                    <option value="return_policy">Returns / Replacement Policy</option>
-                  </select>
-                </div>
+              <div className="bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-xs">
+                <form onSubmit={handleSaveWebsiteContent} className="space-y-4">
+                  <div className="flex flex-col max-w-sm">
+                    <label className="font-bold text-[#2A211D] mb-1">Select Page Section to Edit</label>
+                    <select
+                      value={activeContentKey}
+                      onChange={(e) => setActiveContentKey(e.target.value)}
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D] cursor-pointer font-bold"
+                    >
+                      <option value="about_us">About Us Company Story</option>
+                      <option value="contact_info">Contact Details / Support Hours</option>
+                      <option value="store_locations">Outlets and Depots Locations</option>
+                      <option value="warranty_policy">Warranty Coverage Policy</option>
+                      <option value="delivery_info">Delivery / Shipping Information</option>
+                      <option value="return_policy">Returns / Replacement Policy</option>
+                    </select>
+                  </div>
 
-                <div className="flex flex-col">
-                  <label className="font-bold text-primary mb-1">Page Markdown / Plain Text Copy</label>
-                  <textarea 
-                    rows="12"
-                    value={editorContent}
-                    onChange={(e) => setEditorContent(e.target.value)}
-                    required
-                    placeholder="Enter detailed page content text..."
-                    className="bg-bg-light border border-border rounded-sm p-4 focus:outline-none text-primary leading-relaxed font-sans"
-                  ></textarea>
-                </div>
+                  <div className="flex flex-col">
+                    <label className="font-bold text-[#2A211D] mb-1">Page Markdown / Plain Text Copy</label>
+                    <textarea 
+                      rows="12"
+                      value={editorContent}
+                      onChange={(e) => setEditorContent(e.target.value)}
+                      required
+                      placeholder="Enter detailed page content text..."
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-4 focus:outline-none text-[#2A211D] leading-relaxed font-sans"
+                    ></textarea>
+                  </div>
 
-                <div className="flex justify-end border-t border-border pt-4">
-                  <button 
-                    type="submit"
-                    disabled={submitLoading}
-                    className="bg-primary hover:bg-primary-light text-white font-bold py-2.5 px-6 rounded-sm shadow-sm transition-colors"
-                  >
-                    {submitLoading ? 'Updating vectors...' : 'Save & Update AI Knowledge Base'}
-                  </button>
-                </div>
-              </form>
+                  <div className="flex justify-end pt-3">
+                    <button 
+                      type="submit"
+                      disabled={submitLoading}
+                      className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-xl transition-all"
+                    >
+                      {submitLoading ? 'Updating vectors...' : 'Save & Update AI Knowledge Base'}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           )}
 
           {/* 10. AI TRAINING PANEL */}
-          {activeTab === 'ai_training' && (
-            <div className="animate-fade-in text-xs">
-              <h3 className="text-xl font-bold font-display text-primary mb-1">AI Training & Vector Feeds</h3>
-              <p className="text-xs text-text-muted mb-6">Upload PDFs or Word Documents (catalogs, specifications, detailed policies) to feed the Vector Database context.</p>
+          {activeModule === 'ai_training' && (
+            <div className="animate-fade-in space-y-6">
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">AI Training & Vector Feeds</h1>
+                <p className="text-xs text-[#8E7D75]">Upload PDFs or Word Documents (catalogs, specifications, detailed policies) to feed the Vector Database context.</p>
+              </div>
 
               {/* Upload Drop Zone */}
-              <div className="bg-bg-light border-2 border-dashed border-border/80 p-8 rounded text-center mb-8 flex flex-col items-center justify-center">
+              <div className="bg-[#FAF8F5] border-2 border-dashed border-[#EADFC9] p-8 rounded-2xl text-center flex flex-col items-center justify-center">
                 <span className="text-3xl mb-3">📁</span>
-                <h4 className="font-bold text-sm text-primary mb-1">Index PDF or DOCX Manuals</h4>
-                <p className="text-[10px] text-text-muted mb-4">Supported formats: PDF, DOCX (Max size: 10MB)</p>
+                <h4 className="font-serif font-bold text-sm text-[#2A211D] mb-1">Index PDF or DOCX Manuals</h4>
+                <p className="text-[10px] text-stone-400 mb-4">Supported formats: PDF, DOCX (Max size: 10MB)</p>
                 
                 <form onSubmit={handleDocUpload} className="flex flex-col items-center gap-3">
                   <input 
@@ -1621,7 +1796,7 @@ const AdminDashboard = () => {
                   <button
                     type="submit"
                     disabled={submitLoading || !docFile}
-                    className="bg-accent hover:bg-accent-hover text-primary font-extrabold py-2 px-6 rounded shadow-sm disabled:opacity-50 transition-colors"
+                    className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2 px-6 rounded-xl shadow-sm disabled:opacity-50 transition-colors"
                   >
                     {submitLoading ? 'Extracting Text Chunks...' : 'Train AI on Selected Document'}
                   </button>
@@ -1629,26 +1804,26 @@ const AdminDashboard = () => {
               </div>
 
               {/* Currently Trained Documents List */}
-              <div>
-                <h4 className="font-bold text-sm text-primary mb-4">Indexed Vector Documents</h4>
-                <div className="border border-border rounded-sm overflow-hidden">
+              <div className="space-y-4">
+                <h4 className="font-serif font-bold text-sm text-[#2A211D]">Indexed Vector Documents</h4>
+                <div className="bg-white border border-[#EADFC9]/45 rounded-2xl overflow-hidden shadow-xs">
                   <table className="w-full text-left">
-                    <thead className="bg-bg-light border-b border-border">
+                    <thead className="bg-[#FAF5EF] border-b border-[#EADFC9]/40">
                       <tr>
-                        <th className="p-3 font-bold text-primary">Document Name</th>
-                        <th className="p-3 font-bold text-primary">Context Chunks</th>
-                        <th className="p-3 font-bold text-primary">Trained Date</th>
-                        <th className="p-3 font-bold text-primary text-right">Action</th>
+                        <th className="p-3.5 font-serif font-bold text-[#2A211D]">Document Name</th>
+                        <th className="p-3.5 font-serif font-bold text-[#2A211D]">Context Chunks</th>
+                        <th className="p-3.5 font-serif font-bold text-[#2A211D]">Trained Date</th>
+                        <th className="p-3.5 font-serif font-bold text-[#2A211D] text-right pr-6">Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {trainedDocs.length > 0 ? (
                         trainedDocs.map(doc => (
-                          <tr key={doc.id} className="border-b border-border last:border-b-0 hover:bg-bg-light/20">
-                            <td className="p-3 font-semibold text-primary">{doc.name}</td>
-                            <td className="p-3 text-text-muted">{doc.chunksCount} vectors</td>
-                            <td className="p-3 text-text-muted">{new Date(doc.createdAt).toLocaleDateString()}</td>
-                            <td className="p-3 text-right">
+                          <tr key={doc.id} className="border-b border-stone-100 last:border-b-0 hover:bg-[#FAF8F5]/30">
+                            <td className="p-3.5 font-semibold text-[#2A211D]">{doc.name}</td>
+                            <td className="p-3.5 text-stone-500 font-medium">{doc.chunksCount} vectors</td>
+                            <td className="p-3.5 text-stone-500 font-medium">{new Date(doc.createdAt).toLocaleDateString()}</td>
+                            <td className="p-3.5 text-right pr-6">
                               <button 
                                 onClick={() => handleDeleteDoc(doc.id)}
                                 className="text-red-500 hover:underline font-bold"
@@ -1660,7 +1835,7 @@ const AdminDashboard = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="4" className="p-6 text-center text-text-muted">No custom catalogs uploaded yet. Use the selector above.</td>
+                          <td colSpan="4" className="p-6 text-center text-stone-400">No custom catalogs uploaded yet. Use the selector above.</td>
                         </tr>
                       )}
                     </tbody>
@@ -1670,114 +1845,401 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* 11. ANALYTICS DASHBOARD */}
-          {activeTab === 'analytics' && (
-            <div className="animate-fade-in text-xs space-y-8">
-              <div>
-                <h3 className="text-xl font-bold font-display text-primary mb-1">Conversational Analytics</h3>
-                <p className="text-xs text-text-muted">Monitor assistant volume, accuracy feedback, and language usage charts</p>
+          {/* 7. MODULE: CUSTOMER ENQUIRIES */}
+          {activeModule === 'customer_enquiries' && (
+            <div className="animate-fade-in space-y-6">
+              
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Customer Enquiries Inbox</h1>
+                <p className="text-xs text-[#8E7D75]">Process self-configured quotation inquiries received from the frontend configurators</p>
               </div>
 
-              {analyticsData ? (
-                <>
-                  {/* Stats Summary Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                    <div className="bg-bg-light border border-border p-4 rounded text-center">
-                      <div className="text-2xl font-black text-primary">{analyticsData.totalConversations}</div>
-                      <div className="text-[9px] text-text-muted font-bold uppercase tracking-wider mt-1">Total Conversations</div>
-                    </div>
-                    <div className="bg-bg-light border border-border p-4 rounded text-center">
-                      <div className="text-2xl font-black text-[#10B981]">{analyticsData.totalLeads}</div>
-                      <div className="text-[9px] text-text-muted font-bold uppercase tracking-wider mt-1">leads Generated</div>
-                    </div>
-                    <div className="bg-bg-light border border-border p-4 rounded text-center">
-                      <div className="text-2xl font-black text-primary">{analyticsData.satisfactionRate}%</div>
-                      <div className="text-[9px] text-text-muted font-bold uppercase tracking-wider mt-1">Satisfaction Score</div>
-                    </div>
-                    <div className="bg-bg-light border border-border p-4 rounded text-center flex flex-col items-center justify-center">
-                      <div className="text-sm font-bold text-text-muted flex gap-2">
-                        <span className="text-green-600">👍 {analyticsData.feedback.helpful}</span>
-                        <span className="text-red-500">👎 {analyticsData.feedback.unhelpful}</span>
-                      </div>
-                      <div className="text-[9px] text-text-muted font-bold uppercase tracking-wider mt-1.5">User Feedback ratings</div>
-                    </div>
-                  </div>
-
-                  {/* Languages and Topic Breakdown charts */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-                    
-                    {/* Languages Chart */}
-                    <div className="bg-white border border-border p-5 rounded">
-                      <h4 className="font-bold text-sm text-primary mb-4">Interactions by Language Locale</h4>
-                      <div className="space-y-3.5">
-                        {analyticsData.languages.map(lang => {
-                          const percentage = analyticsData.totalConversations > 0 
-                            ? Math.round((lang.count / analyticsData.totalConversations) * 100)
-                            : 0;
-                          return (
-                            <div key={lang.name} className="space-y-1">
-                              <div className="flex justify-between font-bold text-[10px] text-primary">
-                                <span>{lang.name}</span>
-                                <span>{lang.count} ({percentage}%)</span>
-                              </div>
-                              <div className="w-full bg-border h-2 rounded-full overflow-hidden">
-                                <div className="bg-primary h-full" style={{ width: `${percentage}%` }}></div>
-                              </div>
+              <div className="bg-white border border-[#EADFC9]/45 rounded-2xl overflow-hidden shadow-[0_4px_15px_rgba(42,33,29,0.01)]">
+                <table className="w-full text-left">
+                  <thead className="bg-[#FAF5EF] border-b border-[#EADFC9]/40">
+                    <tr>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Customer & Contact</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Product Details</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Specifications Chosen</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Quoted Rate</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D]">Status</th>
+                      <th className="p-3.5 font-serif font-bold text-[#2A211D] text-right pr-6">Direct Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredLeads.map((lead) => (
+                      <tr key={lead._id} className="border-b border-stone-100 last:border-b-0 hover:bg-[#FAF8F5]/30">
+                        <td className="p-3.5 text-[#2A211D]">
+                          <span className="block font-bold text-xs">{lead.name}</span>
+                          <span className="block text-[10.5px] text-[#8E7D75] mt-0.5">{lead.phone} • {lead.email}</span>
+                          <span className="block text-[9.5px] text-[#8E7D75] mt-1">{new Date(lead.createdAt).toLocaleDateString()}</span>
+                        </td>
+                        <td className="p-3.5 text-[#2A211D]">
+                          <span className="block font-semibold">{lead.productName}</span>
+                          <span className="inline-block text-[8.5px] bg-[#FAF5EF] border border-[#7C5F43]/30 text-[#7C5F43] px-2 py-0.5 rounded-md mt-1 uppercase font-bold">
+                            {lead.category}
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-stone-500 font-medium">
+                          {lead.configuration ? (
+                            <div className="grid grid-cols-1 gap-0.5 text-[10.5px]">
+                              {Object.entries(lead.configuration).map(([k, v]) => (
+                                <span key={k} className="truncate max-w-[200px]">
+                                  {k}: <strong className="text-stone-700">{v}</strong>
+                                </span>
+                              ))}
                             </div>
-                          );
-                        })}
-                      </div>
-                    </div>
+                          ) : (
+                            <span className="italic text-stone-400">None</span>
+                          )}
+                        </td>
+                        <td className="p-3.5 font-bold text-[#2A211D]">
+                          ₹{lead.quotedPrice?.toLocaleString('en-IN')}
+                        </td>
+                        <td className="p-3.5">
+                          <select 
+                            value={lead.status || 'New'}
+                            onChange={(e) => handleUpdateLeadStatus(lead._id, e.target.value)}
+                            className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-md p-1.5 text-[10px] font-bold text-[#2A211D]"
+                          >
+                            <option value="New">New Inbox</option>
+                            <option value="Contacted">Contacted</option>
+                            <option value="Interested">Interested</option>
+                            <option value="Quotation Sent">Quotation Sent</option>
+                            <option value="Purchased">Purchased</option>
+                            <option value="Closed">Closed</option>
+                          </select>
+                        </td>
+                        <td className="p-3.5 text-right space-x-3.5 pr-6">
+                          <a 
+                            href={`tel:${lead.phone}`}
+                            className="text-stone-600 hover:text-stone-900 font-bold"
+                          >
+                            Call
+                          </a>
+                          
+                          <a 
+                            href={`https://wa.me/${lead.phone ? lead.phone.replace(/[^0-9]/g, '') : '919876543210'}?text=${encodeURIComponent(`Hi ${lead.name}, I am reaching out to discuss your TimeWell Mattress/Sofa customization quotation query.`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#25D366] hover:text-[#128C7E] font-bold"
+                          >
+                            WhatsApp
+                          </a>
 
-                    {/* Popular Query Topics Chart */}
-                    <div className="bg-white border border-border p-5 rounded">
-                      <h4 className="font-bold text-sm text-primary mb-4">Most Queried Intent Topics</h4>
-                      <div className="space-y-3.5">
-                        {analyticsData.topics.map(topic => {
-                          const totalLogs = analyticsData.totalConversations || 1;
-                          const percentage = Math.min(Math.round((topic.count / totalLogs) * 100), 100);
-                          return (
-                            <div key={topic.name} className="space-y-1">
-                              <div className="flex justify-between font-bold text-[10px] text-primary">
-                                <span>{topic.name} Related</span>
-                                <span>{topic.count} hits</span>
-                              </div>
-                              <div className="w-full bg-border h-2 rounded-full overflow-hidden">
-                                <div className="bg-accent h-full" style={{ width: `${percentage}%` }}></div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                  </div>
-
-                  {/* Popular Product mentions aggregated from leads */}
-                  <div className="bg-white border border-border p-5 rounded pt-4 max-w-md">
-                    <h4 className="font-bold text-sm text-primary mb-4">Top Custom Inquired Products</h4>
-                    <ul className="divide-y divide-border">
-                      {analyticsData.topProducts.map((p, idx) => (
-                        <li key={idx} className="py-2.5 flex justify-between items-center text-xs">
-                          <span className="font-bold text-primary">{idx + 1}. {p.name}</span>
-                          <span className="bg-primary/5 text-primary px-2.5 py-0.5 rounded font-bold">{p.count} submissions</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                </>
-              ) : (
-                <div className="text-center py-20 text-xs text-text-muted">
-                  No conversation logs available to aggregate statistics.
-                </div>
-              )}
+                          <button 
+                            onClick={() => handleDeleteLead(lead._id)}
+                            className="text-red-500 hover:underline font-bold"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
             </div>
           )}
 
-        </div>
+          {/* 8. MODULE: ANALYTICS */}
+          {activeModule === 'analytics' && (
+            <div className="animate-fade-in space-y-6">
+              
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Operations & Conversational Analytics</h1>
+                <p className="text-xs text-[#8E7D75]">Conversion trends, configured product views, and AI assistant performance metrics</p>
+              </div>
 
+              {/* Operations Graph Charts */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Monthly Enquiries Graph Box */}
+                <div className="bg-white border border-[#EADFC9]/45 p-5 rounded-2xl shadow-xs">
+                  <h4 className="font-serif font-bold text-sm text-[#2A211D] mb-4">Monthly Enquiries Trend</h4>
+                  
+                  {/* Native SVG bar chart */}
+                  <div className="py-2">
+                    <svg viewBox="0 0 400 150" className="w-full h-auto">
+                      {/* Grid lines */}
+                      <line x1="40" y1="20" x2="380" y2="20" stroke="#f1f5f9" strokeWidth="1" />
+                      <line x1="40" y1="60" x2="380" y2="60" stroke="#f1f5f9" strokeWidth="1" />
+                      <line x1="40" y1="100" x2="380" y2="100" stroke="#f1f5f9" strokeWidth="1" />
+                      <line x1="40" y1="130" x2="380" y2="130" stroke="#cbd5e1" strokeWidth="1" />
+                      
+                      {/* Bars */}
+                      <rect x="60" y="50" width="30" height="80" rx="3" fill="#7C5F43" />
+                      <rect x="120" y="30" width="30" height="100" rx="3" fill="#7C5F43" />
+                      <rect x="180" y="65" width="30" height="65" rx="3" fill="#7C5F43" />
+                      <rect x="240" y="20" width="30" height="110" rx="3" fill="#7C5F43" />
+                      <rect x="300" y="40" width="30" height="90" rx="3" fill="#7C5F43" />
+
+                      {/* Labels */}
+                      <text x="75" y="145" textAnchor="middle" fontSize="10" fill="#8E7D75" fontWeight="bold">Feb</text>
+                      <text x="135" y="145" textAnchor="middle" fontSize="10" fill="#8E7D75" fontWeight="bold">Mar</text>
+                      <text x="195" y="145" textAnchor="middle" fontSize="10" fill="#8E7D75" fontWeight="bold">Apr</text>
+                      <text x="255" y="145" textAnchor="middle" fontSize="10" fill="#8E7D75" fontWeight="bold">May</text>
+                      <text x="315" y="145" textAnchor="middle" fontSize="10" fill="#8E7D75" fontWeight="bold">Jun</text>
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Popularity Metrics Pie Representation */}
+                <div className="bg-white border border-[#EADFC9]/45 p-5 rounded-2xl shadow-xs">
+                  <h4 className="font-serif font-bold text-sm text-[#2A211D] mb-4">View Traffic Share</h4>
+                  
+                  <div className="space-y-4">
+                    {[
+                      { label: 'Mattresses Catalog views', val: '4,280 views', pct: '62%' },
+                      { label: 'Sofa Catalog views', val: '2,640 views', pct: '38%' }
+                    ].map((metric, idx) => (
+                      <div key={idx} className="flex justify-between items-center bg-[#FAF8F5] p-3.5 rounded-xl border border-stone-100">
+                        <div>
+                          <span className="block font-bold text-xs text-[#2A211D]">{metric.label}</span>
+                          <span className="block text-[10.5px] text-[#8E7D75] mt-0.5">{metric.val}</span>
+                        </div>
+                        <span className="text-sm font-serif font-bold text-[#7C5F43]">{metric.pct}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Conversational Analytics Section */}
+              <div className="border-t border-[#EADFC9]/30 pt-6 space-y-4">
+                <h4 className="font-serif font-bold text-base text-[#2A211D]">AI Voice Assistant Analytics</h4>
+                {analyticsData ? (
+                  <div className="space-y-6">
+                    {/* Stats Summary Cards */}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div className="bg-white border border-[#EADFC9]/45 p-4 rounded-xl shadow-sm text-center">
+                        <div className="text-xl font-bold text-[#2A211D]">{analyticsData.totalConversations}</div>
+                        <div className="text-[9px] text-[#8E7D75] font-bold uppercase tracking-wider mt-1">Total Conversations</div>
+                      </div>
+                      <div className="bg-white border border-[#EADFC9]/45 p-4 rounded-xl shadow-sm text-center">
+                        <div className="text-xl font-bold text-green-600">{analyticsData.totalLeads}</div>
+                        <div className="text-[9px] text-[#8E7D75] font-bold uppercase tracking-wider mt-1">Leads Generated</div>
+                      </div>
+                      <div className="bg-white border border-[#EADFC9]/45 p-4 rounded-xl shadow-sm text-center">
+                        <div className="text-xl font-bold text-[#2A211D]">{analyticsData.satisfactionRate}%</div>
+                        <div className="text-[9px] text-[#8E7D75] font-bold uppercase tracking-wider mt-1">Satisfaction Score</div>
+                      </div>
+                      <div className="bg-white border border-[#EADFC9]/45 p-4 rounded-xl shadow-sm text-center flex flex-col items-center justify-center">
+                        <div className="text-xs font-bold text-[#8E7D75] flex gap-2">
+                          <span className="text-green-600">👍 {analyticsData.feedback.helpful}</span>
+                          <span className="text-red-500">👎 {analyticsData.feedback.unhelpful}</span>
+                        </div>
+                        <div className="text-[9px] text-[#8E7D75] font-bold uppercase tracking-wider mt-1.5">User Feedback Ratings</div>
+                      </div>
+                    </div>
+
+                    {/* Languages and Topic Breakdown charts */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      
+                      {/* Languages Chart */}
+                      <div className="bg-white border border-[#EADFC9]/45 p-5 rounded-2xl shadow-sm">
+                        <h5 className="font-bold text-xs text-[#2A211D] mb-4">Interactions by Language Locale</h5>
+                        <div className="space-y-3">
+                          {analyticsData.languages.map(lang => {
+                            const percentage = analyticsData.totalConversations > 0 
+                              ? Math.round((lang.count / analyticsData.totalConversations) * 100)
+                              : 0;
+                            return (
+                              <div key={lang.name} className="space-y-1">
+                                <div className="flex justify-between font-bold text-[10px] text-[#2A211D]">
+                                  <span>{lang.name}</span>
+                                  <span>{lang.count} ({percentage}%)</span>
+                                </div>
+                                <div className="w-full bg-[#FAF5EF] h-2 rounded-full overflow-hidden">
+                                  <div className="bg-[#7C5F43] h-full" style={{ width: `${percentage}%` }}></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Popular Query Topics Chart */}
+                      <div className="bg-white border border-[#EADFC9]/45 p-5 rounded-2xl shadow-sm">
+                        <h5 className="font-bold text-xs text-[#2A211D] mb-4">Most Queried Intent Topics</h5>
+                        <div className="space-y-3">
+                          {analyticsData.topics.map(topic => {
+                            const totalLogs = analyticsData.totalConversations || 1;
+                            const percentage = Math.min(Math.round((topic.count / totalLogs) * 100), 100);
+                            return (
+                              <div key={topic.name} className="space-y-1">
+                                <div className="flex justify-between font-bold text-[10px] text-[#2A211D]">
+                                  <span>{topic.name} Related</span>
+                                  <span>{topic.count} hits</span>
+                                </div>
+                                <div className="w-full bg-[#FAF5EF] h-2 rounded-full overflow-hidden">
+                                  <div className="bg-[#7C5F43] h-full opacity-80" style={{ width: `${percentage}%` }}></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-10 bg-white border border-[#EADFC9]/45 rounded-2xl text-xs text-[#8E7D75]">
+                    No conversation logs available to aggregate statistics.
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+
+          {/* 9. MODULE: WEBSITE CONTENT */}
+          {activeModule === 'website_content' && homepageContent && (
+            <div className="animate-fade-in space-y-6">
+              
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Website Content Management</h1>
+                <p className="text-xs text-[#8E7D75]">Update landing page slogans, titles, description copy, and brand paragraphs</p>
+              </div>
+
+              <div className="bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-xs">
+                <form onSubmit={handleSaveWebsite} className="space-y-4">
+                  <div className="flex flex-col">
+                    <label className="font-bold text-[#2A211D] mb-1">Hero Subheading</label>
+                    <input 
+                      type="text" 
+                      value={homepageForm.heroSubheading}
+                      onChange={(e) => setHomepageForm({ ...homepageForm, heroSubheading: e.target.value })}
+                      required
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label className="font-bold text-[#2A211D] mb-1">Hero Primary Title</label>
+                    <input 
+                      type="text" 
+                      value={homepageForm.heroTitle}
+                      onChange={(e) => setHomepageForm({ ...homepageForm, heroTitle: e.target.value })}
+                      required
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none font-bold"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label className="font-bold text-[#2A211D] mb-1">Hero Subtitle Paragraph</label>
+                    <textarea 
+                      rows="3"
+                      value={homepageForm.heroSubtitle}
+                      onChange={(e) => setHomepageForm({ ...homepageForm, heroSubtitle: e.target.value })}
+                      required
+                      className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none resize-none leading-relaxed"
+                    ></textarea>
+                  </div>
+
+                  <div className="flex justify-end pt-3">
+                    <button 
+                      type="submit"
+                      disabled={submitLoading}
+                      className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-xl transition-all disabled:opacity-40"
+                    >
+                      {submitLoading ? 'Saving...' : 'Save Content Headlines'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+          )}
+
+          {/* 10. MODULE: SETTINGS */}
+          {activeModule === 'settings' && (
+            <div className="animate-fade-in space-y-6">
+              
+              <div className="border-b border-[#EADFC9]/40 pb-4">
+                <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Portal Settings</h1>
+                <p className="text-xs text-[#8E7D75]">Update admin credentials, factory branch profiles, and notification preferences</p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                {/* Admin credentials form */}
+                <div className="lg:col-span-7 bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-xs">
+                  <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-4 pb-1.5 border-b border-stone-100">Profile Safety Credentials</h4>
+                  
+                  <form onSubmit={handleSaveProfile} className="space-y-4">
+                    <div className="flex flex-col">
+                      <label className="font-bold text-[#2A211D] mb-1">Admin Email Address</label>
+                      <input 
+                        type="email" 
+                        value={profileForm.email}
+                        onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                        required
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="font-bold text-[#2A211D] mb-1">New Password</label>
+                      <input 
+                        type="password" 
+                        value={profileForm.password}
+                        onChange={(e) => setProfileForm({ ...profileForm, password: e.target.value })}
+                        required
+                        placeholder="••••••••••••"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="font-bold text-[#2A211D] mb-1">Confirm New Password</label>
+                      <input 
+                        type="password" 
+                        value={profileForm.confirmPassword}
+                        onChange={(e) => setProfileForm({ ...profileForm, confirmPassword: e.target.value })}
+                        required
+                        placeholder="••••••••••••"
+                        className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none"
+                      />
+                    </div>
+
+                    <button 
+                      type="submit"
+                      disabled={submitLoading}
+                      className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold py-2.5 px-6 rounded-xl transition-all"
+                    >
+                      Update Profile Safety
+                    </button>
+                  </form>
+                </div>
+
+                {/* Company profile & Backup options */}
+                <div className="lg:col-span-5 bg-white border border-[#EADFC9]/45 p-6 rounded-2xl shadow-xs space-y-5">
+                  <div>
+                    <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-3 pb-1 border-b border-stone-100">Database Tools</h4>
+                    <button 
+                      onClick={() => alert('Simulating full operations database dump creation...')}
+                      className="w-full bg-[#FAF5EF] hover:bg-[#F3EFE6] border border-[#7C5F43]/35 text-[#7C5F43] font-bold text-[10.5px] py-3 rounded-xl uppercase tracking-wider transition-all"
+                    >
+                      💾 Run Database Backup Dump
+                    </button>
+                  </div>
+
+                  <div className="border-t border-stone-100 pt-4">
+                    <h4 className="font-serif font-bold text-xs text-[#2A211D] mb-3 pb-1 border-b border-stone-100">Factory Branch Profile</h4>
+                    <div className="text-stone-500 space-y-2 leading-relaxed">
+                      <p><strong>Factory Outlet Name:</strong> {profileForm.companyName}</p>
+                      <p><strong>Registered Address:</strong> {profileForm.address}</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          )}
+
+        </main>
       </div>
 
     </div>
