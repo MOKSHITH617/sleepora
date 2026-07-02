@@ -2,7 +2,244 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../services/api';
 
-// Realistic Cut-Section Textures & SVG definitions for all core mattress layers
+// Realistic 3D Isometric mattress card vector icons helper
+const renderIsometricIcon = (typeId) => {
+  switch (typeId) {
+    case 'soft-rebonded':
+      return (
+        <svg viewBox="0 0 60 45" className="w-12 h-10 overflow-visible">
+          {/* Top Face - Soft Foam */}
+          <polygon points="30,8 48,17 30,26 12,17" fill="#FFF9E6" stroke="#EADFC9" strokeWidth="0.5"/>
+          {/* Comfort Left Face */}
+          <polygon points="12,17 30,26 30,30 12,21" fill="#FFEBB3"/>
+          {/* Comfort Right Face */}
+          <polygon points="30,26 48,17 48,21 30,30" fill="#FED880"/>
+          
+          {/* Rebonded Left Face */}
+          <polygon points="12,21 30,30 30,38 12,29" fill="#72706E"/>
+          {/* Rebonded Right Face */}
+          <polygon points="30,30 48,21 48,29 30,38" fill="#605E5C"/>
+          
+          {/* Rebonded multi-color polyurethane particles */}
+          <polygon points="15,24 17,23 18,25 16,26" fill="#A95D5D"/>
+          <polygon points="25,27 28,26 27,28 24,29" fill="#5D7FA9"/>
+          <polygon points="35,26 37,25 38,27 36,28" fill="#7FA95D"/>
+          <polygon points="43,22 45,21 46,23 44,24" fill="#C2A35D"/>
+          <polygon points="20,33 22,32 23,34 21,35" fill="#C2A35D"/>
+          <polygon points="41,27 43,26 42,28 40,29" fill="#5D7FA9"/>
+        </svg>
+      );
+    case 'rebonded-latex':
+      return (
+        <svg viewBox="0 0 60 45" className="w-12 h-10 overflow-visible">
+          {/* Top Face - Latex */}
+          <polygon points="30,8 48,17 30,26 12,17" fill="#FAF2DB" stroke="#EBE4D0" strokeWidth="0.5"/>
+          {/* Pin-core aeration holes */}
+          <circle cx="21" cy="14" r="0.6" fill="#D5C9A4"/>
+          <circle cx="25" cy="16" r="0.6" fill="#D5C9A4"/>
+          <circle cx="29" cy="18" r="0.6" fill="#D5C9A4"/>
+          <circle cx="33" cy="16" r="0.6" fill="#D5C9A4"/>
+          <circle cx="37" cy="14" r="0.6" fill="#D5C9A4"/>
+          <circle cx="29" cy="13" r="0.6" fill="#D5C9A4"/>
+          <circle cx="25" cy="11" r="0.6" fill="#D5C9A4"/>
+          <circle cx="33" cy="11" r="0.6" fill="#D5C9A4"/>
+
+          {/* Latex Left Face */}
+          <polygon points="12,17 30,26 30,30 12,21" fill="#EADFBE"/>
+          {/* Latex Right Face */}
+          <polygon points="30,26 48,17 48,21 30,30" fill="#DCD0AE"/>
+          
+          {/* Rebonded Left Face */}
+          <polygon points="12,21 30,30 30,38 12,29" fill="#72706E"/>
+          {/* Rebonded Right Face */}
+          <polygon points="30,30 48,21 48,29 30,38" fill="#605E5C"/>
+          {/* Shredded foam scraps */}
+          <polygon points="16,25 18,24 17,26" fill="#A95D5D"/>
+          <polygon points="26,27 28,26 27,29" fill="#5D7FA9"/>
+          <polygon points="36,25 38,24 37,27" fill="#7FA95D"/>
+          <polygon points="42,23 44,22 43,24" fill="#C2A35D"/>
+        </svg>
+      );
+    case 'memory-foam':
+      return (
+        <svg viewBox="0 0 60 45" className="w-12 h-10 overflow-visible">
+          {/* Top Face - Memory Foam */}
+          <polygon points="30,8 48,17 30,26 12,17" fill="#FFF2CC" stroke="#EADFC9" strokeWidth="0.5"/>
+          {/* Memory Left Face */}
+          <polygon points="12,17 30,26 30,30 12,21" fill="#FFE599"/>
+          {/* Memory Right Face */}
+          <polygon points="30,26 48,17 48,21 30,30" fill="#F1C232"/>
+          
+          {/* Base Foam Left Face */}
+          <polygon points="12,21 30,30 30,38 12,29" fill="#EBE6DD"/>
+          {/* Base Foam Right Face */}
+          <polygon points="30,30 48,21 48,29 30,38" fill="#D6CFC4"/>
+        </svg>
+      );
+    case 'ortho-mattress':
+      return (
+        <svg viewBox="0 0 60 45" className="w-12 h-10 overflow-visible">
+          {/* Top Face - Cooling Gel */}
+          <polygon points="30,8 48,17 30,26 12,17" fill="#E0F7FA" stroke="#B2EBF2" strokeWidth="0.5"/>
+          {/* Gel cooling cells */}
+          <line x1="20" y1="13" x2="24" y2="15" stroke="#4DD0E1" strokeWidth="0.6"/>
+          <line x1="28" y1="17" x2="32" y2="19" stroke="#4DD0E1" strokeWidth="0.6"/>
+          <line x1="36" y1="13" x2="40" y2="15" stroke="#4DD0E1" strokeWidth="0.6"/>
+
+          {/* Gel Left Face */}
+          <polygon points="12,17 30,26 30,30 12,21" fill="#B2EBF2"/>
+          {/* Gel Right Face */}
+          <polygon points="30,26 48,17 48,21 30,30" fill="#80DEEA"/>
+          
+          {/* Ortho Core Left Face */}
+          <polygon points="12,21 30,30 30,38 12,29" fill="#A78BFA"/>
+          {/* Ortho Core Right Face */}
+          <polygon points="30,30 48,21 48,29 30,38" fill="#8B5CF6"/>
+        </svg>
+      );
+    case 'hr-foam':
+      return (
+        <svg viewBox="0 0 60 45" className="w-12 h-10 overflow-visible">
+          {/* Top Face - Soft Top */}
+          <polygon points="30,8 48,17 30,26 12,17" fill="#FFF3E0" stroke="#FFE0B2" strokeWidth="0.5"/>
+          {/* Soft Left Face */}
+          <polygon points="12,17 30,26 30,21 12,12" fill="#FFE0B2"/>
+          {/* Soft Right Face */}
+          <polygon points="30,26 48,17 48,12 30,21" fill="#FFB74D"/>
+          
+          {/* HR Foam Core Left Face */}
+          <polygon points="12,21 30,30 30,38 12,29" fill="#A7F3D0"/>
+          {/* HR Foam Core Right Face */}
+          <polygon points="30,30 48,21 48,29 30,38" fill="#34D399"/>
+        </svg>
+      );
+    case 'coir-mattress':
+      return (
+        <svg viewBox="0 0 60 45" className="w-12 h-10 overflow-visible">
+          {/* Top Face - Foam Cover */}
+          <polygon points="30,8 48,17 30,26 12,17" fill="#FFF8E7" stroke="#FFE8C5" strokeWidth="0.5"/>
+          {/* Foam Left Face */}
+          <polygon points="12,17 30,26 30,29 12,20" fill="#FFE8C5"/>
+          {/* Foam Right Face */}
+          <polygon points="30,26 48,17 48,20 30,29" fill="#FADCA5"/>
+          
+          {/* Coir Left Face */}
+          <polygon points="12,20 30,29 30,35 12,26" fill="#8C6239"/>
+          {/* Coir Right Face */}
+          <polygon points="30,29 48,20 48,26 30,35" fill="#704F2E"/>
+          {/* Fibers cross-hatching */}
+          <line x1="15" y1="23" x2="25" y2="28" stroke="#5C3E21" strokeWidth="0.6"/>
+          <line x1="28" y1="22" x2="18" y2="27" stroke="#B0865E" strokeWidth="0.6"/>
+          <line x1="33" y1="25" x2="43" y2="20" stroke="#5C3E21" strokeWidth="0.6"/>
+          <line x1="45" y1="24" x2="35" y2="29" stroke="#B0865E" strokeWidth="0.6"/>
+
+          {/* Base Foam Left Face */}
+          <polygon points="12,26 30,35 30,38 12,29" fill="#EBE6DD"/>
+          {/* Base Foam Right Face */}
+          <polygon points="30,35 48,26 48,29 30,38" fill="#D6CFC4"/>
+        </svg>
+      );
+    case 'pocket-spring':
+      return (
+        <svg viewBox="0 0 60 45" className="w-12 h-10 overflow-visible">
+          {/* Top Face - Comfort Foam */}
+          <polygon points="30,8 48,17 30,26 12,17" fill="#FFEAA7" stroke="#FFE0B2" strokeWidth="0.5"/>
+          {/* Foam Left Face */}
+          <polygon points="12,17 30,26 30,29 12,20" fill="#FFD166"/>
+          {/* Foam Right Face */}
+          <polygon points="30,26 48,17 48,20 30,29" fill="#E5A93C"/>
+          
+          {/* Pocket Springs Left Face */}
+          <polygon points="12,20 30,29 30,35 12,26" fill="#E5E7EB"/>
+          {/* Pocket Springs Right Face */}
+          <polygon points="30,29 48,20 48,26 30,35" fill="#D1D5DB"/>
+          {/* Individual pockets divisions */}
+          <line x1="16" y1="22" x2="16" y2="28" stroke="#9CA3AF" strokeWidth="0.8"/>
+          <line x1="21" y1="24" x2="21" y2="30" stroke="#9CA3AF" strokeWidth="0.8"/>
+          <line x1="25" y1="26" x2="25" y2="32" stroke="#9CA3AF" strokeWidth="0.8"/>
+          <line x1="34" y1="27" x2="34" y2="33" stroke="#9CA3AF" strokeWidth="0.8"/>
+          <line x1="39" y1="25" x2="39" y2="31" stroke="#9CA3AF" strokeWidth="0.8"/>
+          <line x1="44" y1="22" x2="44" y2="28" stroke="#9CA3AF" strokeWidth="0.8"/>
+
+          {/* Base Foam Left Face */}
+          <polygon points="12,26 30,35 30,38 12,29" fill="#D1CFC9"/>
+          {/* Base Foam Right Face */}
+          <polygon points="30,35 48,26 48,29 30,38" fill="#B8B5AE"/>
+        </svg>
+      );
+    case 'bonnell-spring':
+      return (
+        <svg viewBox="0 0 60 45" className="w-12 h-10 overflow-visible">
+          {/* Top Face - Foam Cover */}
+          <polygon points="30,8 48,17 30,26 12,17" fill="#FFF8E7" stroke="#FFE8C5" strokeWidth="0.5"/>
+          {/* Foam Left Face */}
+          <polygon points="12,17 30,26 30,29 12,20" fill="#FFE8C5"/>
+          {/* Foam Right Face */}
+          <polygon points="30,26 48,17 48,20 30,29" fill="#FADCA5"/>
+          
+          {/* Bonnell Springs open coils illustration (transparent gaps with wire spirals) */}
+          <polygon points="12,20 30,29 30,35 12,26" fill="#F3F4F6" opacity="0.85"/>
+          <polygon points="30,29 48,20 48,26 30,35" fill="#E5E7EB" opacity="0.85"/>
+          {/* Hourglass coils */}
+          <path d="M15,22 C17,23 13,25 15,26 C17,27 15,28 16,28 M20,24 C22,25 18,27 20,28 C22,29 20,30 21,31" stroke="#6B7280" strokeWidth="0.8" fill="none"/>
+          <path d="M36,27 C34,26 38,24 36,23 C34,22 36,21 35,20 M41,25 C39,24 43,22 41,21 C39,20 41,19 40,18" stroke="#6B7280" strokeWidth="0.8" fill="none"/>
+
+          {/* Base Foam Left Face */}
+          <polygon points="12,26 30,35 30,38 12,29" fill="#EBE6DD"/>
+          {/* Base Foam Right Face */}
+          <polygon points="30,35 48,26 48,29 30,38" fill="#D6CFC4"/>
+        </svg>
+      );
+    case 'dual-comfort':
+      return (
+        <svg viewBox="0 0 60 45" className="w-12 h-10 overflow-visible">
+          {/* Top Face - Medium Soft Foam */}
+          <polygon points="30,8 48,17 30,26 12,17" fill="#FFF3E0" stroke="#FFE0B2" strokeWidth="0.5"/>
+          {/* Soft Left Face */}
+          <polygon points="12,17 30,26 30,28 12,19" fill="#FFE0B2"/>
+          {/* Soft Right Face */}
+          <polygon points="30,26 48,17 48,19 30,28" fill="#FFB74D"/>
+          
+          {/* Firm Foam Left Face */}
+          <polygon points="12,19 30,28 30,38 12,29" fill="#D1D5DB"/>
+          {/* Firm Foam Right Face */}
+          <polygon points="30,28 48,19 48,29 30,38" fill="#9CA3AF"/>
+        </svg>
+      );
+    case 'custom-hybrid':
+      return (
+        <svg viewBox="0 0 60 45" className="w-12 h-10 overflow-visible">
+          {/* Top Face - Latex top */}
+          <polygon points="30,8 48,17 30,26 12,17" fill="#FCF9F2" stroke="#FAF2DB" strokeWidth="0.5"/>
+          
+          {/* Latex Left/Right */}
+          <polygon points="12,17 30,26 30,28 12,19" fill="#FAF2DB"/>
+          <polygon points="30,26 48,17 48,19 30,28" fill="#FAF2DB"/>
+          
+          {/* Memory Foam layer */}
+          <polygon points="12,19 30,28 30,30 12,21" fill="#FFEAA7"/>
+          <polygon points="30,28 48,19 48,21 30,30" fill="#FFD166"/>
+          
+          {/* Springs core layer */}
+          <polygon points="12,21 30,30 30,35 12,26" fill="#E5E7EB"/>
+          <polygon points="30,30 48,21 48,26 30,35" fill="#D1D5DB"/>
+          {/* Spring grids */}
+          <line x1="16" y1="23" x2="16" y2="28" stroke="#9CA3AF" strokeWidth="0.8"/>
+          <line x1="22" y1="25" x2="22" y2="30" stroke="#9CA3AF" strokeWidth="0.8"/>
+          <line x1="38" y1="26" x2="38" y2="31" stroke="#9CA3AF" strokeWidth="0.8"/>
+          <line x1="44" y1="23" x2="44" y2="28" stroke="#9CA3AF" strokeWidth="0.8"/>
+
+          {/* Felt base */}
+          <polygon points="12,26 30,35 30,38 12,29" fill="#D1CFC9"/>
+          <polygon points="30,35 48,26 48,29 30,38" fill="#B8B5AE"/>
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
+
+// Definition of the 10 Factory Mattress Types with dynamic layered specifications and functional role suffixes
 const MATTRESS_TYPES = [
   {
     id: 'soft-rebonded',
@@ -621,11 +858,9 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
                       )}
                       
                       <div className="flex flex-col gap-2 flex-grow">
-                        {/* Mini preview colors stack */}
-                        <div className="w-full h-8 bg-[#FAF8F5] rounded-md border border-[#EADFC9]/40 flex flex-col gap-[1px] p-[3px] justify-center">
-                          {c.iconStack.map((color, i) => (
-                            <div key={i} className="w-full h-[6px] rounded-xs" style={{ background: color }}></div>
-                          ))}
+                        {/* 3D Realistic Isometric vector icon header */}
+                        <div className="w-full h-12 bg-[#FAF8F5] rounded-lg border border-[#EADFC9]/40 flex items-center justify-center p-1 overflow-hidden">
+                          {renderIsometricIcon(c.id)}
                         </div>
                         
                         <div className="flex flex-col flex-grow justify-between min-h-[48px]">
