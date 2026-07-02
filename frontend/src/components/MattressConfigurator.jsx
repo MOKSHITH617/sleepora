@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../services/api';
 
-// Definition of the 10 Factory Mattress Types with dynamic layered specifications and functional role suffixes
+// Realistic Cut-Section Textures & SVG definitions for all core mattress layers
 const MATTRESS_TYPES = [
   {
     id: 'soft-rebonded',
@@ -15,8 +15,26 @@ const MATTRESS_TYPES = [
       const soft = t === 4 ? 1 : t === 5 ? 1 : t === 6 ? 2 : t === 7 ? 2 : t === 8 ? 3 : t === 9 ? 3 : 4;
       const rebonded = t - soft;
       return [
-        { name: 'Premium Soft Foam', height: soft, color: 'linear-gradient(to right, #FFF8E7, #FFE8C5)', desc: 'Extra soft comfort layer for a plush feel.', type: 'foam', suffix: '(Comfort Layer)' },
-        { name: 'High Density Rebonded Foam', height: rebonded, color: 'repeating-linear-gradient(45deg, #7C7A78 0px, #7C7A78 10px, #9C9A98 10px, #9C9A98 20px, #5C5A58 20px, #5C5A58 30px)', desc: 'Firm support base for durability and spine support.', type: 'rebonded', suffix: '(Support Layer)' }
+        { 
+          name: 'Premium Soft Foam', 
+          height: soft, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.1) 100%), radial-gradient(rgba(0,0,0,0.015) 8%, transparent 12%)', 
+          desc: 'Extra soft comfort layer for a plush feel.', 
+          type: 'foam', 
+          suffix: '(Comfort Layer)',
+          backgroundSize: 'auto, 6px 6px',
+          backgroundColor: '#FFF9E6'
+        },
+        { 
+          name: 'High Density Rebonded Foam', 
+          height: rebonded, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, transparent 45%, rgba(0,0,0,0.2) 100%), radial-gradient(circle at 20% 30%, #A95D5D 2.5px, transparent 3.5px), radial-gradient(circle at 80% 70%, #5D7FA9 2.5px, transparent 3.5px), radial-gradient(circle at 50% 60%, #7FA95D 3px, transparent 4px), radial-gradient(circle at 75% 25%, #C2A35D 2.5px, transparent 3.5px), repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 3px, transparent 3px, transparent 6px)', 
+          desc: 'Firm support base for durability and spine support.', 
+          type: 'rebonded', 
+          suffix: '(Support Layer)',
+          backgroundSize: 'auto, 20px 20px, 24px 24px, 22px 22px, 26px 26px, auto',
+          backgroundColor: '#72706E'
+        }
       ];
     }
   },
@@ -31,8 +49,26 @@ const MATTRESS_TYPES = [
       const latex = t === 4 ? 1 : t === 5 ? 1 : t === 6 ? 2 : t === 7 ? 2 : t === 8 ? 3 : t === 9 ? 3 : 4;
       const rebonded = t - latex;
       return [
-        { name: 'Natural Pin-Core Latex', height: latex, color: 'radial-gradient(circle, #FCF9F2 20%, #FAF2DB 21%, #FAF2DB 100%)', desc: 'Breathable, eco-friendly, responsive organic comfort.', type: 'latex', suffix: '(Bounce Layer)' },
-        { name: 'High Density Rebonded Foam', height: rebonded, color: 'repeating-linear-gradient(45deg, #7C7A78 0px, #7C7A78 10px, #9C9A98 10px, #9C9A98 20px, #5C5A58 20px, #5C5A58 30px)', desc: 'Heavy-duty orthopaedic core base.', type: 'rebonded', suffix: '(Support Layer)' }
+        { 
+          name: 'Natural Pin-Core Latex', 
+          height: latex, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, transparent 45%, rgba(0,0,0,0.15) 100%), radial-gradient(circle, #D5C9A4 25%, transparent 28%)', 
+          desc: 'Breathable, eco-friendly, responsive organic comfort.', 
+          type: 'latex', 
+          suffix: '(Bounce Layer)',
+          backgroundSize: 'auto, 10px 10px',
+          backgroundColor: '#FAF2DB'
+        },
+        { 
+          name: 'High Density Rebonded Foam', 
+          height: rebonded, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, transparent 45%, rgba(0,0,0,0.2) 100%), radial-gradient(circle at 20% 30%, #A95D5D 2.5px, transparent 3.5px), radial-gradient(circle at 80% 70%, #5D7FA9 2.5px, transparent 3.5px), radial-gradient(circle at 50% 60%, #7FA95D 3px, transparent 4px), radial-gradient(circle at 75% 25%, #C2A35D 2.5px, transparent 3.5px), repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 3px, transparent 3px, transparent 6px)', 
+          desc: 'Heavy-duty orthopaedic core base.', 
+          type: 'rebonded', 
+          suffix: '(Support Layer)',
+          backgroundSize: 'auto, 20px 20px, 24px 24px, 22px 22px, 26px 26px, auto',
+          backgroundColor: '#72706E'
+        }
       ];
     }
   },
@@ -47,8 +83,25 @@ const MATTRESS_TYPES = [
       const mem = t <= 6 ? 2 : 3;
       const support = t - mem;
       return [
-        { name: 'Premium Memory Foam', height: mem, color: 'linear-gradient(to right, #FFEAA7, #FFD166)', desc: 'Contour-hugging pressure relief and body scanning.', type: 'memory', suffix: '(Comfort Layer)' },
-        { name: 'High Density Support Foam', height: support, color: 'linear-gradient(to right, #EBE6DD, #D6CFC4)', desc: 'Foundational durability and anti-sagging reinforcement.', type: 'foam', suffix: '(Support Layer)' }
+        { 
+          name: 'Premium Memory Foam', 
+          height: mem, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 35%, rgba(0,0,0,0.15) 100%), linear-gradient(to right, #FFEAA7, #FFD166)', 
+          desc: 'Contour-hugging pressure relief and body scanning.', 
+          type: 'memory', 
+          suffix: '(Comfort Layer)',
+          backgroundColor: '#FFD166'
+        },
+        { 
+          name: 'High Density Support Foam', 
+          height: support, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.12) 100%), radial-gradient(rgba(0,0,0,0.015) 10%, transparent 15%)', 
+          desc: 'Foundational durability and anti-sagging reinforcement.', 
+          type: 'foam', 
+          suffix: '(Support Layer)',
+          backgroundSize: 'auto, 5px 5px',
+          backgroundColor: '#EBE6DD'
+        }
       ];
     }
   },
@@ -63,8 +116,26 @@ const MATTRESS_TYPES = [
       const gel = t <= 5 ? 1.5 : 2;
       const ortho = t - gel;
       return [
-        { name: 'Cooling Gel Memory Foam', height: gel, color: 'linear-gradient(to right, #E0F7FA, #B2EBF2)', desc: 'Temperature-regulating comfort with gel infusions.', type: 'memory', suffix: '(Comfort Layer)' },
-        { name: 'High Resilient Ortho Foam', height: ortho, color: 'linear-gradient(to right, #A78BFA, #8B5CF6)', desc: '5-Zone target support alignment for spine correction.', type: 'foam', suffix: '(Support Layer)' }
+        { 
+          name: 'Cooling Gel Memory Foam', 
+          height: gel, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, transparent 40%, rgba(0,0,0,0.15) 100%), radial-gradient(circle at 30% 40%, rgba(255,255,255,0.4) 1px, transparent 2px), linear-gradient(to right, #E0F7FA, #B2EBF2)', 
+          desc: 'Temperature-regulating comfort with gel infusions.', 
+          type: 'memory', 
+          suffix: '(Comfort Layer)',
+          backgroundSize: 'auto, 8px 8px, auto',
+          backgroundColor: '#B2EBF2'
+        },
+        { 
+          name: 'High Resilient Ortho Foam', 
+          height: ortho, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, transparent 45%, rgba(0,0,0,0.2) 100%), radial-gradient(rgba(255,255,255,0.15) 12%, transparent 16%)', 
+          desc: '5-Zone target support alignment for spine correction.', 
+          type: 'foam', 
+          suffix: '(Support Layer)',
+          backgroundSize: 'auto, 6px 6px',
+          backgroundColor: '#8B5CF6'
+        }
       ];
     }
   },
@@ -79,8 +150,26 @@ const MATTRESS_TYPES = [
       const soft = t <= 5 ? 1.5 : 2;
       const hr = t - soft;
       return [
-        { name: 'Super Soft Transition Foam', height: soft, color: 'linear-gradient(to right, #FFF3E0, #FFE0B2)', desc: 'Plush sink-in feel with gentle transition contouring.', type: 'foam', suffix: '(Comfort Layer)' },
-        { name: 'High Resilience (HR) Foam', height: hr, color: 'linear-gradient(to right, #A7F3D0, #34D399)', desc: 'Highly responsive buoyant foam prevents sinking.', type: 'foam', suffix: '(Support Layer)' }
+        { 
+          name: 'Super Soft Transition Foam', 
+          height: soft, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.1) 100%), radial-gradient(rgba(0,0,0,0.015) 8%, transparent 12%)', 
+          desc: 'Plush sink-in feel with gentle transition contouring.', 
+          type: 'foam', 
+          suffix: '(Comfort Layer)',
+          backgroundSize: 'auto, 5px 5px',
+          backgroundColor: '#FFF3E0'
+        },
+        { 
+          name: 'High Resilience (HR) Foam', 
+          height: hr, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, transparent 45%, rgba(0,0,0,0.22) 100%), radial-gradient(rgba(255,255,255,0.15) 15%, transparent 20%)', 
+          desc: 'Highly responsive buoyant foam prevents sinking.', 
+          type: 'foam', 
+          suffix: '(Support Layer)',
+          backgroundSize: 'auto, 5px 5px',
+          backgroundColor: '#34D399'
+        }
       ];
     }
   },
@@ -96,9 +185,35 @@ const MATTRESS_TYPES = [
       const coir = t <= 5 ? 2 : 3;
       const support = t - (top + coir);
       return [
-        { name: 'Comfort Foam Layer', height: top, color: 'linear-gradient(to right, #FFF8E7, #FFE8C5)', desc: 'Quilted soft layer to cushion top contact points.', type: 'foam', suffix: '(Comfort Layer)' },
-        { name: 'Rubberized Natural Coir', height: coir, color: 'repeating-linear-gradient(90deg, #8C6239 0px, #8C6239 5px, #704F2E 5px, #704F2E 10px)', desc: 'Natural coconut fibers with latex cooling ventilation.', type: 'coir', suffix: '(Breathable Core)' },
-        { name: 'High Density Base Foam', height: support, color: 'linear-gradient(to right, #EBE6DD, #D6CFC4)', desc: 'Reinforced base support protecting coir longevity.', type: 'foam', suffix: '(Support Layer)' }
+        { 
+          name: 'Comfort Foam Layer', 
+          height: top, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.1) 100%), radial-gradient(rgba(0,0,0,0.015) 8%, transparent 12%)', 
+          desc: 'Quilted soft layer to cushion top contact points.', 
+          type: 'foam', 
+          suffix: '(Comfort Layer)',
+          backgroundSize: 'auto, 5px 5px',
+          backgroundColor: '#FFF8E7'
+        },
+        { 
+          name: 'Rubberized Natural Coir', 
+          height: coir, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.25) 100%), repeating-linear-gradient(45deg, rgba(112,79,46,0.25) 0, rgba(112,79,46,0.25) 2px, transparent 0, transparent 6px), repeating-linear-gradient(-45deg, rgba(210,180,140,0.2) 0, rgba(210,180,140,0.2) 3px, transparent 0, transparent 8px)', 
+          desc: 'Natural coconut fibers with latex cooling ventilation.', 
+          type: 'coir', 
+          suffix: '(Breathable Core)',
+          backgroundColor: '#8C6239'
+        },
+        { 
+          name: 'High Density Base Foam', 
+          height: support, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.12) 100%), radial-gradient(rgba(0,0,0,0.015) 10%, transparent 15%)', 
+          desc: 'Reinforced base support protecting coir longevity.', 
+          type: 'foam', 
+          suffix: '(Support Layer)',
+          backgroundSize: 'auto, 5px 5px',
+          backgroundColor: '#EBE6DD'
+        }
       ];
     }
   },
@@ -114,9 +229,35 @@ const MATTRESS_TYPES = [
       const spring = t <= 6 ? 4 : 5;
       const base = t - (top + spring);
       return [
-        { name: 'Premium Memory Foam', height: top, color: 'linear-gradient(to right, #FFEAA7, #FFD166)', desc: 'Cushioning pressure points above pocket coils.', type: 'memory', suffix: '(Comfort Layer)' },
-        { name: 'Zero-Motion Pocket Springs', height: spring, color: 'repeating-linear-gradient(90deg, #D1D5DB 0px, #D1D5DB 10px, #E5E7EB 10px, #E5E7EB 20px, #9CA3AF 20px, #9CA3AF 22px)', desc: 'Individually encased pocket coils for motion isolation.', type: 'spring', suffix: '(Spring Core)' },
-        { name: 'High Density Felt Base', height: base, color: 'linear-gradient(to right, #D1CFC9, #B8B5AE)', desc: 'Protective bottom absorption pad for springs.', type: 'foam', suffix: '(Support Layer)' }
+        { 
+          name: 'Premium Memory Foam', 
+          height: top, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 35%, rgba(0,0,0,0.15) 100%), linear-gradient(to right, #FFEAA7, #FFD166)', 
+          desc: 'Cushioning pressure points above pocket coils.', 
+          type: 'memory', 
+          suffix: '(Comfort Layer)',
+          backgroundColor: '#FFD166'
+        },
+        { 
+          name: 'Zero-Motion Pocket Springs', 
+          height: spring, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.18) 100%), url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'30\' height=\'60\' viewBox=\'0 0 30 60\'><rect width=\'28\' height=\'58\' x=\'1\' y=\'1\' rx=\'4\' fill=\'%23EBEBE8\' stroke=\'%23D3D3CF\' stroke-width=\'1\'/><path d=\'M4 8 C 15 3, 15 13, 26 8 M4 18 C 15 13, 15 23, 26 18 M4 28 C 15 23, 15 33, 26 28 M4 38 C 15 33, 15 43, 26 38 M4 48 C 15 43, 15 53, 26 48\' stroke=\'%23A0A09C\' stroke-width=\'1.5\' fill=\'none\'/></svg>")', 
+          desc: 'Individually encased pocket coils for motion isolation.', 
+          type: 'spring', 
+          suffix: '(Spring Core)',
+          backgroundSize: 'auto, 24px 100%',
+          backgroundRepeat: 'no-repeat, repeat-x',
+          backgroundColor: '#EAEAE6'
+        },
+        { 
+          name: 'High Density Felt Base', 
+          height: base, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.12) 100%)', 
+          desc: 'Protective bottom absorption pad for springs.', 
+          type: 'foam', 
+          suffix: '(Support Layer)',
+          backgroundColor: '#D1CFC9'
+        }
       ];
     }
   },
@@ -132,9 +273,37 @@ const MATTRESS_TYPES = [
       const spring = t <= 6 ? 4 : 5;
       const base = t - (top + spring);
       return [
-        { name: 'High Density Comfort Foam', height: top, color: 'linear-gradient(to right, #FFF8E7, #FFE8C5)', desc: 'Padding barrier layer over spring coil knots.', type: 'foam', suffix: '(Comfort Layer)' },
-        { name: 'Heavy Duty Bonnell Springs', height: spring, color: 'repeating-linear-gradient(90deg, #9CA3AF 0px, #9CA3AF 8px, #F3F4F6 8px, #F3F4F6 18px, #4B5563 18px, #4B5563 20px)', desc: 'Hourglass-shaped steel coils providing bouncy posture support.', type: 'spring', suffix: '(Spring Core)' },
-        { name: 'Support Foam Foundation', height: base, color: 'linear-gradient(to right, #EBE6DD, #D6CFC4)', desc: 'Base support platform absorbs vertical compression.', type: 'foam', suffix: '(Support Layer)' }
+        { 
+          name: 'High Density Comfort Foam', 
+          height: top, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.1) 100%), radial-gradient(rgba(0,0,0,0.015) 8%, transparent 12%)', 
+          desc: 'Padding barrier layer over spring coil knots.', 
+          type: 'foam', 
+          suffix: '(Comfort Layer)',
+          backgroundSize: 'auto, 5px 5px',
+          backgroundColor: '#FFF8E7'
+        },
+        { 
+          name: 'Heavy Duty Bonnell Springs', 
+          height: spring, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.22) 100%), url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'30\' height=\'60\' viewBox=\'0 0 30 60\'><path d=\'M4 4 L26 4 M4 56 L26 56 M15 4 C15 4, 4 18, 15 28 C26 38, 15 56, 15 56 M15 4 C15 4, 26 18, 15 28 C4 38, 15 56, 15 56\' stroke=\'%2370706C\' stroke-width=\'1.8\' fill=\'none\'/><path d=\'M1 28 L29 28\' stroke=\'%23A5A5A1\' stroke-width=\'0.8\' stroke-dasharray=\'1.5,1.5\'/></svg>")', 
+          desc: 'Hourglass-shaped steel coils providing bouncy posture support.', 
+          type: 'spring', 
+          suffix: '(Spring Core)',
+          backgroundSize: 'auto, 26px 100%',
+          backgroundRepeat: 'no-repeat, repeat-x',
+          backgroundColor: '#E2E2DE'
+        },
+        { 
+          name: 'Support Foam Foundation', 
+          height: base, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.12) 100%), radial-gradient(rgba(0,0,0,0.015) 10%, transparent 15%)', 
+          desc: 'Base support platform absorbs vertical compression.', 
+          type: 'foam', 
+          suffix: '(Support Layer)',
+          backgroundSize: 'auto, 5px 5px',
+          backgroundColor: '#EBE6DD'
+        }
       ];
     }
   },
@@ -149,8 +318,26 @@ const MATTRESS_TYPES = [
       const soft = Math.floor(t / 2);
       const firm = t - soft;
       return [
-        { name: 'Medium-Soft Comfort Foam', height: soft, color: 'linear-gradient(to right, #FFF3E0, #FFE0B2)', desc: 'Gentle, plush surface side for primary comfort sleep.', type: 'foam', suffix: '(Comfort Layer)' },
-        { name: 'Medium-Firm Ortho Support', height: firm, color: 'linear-gradient(to right, #D1D5DB, #9CA3AF)', desc: 'Flipped reverse side offering dense back support.', type: 'foam', suffix: '(Support Layer)' }
+        { 
+          name: 'Medium-Soft Comfort Foam', 
+          height: soft, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.1) 100%), radial-gradient(rgba(0,0,0,0.015) 8%, transparent 12%)', 
+          desc: 'Gentle, plush surface side for primary comfort sleep.', 
+          type: 'foam', 
+          suffix: '(Comfort Layer)',
+          backgroundSize: 'auto, 5px 5px',
+          backgroundColor: '#FFF3E0'
+        },
+        { 
+          name: 'Medium-Firm Ortho Support', 
+          height: firm, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.15) 100%), radial-gradient(rgba(0,0,0,0.015) 10%, transparent 15%)', 
+          desc: 'Flipped reverse side offering dense back support.', 
+          type: 'foam', 
+          suffix: '(Support Layer)',
+          backgroundSize: 'auto, 5px 5px',
+          backgroundColor: '#D1D5DB'
+        }
       ];
     }
   },
@@ -164,9 +351,35 @@ const MATTRESS_TYPES = [
     getLayers: (t) => {
       if (t === 4) {
         return [
-          { name: 'Natural Latex', height: 1, color: 'radial-gradient(circle, #FCF9F2 20%, #FAF2DB 21%, #FAF2DB 100%)', desc: 'Resilient eco-latex cooling sheet.', type: 'latex', suffix: '(Bounce Layer)' },
-          { name: 'Memory Foam', height: 1, color: 'linear-gradient(to right, #FFEAA7, #FFD166)', desc: 'Pressure points contour layer.', type: 'memory', suffix: '(Comfort Layer)' },
-          { name: 'High Resilience Base', height: 2, color: 'linear-gradient(to right, #A7F3D0, #34D399)', desc: 'Buoyant foundation base support.', type: 'foam', suffix: '(Support Layer)' }
+          { 
+            name: 'Natural Latex', 
+            height: 1, 
+            color: 'linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, transparent 45%, rgba(0,0,0,0.15) 100%), radial-gradient(circle, #D5C9A4 25%, transparent 28%)', 
+            desc: 'Resilient eco-latex cooling sheet.', 
+            type: 'latex', 
+            suffix: '(Bounce Layer)',
+            backgroundSize: 'auto, 10px 10px',
+            backgroundColor: '#FAF2DB'
+          },
+          { 
+            name: 'Memory Foam', 
+            height: 1, 
+            color: 'linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 35%, rgba(0,0,0,0.15) 100%), linear-gradient(to right, #FFEAA7, #FFD166)', 
+            desc: 'Pressure points contour layer.', 
+            type: 'memory', 
+            suffix: '(Comfort Layer)',
+            backgroundColor: '#FFD166'
+          },
+          { 
+            name: 'High Resilience Base', 
+            height: 2, 
+            color: 'linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, transparent 45%, rgba(0,0,0,0.22) 100%), radial-gradient(rgba(255,255,255,0.15) 15%, transparent 20%)', 
+            desc: 'Buoyant foundation base support.', 
+            type: 'foam', 
+            suffix: '(Support Layer)',
+            backgroundSize: 'auto, 5px 5px',
+            backgroundColor: '#34D399'
+          }
         ];
       }
       const latex = t <= 6 ? 1 : t <= 8 ? 1.5 : 2;
@@ -174,10 +387,45 @@ const MATTRESS_TYPES = [
       const spring = t <= 6 ? 3 : t <= 8 ? 4 : 5;
       const base = t - (latex + mem + spring);
       return [
-        { name: 'Organic Pin-Core Latex', height: latex, color: 'radial-gradient(circle, #FCF9F2 20%, #FAF2DB 21%, #FAF2DB 100%)', desc: 'Natural organic latex ventilation bounce.', type: 'latex', suffix: '(Bounce Layer)' },
-        { name: 'Premium Memory Foam', height: mem, color: 'linear-gradient(to right, #FFEAA7, #FFD166)', desc: 'Therapeutic memory contour body scanning.', type: 'memory', suffix: '(Comfort Layer)' },
-        { name: 'Dynamic Pocket Springs', height: spring, color: 'repeating-linear-gradient(90deg, #D1D5DB 0px, #D1D5DB 10px, #E5E7EB 10px, #E5E7EB 20px, #9CA3AF 20px, #9CA3AF 22px)', desc: 'Encased coil system absorbs localized compression.', type: 'spring', suffix: '(Spring Core)' },
-        { name: 'Felt Support Base', height: base, color: 'linear-gradient(to right, #D1CFC9, #B8B5AE)', desc: 'Dense absorption bottom boundary.', type: 'foam', suffix: '(Support Layer)' }
+        { 
+          name: 'Organic Pin-Core Latex', 
+          height: latex, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, transparent 45%, rgba(0,0,0,0.15) 100%), radial-gradient(circle, #D5C9A4 25%, transparent 28%)', 
+          desc: 'Natural organic latex ventilation bounce.', 
+          type: 'latex', 
+          suffix: '(Bounce Layer)',
+          backgroundSize: 'auto, 10px 10px',
+          backgroundColor: '#FAF2DB'
+        },
+        { 
+          name: 'Premium Memory Foam', 
+          height: mem, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 35%, rgba(0,0,0,0.15) 100%), linear-gradient(to right, #FFEAA7, #FFD166)', 
+          desc: 'Therapeutic memory contour body scanning.', 
+          type: 'memory', 
+          suffix: '(Comfort Layer)',
+          backgroundColor: '#FFD166'
+        },
+        { 
+          name: 'Dynamic Pocket Springs', 
+          height: spring, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, transparent 40%, rgba(0,0,0,0.18) 100%), url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'30\' height=\'60\' viewBox=\'0 0 30 60\'><rect width=\'28\' height=\'58\' x=\'1\' y=\'1\' rx=\'4\' fill=\'%23EBEBE8\' stroke=\'%23D3D3CF\' stroke-width=\'1\'/><path d=\'M4 8 C 15 3, 15 13, 26 8 M4 18 C 15 13, 15 23, 26 18 M4 28 C 15 23, 15 33, 26 28 M4 38 C 15 33, 15 43, 26 38 M4 48 C 15 43, 15 53, 26 48\' stroke=\'%23A0A09C\' stroke-width=\'1.5\' fill=\'none\'/></svg>")', 
+          desc: 'Encased coil system absorbs localized compression.', 
+          type: 'spring', 
+          suffix: '(Spring Core)',
+          backgroundSize: 'auto, 24px 100%',
+          backgroundRepeat: 'no-repeat, repeat-x',
+          backgroundColor: '#EAEAE6'
+        },
+        { 
+          name: 'Felt Support Base', 
+          height: base, 
+          color: 'linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.12) 100%)', 
+          desc: 'Dense absorption bottom boundary.', 
+          type: 'foam', 
+          suffix: '(Support Layer)',
+          backgroundColor: '#D1CFC9'
+        }
       ];
     }
   }
@@ -315,7 +563,16 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
   // Build the list of visual layers (quilted cover + core layers)
   const coreLayers = coreData.getLayers(thicknessVal);
   const visualLayers = [
-    { name: 'Premium Fabric Quilted Cover', height: 0.75, color: 'linear-gradient(to right, #FFFFFF, #EAE8E4)', desc: 'Breathable organic cover quilted with soft fiber loops.', type: 'cover', suffix: '(Quilted Cover)' },
+    { 
+      name: 'Premium Fabric Quilted Cover', 
+      height: 0.75, 
+      color: 'linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, transparent 40%, rgba(0,0,0,0.12) 100%), url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\'><path d=\'M0 12 L12 0 L24 12 L12 24 Z\' fill=\'none\' stroke=\'%23E2DFD9\' stroke-width=\'1\'/></svg>")', 
+      desc: 'Breathable organic cover quilted with soft fiber loops.', 
+      type: 'cover', 
+      suffix: '(Quilted Cover)',
+      backgroundSize: 'auto, 12px 12px',
+      backgroundColor: '#FFFFFF'
+    },
     ...coreLayers
   ];
 
@@ -483,26 +740,23 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
             <div className="relative py-2 flex flex-col items-center justify-center min-h-[200px]">
               <div className="w-full max-w-none md:max-w-[280px] flex flex-col gap-1 z-10">
                 {visualLayers.map((layer, idx) => {
-                  const layerHeight = Math.max(20, Math.min(80, Math.round(layer.height * 22)));
+                  const layerHeight = Math.max(24, Math.min(80, Math.round(layer.height * 22)));
                   return (
                     <div key={idx} className="relative flex items-center group">
                       
-                      {/* The 3D Layer slab */}
+                      {/* The 3D Realistic Texture Layer slab */}
                       <div 
-                        className={`layer-3d flex-grow rounded-md text-[8.5px] text-[#2A211D] font-bold relative overflow-hidden ${
-                          idx === 0 ? 'layer-quilted bg-white' : ''
-                        }`}
+                        className={`layer-3d flex-grow rounded-md text-[8.5px] text-[#2A211D] font-bold relative overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_3px_5px_rgba(0,0,0,0.18)]`}
                         style={{ 
-                          background: idx === 0 ? undefined : layer.color, 
-                          height: `${layerHeight}px` 
+                          backgroundColor: layer.backgroundColor,
+                          backgroundImage: layer.color,
+                          backgroundSize: layer.backgroundSize || 'auto',
+                          backgroundRepeat: layer.backgroundRepeat || 'repeat',
+                          height: `${layerHeight}px`
                         }}
                       >
-                        {layer.type === 'latex' && (
-                          <div className="absolute inset-0 opacity-15 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 15%, transparent 20%)', backgroundSize: '8px 8px' }}></div>
-                        )}
-                        {layer.type === 'spring' && (
-                          <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(90deg, transparent 50%, #000 50%)', backgroundSize: '12px 100%' }}></div>
-                        )}
+                        {/* Highlights & shadow overlay for 3D volume */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/15 via-transparent to-black/25 pointer-events-none"></div>
                       </div>
                       
                       {/* Connector Line */}
