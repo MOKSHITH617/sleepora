@@ -520,33 +520,33 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
           </div>
 
           {/* Pricing Summary Card */}
-          <div className="bg-[#2B211D] border border-[#7C5F43]/35 p-4 rounded-xl mt-4">
-            <h5 className="text-[9.5px] font-bold uppercase tracking-[1.5px] text-[#C7A36B] mb-2 pb-1 border-b border-[#7C5F43]/20">
+          <div className="bg-white border border-[#EADFC9]/70 p-4 rounded-xl mt-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+            <h5 className="text-[9.5px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-2 pb-1 border-b border-[#EADFC9]/30">
               Price Summary
             </h5>
-            <ul className="flex flex-col gap-1.5 text-xs text-stone-300 mb-4">
+            <ul className="flex flex-col gap-1.5 text-xs text-[#8E7D75] mb-4">
               <li className="flex justify-between">
-                <span className="text-stone-400">Mattress Type:</span>
-                <span className="font-semibold text-white truncate max-w-[120px]">{coreData.name}</span>
+                <span className="text-[#8E7D75]">Mattress Type:</span>
+                <span className="font-semibold text-[#2A211D] truncate max-w-[155px]">{coreData.name}</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-stone-400">Bed Size:</span>
-                <span className="font-semibold text-white truncate max-w-[120px]">{selectedSize}</span>
+                <span className="text-[#8E7D75]">Bed Size:</span>
+                <span className="font-semibold text-[#2A211D] truncate max-w-[155px]">{selectedSize}</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-stone-400">Thickness:</span>
-                <span className="font-semibold text-white">{thicknessVal} inches</span>
+                <span className="text-[#8E7D75]">Thickness:</span>
+                <span className="font-semibold text-[#2A211D]">{thicknessVal} inches</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-stone-400">Total Layers:</span>
-                <span className="font-semibold text-white">{coreLayers.length} Layers</span>
+                <span className="text-[#8E7D75]">Total Layers:</span>
+                <span className="font-semibold text-[#2A211D]">{coreLayers.length} Layers</span>
               </li>
             </ul>
             
-            <div className="flex justify-between items-end mb-3 border-t border-[#7C5F43]/15 pt-2.5">
+            <div className="flex justify-between items-end mb-3 border-t border-[#EADFC9]/30 pt-2.5">
               <div>
-                <span className="text-[8px] uppercase tracking-wider text-stone-400 font-bold block mb-0.5">Factory Price</span>
-                <span className="text-2xl font-serif font-bold text-[#E3D8C4]">₹{factoryPrice.toLocaleString('en-IN')}</span>
+                <span className="text-[8px] uppercase tracking-wider text-[#8E7D75] font-bold block mb-0.5">Factory Price</span>
+                <span className="text-2.5xl font-serif font-bold text-[#7C5F43]">₹{factoryPrice.toLocaleString('en-IN')}</span>
               </div>
               <span className="text-[9px] bg-[#FAF5EF] text-[#7C5F43] font-bold px-2 py-0.5 border border-[#7C5F43]/15 rounded-md">
                 Save {savingsPercent}%
@@ -564,7 +564,7 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
               Add To Inquiry
             </button>
             
-            <span className="block text-center text-[9px] text-stone-400 mt-1.5 font-medium">
+            <span className="block text-center text-[9px] text-[#8E7D75]/80 mt-1.5 font-medium">
               Get expert assistance on WhatsApp
             </span>
           </div>
