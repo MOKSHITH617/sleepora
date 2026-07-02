@@ -80,8 +80,41 @@ const MattressDetail = () => {
 
   const imagesList = product.images && product.images.length > 0 ? product.images : ['/images/ortho_mattress.png'];
 
+  const getMattressCategoryLabel = (coreType) => {
+    if (coreType === 'ortho') return 'Orthopedic';
+    if (coreType === 'latex') return 'Natural Latex';
+    if (coreType === 'spring') return 'Pocket Spring';
+    if (coreType === 'coir') return 'Coir';
+    if (coreType === 'dual') return 'Dual Comfort';
+    return 'Organic';
+  };
+
   return (
-    <div className="max-w-[1200px] mx-auto px-6 py-16 select-none bg-[#FAF8F5]">
+    <div className="max-w-[1200px] mx-auto px-6 py-16 select-none bg-[#FAF8F5] product-detail-page">
+      <style dangerouslySetInnerHTML={{__html: `
+        @media (max-width: 767px) {
+          header.fixed { display: none !important; }
+          main { padding-top: 0 !important; }
+          .product-detail-page { padding-top: 0 !important; }
+        }
+      `}} />
+      
+      {/* Mobile Sticky Navigation Header */}
+      <div className="md:hidden sticky top-0 left-0 right-0 z-50 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#EADFC9]/40 px-4 py-3 shadow-xs flex flex-col gap-1 -mx-6 -mt-16 mb-6">
+        <div className="flex items-center gap-2.5">
+          <Link to="/mattresses" className="text-xs font-bold text-[#7C5F43] flex items-center gap-1.5 py-0.5">
+            <span className="text-sm">←</span> <span>Back</span>
+          </Link>
+          <span className="h-3 w-[1px] bg-[#EADFC9]/70"></span>
+          <span className="text-xs font-serif font-bold text-[#2A211D] truncate flex-grow">
+            {product.name}
+          </span>
+        </div>
+        <div className="text-[9px] text-[#8E7D75] uppercase tracking-wider font-semibold pl-12">
+          Mattresses &nbsp;&gt;&nbsp; {getMattressCategoryLabel(product.mattressCoreType)} &nbsp;&gt;&nbsp; {product.name}
+        </div>
+      </div>
+
       <MetaTags 
         title={product.name}
         description={product.shortDescription}
@@ -89,7 +122,7 @@ const MattressDetail = () => {
         productSchema={productSchema}
       />
 
-      <div className="mb-8 border-b border-[#EADFC9]/30 pb-4 text-xs">
+      <div className="hidden md:block mb-8 border-b border-[#EADFC9]/30 pb-4 text-xs">
         <span className="text-xs text-[#8E7D75]">
           <Link to="/" className="hover:text-[#2A211D] transition-colors">Home</Link> &nbsp;&gt;&nbsp;{' '}
           <Link to="/mattresses" className="hover:text-[#2A211D] transition-colors">Mattresses</Link> &nbsp;&gt;&nbsp;{' '}
