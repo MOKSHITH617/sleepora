@@ -130,23 +130,23 @@ const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, async () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'production'} mode on port ${PORT}`);
   
-  // Auto-seed check: If no admin exists, trigger automatic seed script configuration
+  // Safe first-time setup: Only create admin account if no users exist
+  // Does NOT wipe existing data — safe for production restarts
   try {
     const User = require('./models/User');
     const userCount = await User.countDocuments();
     if (userCount === 0) {
-      console.log('No user accounts detected. Seeding initial store database configurations...');
-      // Run internal seed routine
-      const { exec } = require('child_process');
-      exec('npm run seed', (err, stdout, stderr) => {
-        if (err) {
-          console.error('Auto-seeding task execution failed:', err);
-          return;
-        }
-        console.log(stdout);
+      console.log('No admin account found. Creating default admin user...');
+      await User.create({
+        name: 'Admin',
+        email: 'admin@example.com',
+        password: 'Admin@123',
+        role: 'admin'
       });
+      console.log('Default admin created (admin@example.com / Admin@123).');
+      console.log('Run "npm run seed" manually if you need to populate sample product data.');
     }
   } catch (seedError) {
-    console.error('Database connection checking for auto-seeding failed:', seedError);
+    console.error('Auto-setup check failed:', seedError.message);
   }
 });
