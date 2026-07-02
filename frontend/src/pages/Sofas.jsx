@@ -66,29 +66,44 @@ const Sofas = () => {
       </div>
 
       {/* Main content split */}
-      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-[28px] items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6 items-start">
         
         {/* Left Side: Filter Configurator Sidebar */}
-        <aside className="bg-white border border-[#E6DED2] p-6 rounded-[16px] shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_40px_rgba(42,33,29,0.04)] hover:border-[#C7A36B]/40 transition-all duration-300 sticky top-[100px]">
-          <h3 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3 border-b border-[#EADFC9]/30 pb-2">
-            Sofa Types
-          </h3>
-          <div className="flex flex-col gap-2.5">
+        <aside className="bg-white border border-[#E6DED2] p-5 rounded-[16px] shadow-[0_8px_30px_rgba(42,33,29,0.035)] hover:shadow-[0_16px_40px_rgba(42,33,29,0.05)] hover:border-[#C7A36B]/40 transition-all duration-300 sticky top-[100px]">
+          <div className="flex justify-between items-center mb-3 pb-2 border-b border-[#EADFC9]/30">
+            <h3 className="text-[9.5px] font-bold uppercase tracking-[2px] text-[#7C5F43] select-none">
+              Sofa Types
+            </h3>
+            <button
+              onClick={() => setSelectedCategory('all')}
+              disabled={selectedCategory === 'all'}
+              className={`text-[9px] font-bold py-1 px-2.5 rounded-md border uppercase tracking-[1.5px] transition-all select-none duration-200 ${
+                selectedCategory !== 'all'
+                  ? 'text-[#7C5F43] border-[#7C5F43]/40 bg-transparent hover:bg-[#FAF5EF] hover:border-[#7C5F43] cursor-pointer' 
+                  : 'text-stone-300 border-stone-200 cursor-not-allowed'
+              }`}
+            >
+              Clear
+            </button>
+          </div>
+          <div className="flex flex-col gap-1.5">
             {categories.map((cat) => (
               <label 
                 key={cat.id} 
-                className="flex items-center gap-2.5 text-xs text-[#8E7D75] hover:text-[#2A211D] cursor-pointer font-medium transition-colors"
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all duration-200 select-none border ${
+                  selectedCategory === cat.id 
+                    ? 'bg-[#FAF5EF] text-[#2A211D] border-[#7C5F43]/15 font-semibold' 
+                    : 'text-[#8E7D75] hover:text-[#2A211D] hover:bg-[#FAF8F5] border-transparent'
+                }`}
               >
                 <input
                   type="radio"
                   name="sofa-category"
                   checked={selectedCategory === cat.id}
                   onChange={() => setSelectedCategory(cat.id)}
-                  className="w-4 h-4 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43]/30 cursor-pointer accent-[#7C5F43] transition-all duration-200"
+                  className="w-3.5 h-3.5 text-[#7C5F43] border-[#EADFC9] focus:ring-[#7C5F43]/30 cursor-pointer accent-[#7C5F43] transition-all duration-200 flex-shrink-0"
                 />
-                <span className={selectedCategory === cat.id ? 'text-[#2A211D] font-bold' : ''}>
-                  {cat.name}
-                </span>
+                <span>{cat.name}</span>
               </label>
             ))}
           </div>

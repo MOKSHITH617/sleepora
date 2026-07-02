@@ -303,7 +303,7 @@ const Home = () => {
               to="/mattresses"
               className="inline-block border border-[#7C5F43] text-[#7C5F43] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3 px-7 hover:bg-[#7C5F43] hover:text-white transition-all duration-300"
             >
-              View More Products
+              EXPLORE MATTRESS COLLECTION
             </Link>
           </div>
         </div>
@@ -333,7 +333,7 @@ const Home = () => {
                 to="/sofas"
                 className="inline-block border border-[#7C5F43] text-[#7C5F43] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3.5 px-8 hover:bg-[#7C5F43] hover:text-white transition-all duration-300"
               >
-                View More Products
+                EXPLORE MATTRESS COLLECTION
               </Link>
             </div>
           </div>

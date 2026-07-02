@@ -18,7 +18,7 @@ const Mattresses = () => {
   const [selectedWarranty, setSelectedWarranty] = useState('all');
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [visibleLimit, setVisibleLimit] = useState(6);
-  
+
   // Responsive States
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isTabletFilterExpanded, setIsTabletFilterExpanded] = useState(true);
@@ -66,22 +66,22 @@ const Mattresses = () => {
   // Filter Logic
   const filteredProducts = products.filter(product => {
     const matchesCore = selectedCore === 'all' || product.mattressCoreType === selectedCore;
-    
-    const matchesSize = selectedSize === 'all' || 
+
+    const matchesSize = selectedSize === 'all' ||
       (product.category === 'mattress' && ['single', 'double', 'queen', 'king', 'custom'].includes(selectedSize.toLowerCase())) ||
       (product.specifications && JSON.stringify(product.specifications).toLowerCase().includes(selectedSize.toLowerCase()));
-      
-    const matchesThickness = selectedThickness === 'all' || 
+
+    const matchesThickness = selectedThickness === 'all' ||
       (product.specifications && JSON.stringify(product.specifications).toLowerCase().includes(selectedThickness.replace('-inch', '').toLowerCase()));
 
     const matchesPrice = product.basePrice >= 2000 && product.basePrice <= maxPrice;
 
-    const matchesSearch = searchTerm.trim() === '' || 
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch = searchTerm.trim() === '' ||
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.shortDescription.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesWarranty = selectedWarranty === 'all' || 
+    const matchesWarranty = selectedWarranty === 'all' ||
       (product.specifications && JSON.stringify(product.specifications).toLowerCase().includes(selectedWarranty.toLowerCase()));
 
     const matchesAvailability = !onlyAvailable || product.isAvailable;
@@ -125,7 +125,7 @@ const Mattresses = () => {
 
   return (
     <div className="max-w-[1480px] mx-auto px-6 pt-10 pb-[25px] select-none bg-[#FAF8F5]">
-      <MetaTags 
+      <MetaTags
         title="Explore Mattress Collection | Factory Direct Mattresses"
         description="Browse our range of Ortho-Memory Foam, Premium Natural Latex, Hybrid Pocket Spring, Dual Comfort, and Coconut Coir mattresses. Handcrafted to order."
       />
@@ -145,7 +145,7 @@ const Mattresses = () => {
           className="flex items-center gap-2 bg-[#7C5F43] text-white text-xs font-bold py-2.5 px-5 uppercase tracking-wider hover:bg-[#5F4630] transition-colors focus:outline-none"
         >
           <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-            <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h6V7h-6V5h-2v6h2V9z"/>
+            <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h6V7h-6V5h-2v6h2V9z" />
           </svg>
           Filters
         </button>
@@ -156,14 +156,14 @@ const Mattresses = () => {
 
       {/* Main Content Grid Area */}
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-[28px] items-start">
-        
+
         {/* Desktop Left Sidebar Filters */}
         <aside className="hidden lg:block bg-white border border-[#E6DED2] p-6 rounded-[16px] shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_40px_rgba(42,33,29,0.04)] hover:border-[#C7A36B]/40 transition-all duration-300 sticky top-[100px]">
           <div className="flex justify-between items-center mb-4 pb-2 border-b border-[#EADFC9]/30">
             <h3 className="font-serif font-bold text-sm text-[#2A211D] uppercase tracking-wider select-none">Filters</h3>
             {renderResetButtons()}
           </div>
-          
+
           <div className="space-y-[18px]">
             {/* Search */}
             <div>
@@ -244,7 +244,7 @@ const Mattresses = () => {
                 ))}
               </div>
             </div>
-            
+
             {/* Size */}
             <div className="border-t border-[#EADFC9]/25 pt-4">
               <h4 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3">Size</h4>
@@ -273,7 +273,7 @@ const Mattresses = () => {
                 ))}
               </div>
             </div>
-            
+
             {/* Thickness */}
             <div className="border-t border-[#EADFC9]/25 pt-4">
               <h4 className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-3">Thickness</h4>
@@ -350,7 +350,7 @@ const Mattresses = () => {
 
         {/* Right side Products Grid */}
         <div className="w-full">
-          
+
           {/* Product Grid Header */}
           <div className="hidden lg:flex justify-between items-center mb-4 border-b border-[#EADFC9]/30 pb-3 text-xs">
             <div className="text-[#8E7D75] font-semibold">
@@ -377,17 +377,17 @@ const Mattresses = () => {
             <>
               <div className="premium-product-grid">
                 {sortedProducts.slice(0, visibleLimit).map((product) => (
-                  <ProductCard 
-                    key={product._id} 
-                    product={product} 
-                    mattressConfig={config} 
+                  <ProductCard
+                    key={product._id}
+                    product={product}
+                    mattressConfig={config}
                   />
                 ))}
               </div>
 
               {sortedProducts.length > visibleLimit && (
                 <div className="mt-16 text-center animate-fade-in">
-                  <button 
+                  <button
                     onClick={() => setVisibleLimit(prev => prev + 6)}
                     className="inline-block border border-[#7C5F43] text-[#7C5F43] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3.5 px-8 hover:bg-[#7C5F43] hover:text-white transition-all duration-300 focus:outline-none"
                   >
@@ -403,7 +403,7 @@ const Mattresses = () => {
               <p className="text-xs text-[#8E7D75] max-w-sm mx-auto mb-6">
                 Try adjusting your search terms or filter constraints to see all available factory direct mattresses.
               </p>
-              <button 
+              <button
                 onClick={handleResetFilters}
                 className="bg-[#7C5F43] hover:bg-[#5F4630] text-white font-bold text-xs py-3 px-6 uppercase tracking-wider focus:outline-none"
               >
@@ -419,24 +419,24 @@ const Mattresses = () => {
       {isMobileDrawerOpen && (
         <div className="fixed inset-0 z-[2000] flex block lg:hidden animate-fade-in">
           {/* Backdrop overlay */}
-          <div 
+          <div
             onClick={() => setIsMobileDrawerOpen(false)}
             className="absolute inset-0 bg-black/45 backdrop-blur-xs transition-opacity duration-300"
           ></div>
-          
+
           {/* Drawer Menu */}
           <div className="relative w-4/5 max-w-[320px] h-full bg-[#FAF8F5] shadow-xl flex flex-col z-10 animate-slide-in border-r border-[#EADFC9]/30">
             {/* Header */}
             <div className="flex justify-between items-center p-4 border-b border-[#EADFC9]/30 bg-white">
               <h3 className="font-serif font-bold text-sm text-[#2A211D] uppercase tracking-wider">Filters</h3>
-              <button 
+              <button
                 onClick={() => setIsMobileDrawerOpen(false)}
                 className="text-[#7C5F43] font-bold text-xl focus:outline-none"
               >
                 &times;
               </button>
             </div>
-            
+
             {/* Scrollable Filters */}
             <div className="flex-grow overflow-y-auto p-4 space-y-6 select-none bg-white">
               {/* Search */}
@@ -477,7 +477,7 @@ const Mattresses = () => {
                   ))}
                 </div>
               </div>
-              
+
               {/* Bed Size */}
               <div className="border-t border-[#EADFC9]/25 pt-4">
                 <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#2A211D] mb-3">Bed Size</h4>
@@ -504,7 +504,7 @@ const Mattresses = () => {
                   ))}
                 </div>
               </div>
-              
+
               {/* Thickness */}
               <div className="border-t border-[#EADFC9]/25 pt-4">
                 <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#2A211D] mb-3">Thickness</h4>
@@ -556,7 +556,7 @@ const Mattresses = () => {
                   ))}
                 </div>
               </div>
-              
+
               {/* Price Range */}
               <div className="border-t border-[#EADFC9]/25 pt-4">
                 <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#2A211D] mb-3">Price Range</h4>
@@ -592,7 +592,7 @@ const Mattresses = () => {
                 </label>
               </div>
             </div>
-            
+
             {/* Footer Buttons */}
             <div className="p-4 border-t border-[#EADFC9]/30 bg-[#FAF8F5] flex gap-3">
               <button
