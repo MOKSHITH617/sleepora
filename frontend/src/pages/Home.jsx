@@ -202,7 +202,7 @@ const Home = () => {
       </section>
 
       {/* --- TRUST BADGES BAR --- */}
-      <section className="bg-[#F4F1EC] border-b border-[#E0D8CE]/60 py-6 select-none animate-fade-in">
+      <section className="bg-white border-b border-[#E0D8CE]/60 py-6 select-none animate-fade-in">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-y-4 gap-x-6 justify-items-center items-center text-center">
             {[

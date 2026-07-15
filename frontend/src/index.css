@@ -16,7 +16,7 @@
   --whatsapp-dark: #128C7E;
 
   --bg-dark: #2E221A;
-  --bg-light: #F4F1EC;
+  --bg-light: #ffffff;
   --bg-white: #FFFDFC;
   --text-dark: #2E221A;
   --text-light: #FFFDFC;
@@ -34,7 +34,7 @@
 
 @layer base {
   body {
-    @apply font-sans bg-[#F4F1EC] text-[#201712] antialiased overflow-x-hidden;
+    @apply font-sans bg-white text-[#201712] antialiased overflow-x-hidden;
     scroll-behavior: smooth;
   }
 

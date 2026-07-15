@@ -49,7 +49,7 @@ const MainLayout = ({ children }) => {
     <div className="min-h-screen flex flex-col bg-bg-light text-primary">
       
       {/* --- PREMIUM NAVIGATION BAR (WOODNEST STYLE) --- */}
-      <header className={`fixed top-0 left-0 w-full z-[1000] border-b bg-[#F4F1EC]/95 backdrop-blur-md text-[#201712] border-[#E0D8CE]/60 transition-all duration-300 ${scrolled ? 'shadow-md py-2.5' : 'py-4'}`}>
+      <header className={`fixed top-0 left-0 w-full z-[1000] border-b bg-white/95 backdrop-blur-md text-[#201712] border-[#E0D8CE]/60 transition-all duration-300 ${scrolled ? 'shadow-md py-2.5' : 'py-4'}`}>
         <div className="max-w-[1200px] mx-auto px-6 flex justify-between items-center">
           
           <Link to="/" className="font-serif text-[30px] font-bold tracking-wide text-[#8B6844] transition-colors duration-300 hover:text-[#6D5134] select-none">
@@ -57,7 +57,7 @@ const MainLayout = ({ children }) => {
           </Link>
 
           {/* Nav links */}
-          <nav className={`fixed lg:static top-[68px] lg:top-auto ${menuActive ? 'left-0' : '-left-full'} w-full lg:w-auto h-[calc(100vh-68px)] lg:h-auto border-t lg:border-t-0 flex flex-col lg:flex-row items-center lg:gap-10 gap-8 pt-10 lg:pt-0 transition-all duration-300 ease-in-out z-50 bg-[#F4F1EC] border-[#E0D8CE]/40 lg:bg-transparent`}>
+          <nav className={`fixed lg:static top-[68px] lg:top-auto ${menuActive ? 'left-0' : '-left-full'} w-full lg:w-auto h-[calc(100vh-68px)] lg:h-auto border-t lg:border-t-0 flex flex-col lg:flex-row items-center lg:gap-10 gap-8 pt-10 lg:pt-0 transition-all duration-300 ease-in-out z-50 bg-white border-[#E0D8CE]/40 lg:bg-transparent`}>
             <Link to="/" className={`text-[14px] font-semibold tracking-wide transition-all duration-200 pb-1.5 relative ${location.pathname === '/' ? 'text-[#8B6844] after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-[#8B6844]' : 'text-[#201712] hover:text-[#8B6844]'}`}>Home</Link>
             <Link to="/sofas" className={`text-[14px] font-semibold tracking-wide transition-all duration-200 pb-1.5 relative ${location.pathname === '/sofas' ? 'text-[#8B6844] after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-[#8B6844]' : 'text-[#201712] hover:text-[#8B6844]'}`}>Sofas</Link>
             <Link to="/mattresses" className={`text-[14px] font-semibold tracking-wide transition-all duration-200 pb-1.5 relative ${location.pathname === '/mattresses' ? 'text-[#8B6844] after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-[#8B6844]' : 'text-[#201712] hover:text-[#8B6844]'}`}>Mattresses</Link>

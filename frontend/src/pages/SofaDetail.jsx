@@ -111,7 +111,7 @@ const SofaDetail = () => {
   };
 
   return (
-    <div className="w-full bg-[#F4F1EC] select-none product-detail-page">
+    <div className="w-full bg-white select-none product-detail-page">
       <style dangerouslySetInnerHTML={{__html: `
         @media (max-width: 767px) {
           header.fixed { display: none !important; }
@@ -122,7 +122,7 @@ const SofaDetail = () => {
       
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-12">
         {/* Mobile Sticky Navigation Header */}
-        <div className="md:hidden sticky top-0 left-0 right-0 z-50 bg-[#F4F1EC]/95 backdrop-blur-md border-b border-[#E0D8CE]/60 px-4 py-3 shadow-sm flex flex-col gap-1 -mx-4 mb-6">
+        <div className="md:hidden sticky top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E0D8CE]/60 px-4 py-3 shadow-sm flex flex-col gap-1 -mx-4 mb-6">
           <div className="flex items-center gap-2.5">
             <Link to="/sofas" className="text-xs font-bold text-[#8B6844] flex items-center gap-1.5 py-0.5">
               <span className="text-sm">←</span> <span>Back</span>

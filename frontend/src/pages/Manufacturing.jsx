@@ -89,7 +89,7 @@ const Manufacturing = () => {
   ];
 
   return (
-    <div className="max-w-[1480px] mx-auto px-6 pt-10 pb-[25px] select-none bg-[#F4F1EC]">
+    <div className="max-w-[1480px] mx-auto px-6 pt-10 pb-[25px] select-none bg-white">
       <MetaTags 
         title="Our Manufacturing Capability | Direct Mattress Factory"
         description="Take a look inside our manufacturing floor. Learn how we foam, cut, stitch, and test our premium mattresses and custom sofas direct from raw materials."

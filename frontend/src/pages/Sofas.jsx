@@ -61,7 +61,7 @@ const Sofas = () => {
   const featuredSofa = products.find(p => p.isFeatured) || products[0];
 
   return (
-    <div className="w-full select-none bg-[#FDFBF7] min-h-screen pt-10 pb-16 px-4 md:px-12 lg:px-16 flex flex-col items-center">
+    <div className="w-full select-none bg-white min-h-screen pt-10 pb-16 px-4 md:px-12 lg:px-16 flex flex-col items-center">
       <div className="w-full max-w-[1400px]">
         <MetaTags 
           title="Custom Sofa Collection | Premium Sofa Manufacturer"
