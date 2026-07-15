@@ -37,10 +37,10 @@ const AdminLogin = () => {
     <div className="min-h-[80vh] flex items-center justify-center bg-[#FAF8F5] px-6 select-none animate-fade-in">
       <MetaTags title="Admin Login" description="Administrative access panel login screen." />
 
-      <div className="bg-white border border-[#EADFC9]/45 rounded-none shadow-sm max-w-md w-full p-8">
+      <div className="bg-white border border-[#EADFC9]/60 rounded-none shadow-sm max-w-md w-full p-8">
         
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-[#7C5F43] rounded-none flex items-center justify-center text-[#E3D8C4] font-serif font-black text-xl mx-auto mb-3.5">
+          <div className="w-12 h-12 bg-[#7C5F43] rounded-none flex items-center justify-center text-[#FAF8F5] font-serif font-black text-xl mx-auto mb-3.5">
             TW
           </div>
           <h2 className="text-2xl font-serif font-bold text-[#2A211D] mb-1">Admin Dashboard Portal</h2>
@@ -64,12 +64,12 @@ const AdminLogin = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@example.com"
               required
-              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75] font-medium"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75] font-medium"
             />
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="login-password" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Security Password</label>
+            <label htmlFor="login-password" className="text-[10px] font-bold text-[#201712] uppercase tracking-wider mb-1.5">Security Password</label>
             <input 
               id="login-password"
               type="password" 
@@ -77,7 +77,7 @@ const AdminLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••"
               required
-              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
 
@@ -91,7 +91,7 @@ const AdminLogin = () => {
 
         </form>
 
-        <div className="mt-8 text-center text-[10px] text-[#8E7D75] select-none border-t border-[#EADFC9]/30 pt-4">
+        <div className="mt-8 text-center text-[10px] text-[#8E7D75] select-none border-t border-[#EADFC9]/40 pt-4">
           <span className="block font-semibold">Protected Administration Session</span>
           <span className="block mt-0.5">Authorization tokens remain active for 30 days. Do not share admin credentials.</span>
         </div>

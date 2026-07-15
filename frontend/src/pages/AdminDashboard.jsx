@@ -5,10 +5,8 @@ import API from '../services/api';
 import MetaTags from '../components/MetaTags';
 
 const FABRIC_QUALITIES = [
-  { id: 'economy', name: 'Economy Fabric', modifier: 0 },
   { id: 'standard', name: 'Standard Fabric', modifier: 2500 },
-  { id: 'premium', name: 'Premium Fabric', modifier: 6000 },
-  { id: 'luxury', name: 'Luxury Fabric', modifier: 12500 }
+  { id: 'premium', name: 'Premium Fabric', modifier: 6000 }
 ];
 
 // Initial Layer Configurations mock dataset for the interactive layer builder
@@ -118,9 +116,11 @@ const AdminDashboard = () => {
   const [tempSpecKey, setTempSpecKey] = useState('');
   const [tempSpecVal, setTempSpecVal] = useState('');
   const [tempBenefit, setTempBenefit] = useState('');
+  const [tempImageUrl, setTempImageUrl] = useState('');
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   // Fabric catalogues tab
-  const [fabricTab, setFabricTab] = useState('economy');
+  const [fabricTab, setFabricTab] = useState('standard');
   const [editingFabric, setEditingFabric] = useState(null);
   const [fabricForm, setFabricForm] = useState({
     code: '', name: '', finish: 'Velvet', extraPrice: 0, colorHex: '#7C5F43', isAvailable: true
@@ -142,7 +142,7 @@ const AdminDashboard = () => {
 
   // Profile credentials
   const [profileForm, setProfileForm] = useState({
-    email: '', password: '', confirmPassword: '', companyName: 'TimeWell Factory Outlet', address: 'Plot 42, Furniture Zone, Sector 4'
+    email: '', password: '', confirmPassword: '', companyName: 'Sleepora Factory Outlet', address: 'Plot 42, Furniture Zone, Sector 4'
   });
 
   // Notification states
@@ -388,6 +388,127 @@ const AdminDashboard = () => {
     setTempBenefit('');
   };
 
+  // Image gallery helpers
+  const handleFileUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    if (productForm.images.length + files.length > 6) {
+      alert('You can attach a maximum of 6 gallery images per product.');
+      return;
+    }
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('images', files[i]);
+    }
+
+    try {
+      setUploadingImages(true);
+      const res = await API.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (res.data && res.data.urls) {
+        setProductForm({
+          ...productForm,
+          images: [...productForm.images, ...res.data.urls].slice(0, 6)
+        });
+      }
+    } catch (err) {
+      alert('Upload failed: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
+  const handleAddImageUrl = () => {
+    if (!tempImageUrl.trim()) return;
+    if (productForm.images.length >= 6) {
+      alert('Maximum 6 gallery images allowed per product.');
+      return;
+    }
+    setProductForm({
+      ...productForm,
+      images: [...productForm.images, tempImageUrl.trim()]
+    });
+    setTempImageUrl('');
+  };
+
+  const handleRemoveImage = (index) => {
+    setProductForm({
+      ...productForm,
+      images: productForm.images.filter((_, i) => i !== index)
+    });
+  };
+
+  const renderGalleryManager = (labelsList) => (
+    <div className="bg-[#FAF8F5] border border-[#EADFC9]/40 p-4 rounded-xl">
+      <div className="flex justify-between items-center mb-2">
+        <label className="block font-bold text-[#2A211D] text-xs uppercase tracking-wider">
+          Product Image Gallery (Up to 6 Views)
+        </label>
+        <span className="text-[10px] font-bold bg-white px-2 py-0.5 rounded border text-[#7C5F43]">
+          {productForm.images.length} / 6 Attached
+        </span>
+      </div>
+
+      {productForm.images.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 mb-3">
+          {productForm.images.map((imgUrl, idx) => (
+            <div key={idx} className="relative group border border-[#EADFC9]/60 rounded-lg overflow-hidden aspect-[4/3] bg-white">
+              <img src={imgUrl} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+              <div className="absolute inset-x-0 bottom-0 bg-black/75 text-[8px] text-white p-0.5 text-center truncate font-medium">
+                {labelsList[idx] || `View ${idx + 1}`}
+              </div>
+              <button
+                type="button"
+                onClick={() => handleRemoveImage(idx)}
+                className="absolute top-1 right-1 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full text-xs flex items-center justify-center font-bold shadow-sm"
+                title="Remove image"
+              >
+                &times;
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-[11px] text-[#8E7D75] italic mb-3">No custom gallery images uploaded yet. When empty, the system automatically displays the multi-view fallback gallery.</p>
+      )}
+
+      {productForm.images.length < 6 && (
+        <div className="flex flex-col sm:flex-row gap-3 items-center pt-2 border-t border-[#EADFC9]/30">
+          <label className="flex-1 w-full bg-white border border-dashed border-[#7C5F43]/50 hover:border-[#7C5F43] text-[#7C5F43] py-2 px-3 rounded-lg text-xs font-bold text-center cursor-pointer transition-colors flex items-center justify-center gap-2">
+            <span>📁 {uploadingImages ? 'Uploading...' : 'Upload Image Files (Max 6)'}</span>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleFileUpload}
+              disabled={uploadingImages}
+              className="hidden"
+            />
+          </label>
+          <span className="text-[10px] text-[#8E7D75] font-bold">OR</span>
+          <div className="flex-1 w-full flex gap-1.5">
+            <input
+              type="text"
+              placeholder="Paste direct image URL..."
+              value={tempImageUrl}
+              onChange={(e) => setTempImageUrl(e.target.value)}
+              className="flex-1 bg-white border border-[#EADFC9]/50 rounded-lg p-2 text-xs focus:outline-none text-[#2A211D]"
+            />
+            <button
+              type="button"
+              onClick={handleAddImageUrl}
+              className="bg-[#2A211D] hover:bg-[#40332D] text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-colors whitespace-nowrap"
+            >
+              + Add URL
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   // Fabric Catalogues operations
   const handleSaveFabric = async (e) => {
     e.preventDefault();
@@ -630,7 +751,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex h-screen bg-[#FAF8F5] overflow-hidden select-none text-xs font-sans admin-erp-viewport">
-      <MetaTags title="TimeWell Operations Portal" description="Premium Furniture Manufacturing System" />
+      <MetaTags title="Sleepora Operations Portal" description="Premium Furniture Manufacturing System" />
       
       {/* Immersive dashboard layout styles - hides standard header and footer */}
       <style dangerouslySetInnerHTML={{__html: `
@@ -645,7 +766,7 @@ const AdminDashboard = () => {
           {/* Brand Identity */}
           <div className="mb-8 border-b border-stone-800 pb-5">
             <span className="block font-serif text-2xl font-bold tracking-wide text-[#E3D8C4] select-none">
-              TimeWell
+              Sleepora
             </span>
             <span className="block text-[8px] uppercase tracking-[2px] text-[#7C5F43] font-bold mt-1">
               Manufacturing Portal
@@ -730,7 +851,7 @@ const AdminDashboard = () => {
               </div>
               <div className="text-left hidden md:block">
                 <span className="block font-bold text-[#2A211D]">Administrator</span>
-                <span className="block text-[9px] text-[#8E7D75]">TimeWell Factory Admin</span>
+                <span className="block text-[9px] text-[#8E7D75]">Sleepora Factory Admin</span>
               </div>
             </div>
           </div>
@@ -984,6 +1105,8 @@ const AdminDashboard = () => {
                       </div>
                     )}
                   </div>
+
+                  {renderGalleryManager(['Front View', 'Side Profile', 'Cross-Section Layer', 'Layer Composition', 'Fabric Texture', 'Factory Craftsmanship'])}
 
                   <div className="flex justify-end gap-2.5 border-t border-[#EADFC9]/20 pt-4">
                     <button 
@@ -1273,7 +1396,6 @@ const AdminDashboard = () => {
                         onChange={(e) => setProductForm({ ...productForm, sofaCategory: e.target.value })}
                         className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D]"
                       >
-                        <option value="l-shape">L Shape Sofa</option>
                         <option value="recliner">Recliner Sofa</option>
                         <option value="2-seater">2 Seater</option>
                         <option value="3-seater">3 Seater</option>
@@ -1317,6 +1439,8 @@ const AdminDashboard = () => {
                       className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none text-[#2A211D] resize-none"
                     ></textarea>
                   </div>
+
+                  {renderGalleryManager(['Front View', 'Side View', 'Back Profile', 'Recliner / Open Position', 'Fabric Close-up', 'Lifestyle Room Setting'])}
 
                   <div className="flex justify-end gap-2.5 border-t border-[#EADFC9]/20 pt-4">
                     <button 
@@ -1400,12 +1524,12 @@ const AdminDashboard = () => {
               
               <div className="border-b border-[#EADFC9]/40 pb-4">
                 <h1 className="text-2xl font-serif font-bold text-[#2A211D]">Fabric Swatches Catalogues</h1>
-                <p className="text-xs text-[#8E7D75]">Configure Economy, Standard, Premium, and Luxury fabrics options</p>
+                <p className="text-xs text-[#8E7D75]">Configure Standard and Premium fabrics options</p>
               </div>
 
               {/* Fabric Swatch Quality Categories Tabs */}
               <div className="flex border-b border-[#EADFC9]/40">
-                {['economy', 'standard', 'premium', 'luxury'].map((tab) => (
+                {['standard', 'premium'].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => {
@@ -1437,7 +1561,7 @@ const AdminDashboard = () => {
                       value={fabricForm.code}
                       onChange={(e) => setFabricForm({ ...fabricForm, code: e.target.value })}
                       required
-                      placeholder={fabricTab === 'economy' ? 'E001' : fabricTab === 'standard' ? 'S001' : fabricTab === 'premium' ? 'P001' : 'L001'}
+                      placeholder={fabricTab === 'standard' ? 'S001' : 'P001'}
                       className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg p-2 focus:outline-none"
                     />
                   </div>
@@ -1919,7 +2043,7 @@ const AdminDashboard = () => {
                           </a>
                           
                           <a 
-                            href={`https://wa.me/${lead.phone ? lead.phone.replace(/[^0-9]/g, '') : '919876543210'}?text=${encodeURIComponent(`Hi ${lead.name}, I am reaching out to discuss your TimeWell Mattress/Sofa customization quotation query.`)}`}
+                            href={`https://wa.me/${lead.phone ? lead.phone.replace(/[^0-9]/g, '') : '919876543210'}?text=${encodeURIComponent(`Hi ${lead.name}, I am reaching out to discuss your Sleepora Mattress/Sofa customization quotation query.`)}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-[#25D366] hover:text-[#128C7E] font-bold"

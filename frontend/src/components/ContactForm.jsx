@@ -99,7 +99,7 @@ Please send me the price details and dispatch timeline!`;
   };
 
   return (
-    <div className="bg-white p-6 md:p-8 rounded-none border border-[#EADFC9]/45 shadow-sm select-none">
+    <div className="bg-white p-6 md:p-8 rounded-none border border-[#EADFC9]/60 shadow-sm select-none">
       <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-1">Enquiry Details</h3>
       <p className="text-xs text-[#8E7D75] mb-6">Receive custom sizes price configurations directly on WhatsApp</p>
  
@@ -115,7 +115,7 @@ Please send me the price details and dispatch timeline!`;
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Rajesh Kumar"
               required
-              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
  
@@ -130,7 +130,7 @@ Please send me the price details and dispatch timeline!`;
               pattern="[0-9]{10}"
               title="Ten digit mobile number"
               required
-              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
         </div>
@@ -144,7 +144,7 @@ Please send me the price details and dispatch timeline!`;
             onChange={(e) => setEmail(e.target.value)}
             placeholder="e.g. rajesh@example.com"
             required
-            className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+            className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
           />
         </div>
  
@@ -158,7 +158,7 @@ Please send me the price details and dispatch timeline!`;
                 setCategory(e.target.value);
                 setProductSelection(e.target.value === 'mattress' ? 'Ortho-Memory Foam' : 'Royal Sectional Sofa');
               }}
-              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
             >
               <option value="mattress">Mattress Range</option>
               <option value="sofa">Sofa Collection</option>
@@ -173,22 +173,22 @@ Please send me the price details and dispatch timeline!`;
                 id="form-select-prod"
                 value={productSelection}
                 onChange={(e) => setProductSelection(e.target.value)}
-                className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
+                className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
               >
                 <option value="Ortho-Memory Foam">Ortho-Memory Foam</option>
                 <option value="Premium Natural Latex">Premium Natural Latex</option>
                 <option value="Luxury Pocket Spring">Luxury Pocket Spring</option>
                 <option value="Dual Comfort (Hard/Soft)">Dual Comfort (Hard/Soft)</option>
-                <option value="Classic Coir Mattress">Classic Coir Mattress</option>
+                <option value="HR Foam Mattress">HR Foam Mattress</option>
               </select>
             ) : category === 'sofa' ? (
               <select
                 id="form-select-prod"
                 value={productSelection}
                 onChange={(e) => setProductSelection(e.target.value)}
-                className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
+                className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
               >
-                <option value="Royal Sectional Sofa">Royal Sectional Sofa (L-Shape)</option>
+                <option value="Royal Sectional Corner Sofa">Royal Sectional Corner Sofa</option>
                 <option value="Plush Lounge Recliner">Plush Lounge Recliner</option>
                 <option value="Compact 2-Seater Studio Sofa">Compact 2-Seater Studio Sofa</option>
                 <option value="Classic 3-Seater Comfort Sofa">Classic 3-Seater Comfort Sofa</option>
@@ -201,7 +201,7 @@ Please send me the price details and dispatch timeline!`;
                 value={productSelection}
                 onChange={(e) => setProductSelection(e.target.value)}
                 placeholder="What product are you interested in?"
-                className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+                className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
               />
             )}
           </div>
@@ -222,7 +222,7 @@ Please send me the price details and dispatch timeline!`;
                   setDimension('');
                 }
               }}
-              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer mb-2.5"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer mb-2.5"
             >
               <option value="Single Bed (72 x 36)">Single Bed (72" x 36")</option>
               <option value="Double Bed (72 x 48)">Double Bed (72" x 48")</option>
@@ -239,7 +239,7 @@ Please send me the price details and dispatch timeline!`;
                 onChange={(e) => setDimension(e.target.value)}
                 placeholder="e.g. custom 75x62 inches"
                 required
-                className="bg-[#FAF5EF] border border-[#7C5F43]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none text-[#2A211D] animate-fade-in placeholder-[#8E7D75]"
+                className="bg-[#FAF8F5] border border-[#7C5F43]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none text-[#2A211D] animate-fade-in placeholder-[#8E7D75]"
               />
             )}
           </div>
@@ -253,7 +253,7 @@ Please send me the price details and dispatch timeline!`;
               value={quantity}
               onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
               required
-              className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
         </div>
@@ -266,7 +266,7 @@ Please send me the price details and dispatch timeline!`;
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="e.g. My bed frame is exactly 75x62 inches and I need an 8-inch thickness..."
-            className="bg-[#FAF5EF] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75] resize-none"
+            className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75] resize-none"
           ></textarea>
         </div>
  
@@ -286,7 +286,7 @@ Please send me the price details and dispatch timeline!`;
       {/* --- SUCCESS MODAL OVERLAY --- */}
       {modalOpen && (
         <div className="fixed inset-0 bg-[#2A211D]/60 backdrop-blur-xs z-[2000] flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-none max-w-md w-full p-6 text-center border border-[#EADFC9]/45 shadow-xl relative">
+          <div className="bg-white rounded-none max-w-md w-full p-6 text-center border border-[#EADFC9]/60 shadow-xl relative">
             <div className="w-16 h-16 bg-[#25D366] text-white rounded-none flex items-center justify-center text-3xl mx-auto mb-4">
               ✓
             </div>
@@ -296,7 +296,7 @@ Please send me the price details and dispatch timeline!`;
             </p>
  
             {savedLead && (
-              <div className="bg-[#FAF8F5] border border-[#EADFC9]/30 text-left p-4 rounded-none text-xs space-y-1.5 mb-6 text-[#2A211D] select-none">
+              <div className="bg-[#FAF8F5] border border-[#EADFC9]/40 text-left p-4 rounded-none text-xs space-y-1.5 mb-6 text-[#2A211D] select-none">
                 <div><strong>Inquirer Name:</strong> {savedLead.name}</div>
                 <div><strong>Mobile Contact:</strong> {savedLead.phone}</div>
                 <div><strong>Configured Selection:</strong> {savedLead.productName}</div>

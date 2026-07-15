@@ -4,8 +4,8 @@ const MetaTags = ({ title, description, ogUrl, ogImage, productSchema, localBusi
   useEffect(() => {
     // 1. Update Title Tag
     const pageTitle = title 
-      ? `${title} | TimeWell Mattress Factory` 
-      : 'TimeWell Mattresses | Factory Direct Premium Comfort';
+      ? `${title} | Sleepora Mattress Factory` 
+      : 'Sleepora Mattresses | Factory Direct Premium Comfort';
     document.title = pageTitle;
 
     // 2. Update Description Meta Tag
@@ -28,7 +28,7 @@ const MetaTags = ({ title, description, ogUrl, ogImage, productSchema, localBusi
       ogTag.setAttribute('content', content || '');
     };
 
-    updateOgTag('og:title', title || 'TimeWell Mattresses | Factory Direct Premium Comfort');
+    updateOgTag('og:title', title || 'Sleepora Mattresses | Factory Direct Premium Comfort');
     updateOgTag('og:description', description || 'Buy premium mattresses directly from the manufacturer. Custom sizes, Orthopaedic Memory Foam, Natural Latex, and Pocket Spring.');
     updateOgTag('og:url', ogUrl || window.location.href);
     updateOgTag('og:image', ogImage || `${window.location.origin}/images/ortho_mattress.png`);

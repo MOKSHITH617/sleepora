@@ -8,22 +8,23 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#2A211D', // Luxury Dark Espresso
-          light: '#3E322D',   // Medium-dark brown
-          lighter: '#5C4C44', // Soft medium-brown
+          DEFAULT: '#2E221A', // Luxury Primary Dark
+          light: '#3E3026',   // Luxury Secondary Dark
+          lighter: '#5A483B', // Deep Walnut
         },
         accent: {
-          DEFAULT: '#7C5F43', // Rich Wood Brown
-          hover: '#9E7B5B',   // Warm highlight
-          light: '#FAF5EF',   // Very light cream/sand
+          DEFAULT: '#A27B5C', // Luxury Gold/Wood Accent
+          hover: '#BD9A7A',   // Warm Wood Highlight
+          light: '#F4F1EC',   // Warm Ivory
         },
         whatsapp: {
           DEFAULT: '#25D366',
           dark: '#128C7E',
         },
         bg: {
-          dark: '#1C1613',    // Dark Espresso base
-          light: '#FAF8F5',   // Showroom Cream background
+          dark: '#2E221A',    // Primary Dark Base
+          light: '#F4F1EC',   // Warm Ivory Background
+          card: '#FFFDFC',    // Pure Luxury Card Background
         }
       },
       fontFamily: {
@@ -37,11 +38,13 @@ export default {
         lg: '24px',
       },
       boxShadow: {
-        sm: '0 2px 4px rgba(0, 0, 0, 0.05)',
-        md: '0 4px 12px rgba(11, 25, 44, 0.08)',
-        lg: '0 12px 24px -4px rgba(11, 25, 44, 0.15)',
-        gold: '0 8px 20px rgba(230, 179, 37, 0.2)',
-        glass: '0 8px 32px 0 rgba(0, 0, 0, 0.06)',
+        sm: '0 2px 8px rgba(32, 23, 18, 0.06)',
+        md: '0 8px 24px rgba(32, 23, 18, 0.09)',
+        lg: '0 16px 40px -4px rgba(32, 23, 18, 0.16)',
+        xl: '0 24px 60px -8px rgba(32, 23, 18, 0.22)',
+        gold: '0 10px 28px rgba(139, 104, 68, 0.25)',
+        glass: '0 8px 32px 0 rgba(32, 23, 18, 0.08)',
+        luxury: '0 12px 36px rgba(32, 23, 18, 0.12)',
       },
       fontSize: {
         'xs': ['0.85rem', { lineHeight: '1.3rem' }],

@@ -89,35 +89,35 @@ const Manufacturing = () => {
   ];
 
   return (
-    <div className="max-w-[1480px] mx-auto px-6 pt-10 pb-[25px] select-none bg-[#FAF8F5]">
+    <div className="max-w-[1480px] mx-auto px-6 pt-10 pb-[25px] select-none bg-[#F4F1EC]">
       <MetaTags 
         title="Our Manufacturing Capability | Direct Mattress Factory"
         description="Take a look inside our manufacturing floor. Learn how we foam, cut, stitch, and test our premium mattresses and custom sofas direct from raw materials."
       />
 
       <div className="text-center max-w-[650px] mx-auto mb-4 animate-fade-in">
-        <span className="text-xs font-bold text-[#7C5F43] uppercase tracking-[2px] mb-3 inline-block">Direct From Factory</span>
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#2A211D] mb-4">Inside Our Manufacturing Operations</h1>
-        <p className="text-[13px] text-[#8E7D75] leading-relaxed">
+        <span className="text-xs font-bold text-[#8B6844] uppercase tracking-[2px] mb-3 inline-block">Direct From Factory</span>
+        <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#201712] mb-4">Inside Our Manufacturing Operations</h1>
+        <p className="text-[13px] text-[#6D6258] leading-relaxed">
           We do not just retail mattresses. We run independent foaming, slicing, cover sewing, and edge tape binding machines to control comfort standards.
         </p>
       </div>
 
       {/* --- IMAGE COLLAGE DISPLAY --- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-        <div className="md:col-span-2 relative pt-[50%] overflow-hidden border border-[#EADFC9]/50 shadow-xs rounded-none bg-white p-2 group">
+        <div className="md:col-span-2 relative pt-[50%] overflow-hidden border border-[#E0D8CE]/60 shadow-sm rounded-none bg-[#FFFDFC] p-2 group">
           <img 
             src="/images/factory_floor.png" 
             alt="Factory assembly floor" 
             className="absolute inset-0 w-full h-full object-cover p-2 transition-transform duration-700 group-hover:scale-[1.025]" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-6 m-2 z-10">
-            <span className="text-white font-serif font-bold text-lg tracking-wide">TimeWell Assembly Operations Floor</span>
+            <span className="text-white font-serif font-bold text-lg tracking-wide">Sleepora Assembly Operations Floor</span>
           </div>
         </div>
         
         <div className="grid grid-rows-2 gap-5">
-          <div className="relative pt-[50%] md:pt-0 overflow-hidden border border-[#EADFC9]/50 shadow-xs rounded-none bg-white p-1.5 group">
+          <div className="relative pt-[50%] md:pt-0 overflow-hidden border border-[#E0D8CE]/60 shadow-sm rounded-none bg-[#FFFDFC] p-1.5 group">
             <img 
               src="/images/workers_crafting.png" 
               alt="Stitching cover tape edges" 
@@ -127,7 +127,7 @@ const Manufacturing = () => {
               <span className="text-white font-serif font-bold text-xs tracking-wide">Edge Tape Binding Machine</span>
             </div>
           </div>
-          <div className="relative pt-[50%] md:pt-0 overflow-hidden border border-[#EADFC9]/50 shadow-xs rounded-none bg-white p-1.5 group">
+          <div className="relative pt-[50%] md:pt-0 overflow-hidden border border-[#E0D8CE]/60 shadow-sm rounded-none bg-[#FFFDFC] p-1.5 group">
             <img 
               src="/images/latex_mattress.png" 
               alt="Natural Latex Curing" 
@@ -141,36 +141,36 @@ const Manufacturing = () => {
       </div>
 
       {/* --- STEPS TIMELINE STORYTELLING --- */}
-      <div className="relative border-l border-[#EADFC9]/55 ml-4 md:ml-36 pl-8 md:pl-12 space-y-6">
+      <div className="relative border-l border-[#8B6844]/40 ml-4 md:ml-36 pl-8 md:pl-12 space-y-6">
         
         {steps.map((s, idx) => (
           <ScrollRevealItem key={idx} delay={idx % 2 * 100}>
             <div className="relative group mb-10 last:mb-0">
               {/* Step node indicator */}
-              <span className="absolute -left-[50px] md:-left-[80px] top-0 w-9 h-9 bg-white text-[#7C5F43] rounded-none border border-[#7C5F43] flex items-center justify-center font-serif font-bold text-sm shadow-xs group-hover:bg-[#7C5F43] group-hover:text-white group-hover:scale-110 transition-all duration-300">
+              <span className="absolute -left-[50px] md:-left-[80px] top-0 w-9 h-9 bg-[#FFFDFC] text-[#8B6844] rounded-none border border-[#8B6844] flex items-center justify-center font-serif font-bold text-sm shadow-sm group-hover:bg-[#8B6844] group-hover:text-white group-hover:scale-110 transition-all duration-300">
                 {s.step}
               </span>
 
               {/* Content card */}
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-white border border-[#EADFC9]/45 rounded-none shadow-[0_4px_20px_rgba(42,33,29,0.02)] p-5 md:p-6 group-hover:border-[#7C5F43]/40 group-hover:shadow-[0_12px_32px_rgba(42,33,29,0.06)] group-hover:-translate-y-1 transition-all duration-300 transform">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-[#FFFDFC] border border-[#E0D8CE] rounded-none shadow-md p-5 md:p-6 group-hover:border-[#8B6844] group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-300 transform">
                 
                 <div className="md:col-span-8">
-                  <span className="text-[10px] font-bold text-[#7C5F43] uppercase tracking-[1.5px] mb-1.5 block">
+                  <span className="text-[10px] font-bold text-[#8B6844] uppercase tracking-[1.5px] mb-1.5 block">
                     {s.subtitle}
                   </span>
-                  <h3 className="text-xl font-serif font-bold text-[#2A211D] mb-3">
+                  <h3 className="text-xl font-serif font-bold text-[#201712] mb-3">
                     {s.title}
                   </h3>
-                  <p className="text-[12px] text-[#8E7D75] leading-relaxed">
+                  <p className="text-[12px] text-[#6D6258] leading-relaxed">
                     {s.desc}
                   </p>
                 </div>
 
-                <div className="md:col-span-4 relative pt-[50%] md:pt-[70%] rounded-none overflow-hidden border border-[#EADFC9]/30 bg-[#FAF5EF]">
+                <div className="md:col-span-4 relative pt-[50%] md:pt-[70%] rounded-none overflow-hidden border border-[#E0D8CE]/50 bg-[#F4F1EC]">
                   <img 
                     src={s.img} 
                     alt={s.title} 
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 contrast-105" 
                   />
                 </div>
 

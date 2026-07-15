@@ -4,20 +4,17 @@ import API from '../services/api';
 
 // Definition of 6 Premium Sofa Layout Types with descriptions and dynamic multipliers
 const SOFA_TYPES = [
-  { id: 'l-shape', name: 'L Shape Sofa', desc: 'Spacious sectional layout with lounging chaise.', multiplier: 1.5, icon: '🛋️' },
   { id: 'recliner', name: 'Recliner Sofa', desc: 'Premium comfort seat with reclining mechanism.', multiplier: 1.35, icon: '💺' },
   { id: '2-seater', name: '2 Seater', desc: 'Compact dual seating ideal for cosy spaces.', multiplier: 0.85, icon: '👥' },
   { id: '3-seater', name: '3 Seater', desc: 'Classic layout for standard family living rooms.', multiplier: 1.0, icon: '🛋️' },
-  { id: 'corner', name: 'Corner Sofa', desc: 'L-shape design optimizing corner space coverage.', multiplier: 1.45, icon: '📐' },
+  { id: 'corner', name: 'Corner Sofa', desc: 'Spacious L-shape design optimizing space coverage.', multiplier: 1.45, icon: '📐' },
   { id: 'custom-sofa', name: 'Custom Sofa', desc: 'Bespoke layouts tailored to floor measurements.', multiplier: 1.6, icon: '🛠️' }
 ];
 
-// Definition of the 4 Fabric Quality Grades with prices modifiers
+// Definition of the 2 Fabric Quality Grades with price modifiers
 const FABRIC_QUALITIES = [
-  { id: 'economy', name: 'Economy Fabric', desc: 'Budget friendly and durable', modifier: 0, text: 'Browse Economy Fabric Catalogue' },
   { id: 'standard', name: 'Standard Fabric', desc: 'Good quality and long lasting', modifier: 2500, text: 'Browse Standard Fabric Catalogue' },
-  { id: 'premium', name: 'Premium Fabric', desc: 'Soft touch and premium feel', modifier: 6000, text: 'Browse Premium Fabric Catalogue' },
-  { id: 'luxury', name: 'Luxury Fabric', desc: 'Imported fabric and exclusive collection', modifier: 12500, text: 'Browse Luxury Fabric Catalogue' }
+  { id: 'premium', name: 'Premium Fabric', desc: 'Soft touch and premium feel', modifier: 6000, text: 'Browse Premium Fabric Catalogue' }
 ];
 
 // Full fabric catalogue categorized by Quality Series
@@ -57,7 +54,39 @@ const FABRIC_CATALOG = {
 };
 
 // Render a detailed 3D perspective vector sofa illustration inside an SVG viewport
-const renderSofaSVG = (colorHex) => {
+const renderSofaSVG = (colorHex, capacity) => {
+  const cap = parseInt(capacity) || 3;
+  
+  // Seating interior is from X=46 to X=234. Width = 188.
+  const W = 188 / cap;
+  
+  // We will generate the seat cushions
+  const cushions = [];
+  const highlights = [];
+  const shadows = [];
+  const seams = [];
+  
+  for (let i = 0; i < cap; i++) {
+    const x = 46 + i * W;
+    const cWidth = W - 1.5; // leaving a small gap
+    
+    cushions.push(
+      <rect key={`c-${i}`} x={x} y="86" width={cWidth} height="20" rx="4" fill={colorHex} />
+    );
+    highlights.push(
+      <rect key={`h-${i}`} x={x} y="86" width={cWidth} height="4" rx="2" fill="rgba(255,255,255,0.12)" />
+    );
+    shadows.push(
+      <rect key={`s-${i}`} x={x} y="102" width={cWidth} height="4" rx="2" fill="rgba(0,0,0,0.15)" />
+    );
+    
+    if (i > 0) {
+      seams.push(
+        <line key={`seam-${i}`} x1={x} y1="46" x2={x} y2="102" stroke="rgba(0,0,0,0.15)" strokeWidth="1.5" />
+      );
+    }
+  }
+
   return (
     <svg viewBox="0 0 280 150" className="w-full h-auto max-w-[260px] drop-shadow-[0_8px_20px_rgba(0,0,0,0.25)] select-none overflow-visible">
       {/* Background shadow glow */}
@@ -75,25 +104,20 @@ const renderSofaSVG = (colorHex) => {
 
       {/* Sofa Main Backrest Cushion */}
       <rect x="48" y="44" width="184" height="60" rx="8" fill={colorHex} />
+      
       {/* Backrest details (vertical cushion seams) */}
-      <path d="M110,46 L110,102 M170,46 L170,102" stroke="rgba(0,0,0,0.15)" strokeWidth="1.5" />
+      {seams}
       
       {/* Backrest shading (top highlight and bottom shade) */}
       <rect x="48" y="44" width="184" height="8" rx="4" fill="rgba(255,255,255,0.08)" />
       <rect x="48" y="96" width="184" height="8" rx="4" fill="rgba(0,0,0,0.15)" />
 
       {/* Main Seat Cushions */}
-      <rect x="46" y="86" width="60" height="20" rx="4" fill={colorHex} />
-      <rect x="110" y="86" width="60" height="20" rx="4" fill={colorHex} />
-      <rect x="174" y="86" width="60" height="20" rx="4" fill={colorHex} />
+      {cushions}
       
       {/* Seat Cushions Shading & Highlights */}
-      <rect x="46" y="86" width="60" height="4" rx="2" fill="rgba(255,255,255,0.12)" />
-      <rect x="110" y="86" width="60" height="4" rx="2" fill="rgba(255,255,255,0.12)" />
-      <rect x="174" y="86" width="60" height="4" rx="2" fill="rgba(255,255,255,0.12)" />
-      <rect x="46" y="102" width="60" height="4" rx="2" fill="rgba(0,0,0,0.15)" />
-      <rect x="110" y="102" width="60" height="4" rx="2" fill="rgba(0,0,0,0.15)" />
-      <rect x="174" y="102" width="60" height="4" rx="2" fill="rgba(0,0,0,0.15)" />
+      {highlights}
+      {shadows}
 
       {/* Left Armrest */}
       <path d="M36,68 C36,60 48,60 48,68 L48,114 C48,118 36,118 36,114 Z" fill={colorHex} stroke="rgba(0,0,0,0.1)" strokeWidth="0.5" />
@@ -130,7 +154,7 @@ const SofaConfigurator = ({ config, defaultProduct }) => {
   useEffect(() => {
     if (config) {
       if (defaultProduct) {
-        const typeName = defaultProduct.sofaCategory === 'l-shape' ? 'L Shape Sofa' : 
+        const typeName = defaultProduct.sofaCategory === 'l-shape' ? 'Corner Sofa' : 
                          defaultProduct.sofaCategory === 'recliner' ? 'Recliner Sofa' : 
                          defaultProduct.sofaCategory === '2-seater' ? '2 Seater' : 
                          defaultProduct.sofaCategory === '3-seater' ? '3 Seater' : 
@@ -153,7 +177,7 @@ const SofaConfigurator = ({ config, defaultProduct }) => {
   const capObj = config.seatingCapacities?.find(c => c.capacity === selectedCapacity) || { multiplier: 1.0 };
   
   // Price = (BasePrice * TypeMultiplier * CapacityMultiplier) + QualityPriceAdjustment
-  const activeQualityData = FABRIC_QUALITIES.find(q => q.id === selectedQuality) || FABRIC_QUALITIES[2];
+  const activeQualityData = FABRIC_QUALITIES.find(q => q.id === selectedQuality) || FABRIC_QUALITIES[1] || FABRIC_QUALITIES[0];
   const qualityPriceAdjustment = activeQualityData.modifier;
   
   const finalPrice = Math.round((basePrice * typeObj.multiplier * capObj.multiplier) + qualityPriceAdjustment);
@@ -168,7 +192,7 @@ const SofaConfigurator = ({ config, defaultProduct }) => {
     const leadData = {
       name: 'Customer (Sofa Configurator)',
       phone: 'Unspecified',
-      email: 'sofa_configurator@timewell.com',
+      email: 'sofa_configurator@sleepora.com',
       productName: defaultProduct ? defaultProduct.name : 'Custom Configured Sofa',
       category: 'sofa',
       configuration: {
@@ -259,29 +283,30 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
     <div className="relative pb-[76px] lg:pb-0">
       
       {/* Main Configurator Container Box */}
-      <div className="bg-white rounded-[16px] border border-[#EADFC9]/45 shadow-[0_10px_30px_rgba(42,33,29,0.03)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0 animate-fade-in">
+      <div className="bg-[#FFFDFC] rounded-[16px] border border-[#E0D8CE]/60 shadow-[0_10px_30px_rgba(32,23,18,0.05)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0 animate-fade-in">
         
         {/* Left Side Spec Controls */}
         <div className="lg:col-span-7 p-5 md:p-8 flex flex-col justify-between select-none">
           <div>
-            <h3 className="text-xl md:text-2xl font-serif font-bold text-[#2A211D] mb-1">Select Custom Specifications</h3>
-            <p className="text-xs text-[#8E7D75] mb-5">Customize sofa layout, seating capacity, fabric qualities, and swatches</p>
+            <h3 className="text-xl md:text-2xl font-serif font-bold text-[#201712] mb-1">Select Custom Specifications</h3>
+            <p className="text-xs text-[#6D6258] mb-5">Customize sofa layout, seating capacity, fabric qualities, and swatches</p>
 
             {/* 1. Choose Sofa Type Layout (Selectable cards with descriptions) */}
             <div className="mb-5">
-              <label className="block text-[10px] font-bold text-[#2A211D] uppercase tracking-[1.5px] mb-2.5">
+              <label className="block text-[10px] font-bold text-[#201712] uppercase tracking-[1.5px] mb-2.5">
                 1. Choose Sofa Type / Layout
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
-                {SOFA_TYPES.map((t) => {
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-2.5">
+                {SOFA_TYPES.map((t, idx) => {
                   const isSelected = selectedType === t.name;
+                  const spanClass = idx < 3 ? 'col-span-1 md:col-span-2' : (idx === 3 ? 'col-span-1 md:col-span-3' : 'col-span-2 md:col-span-3');
                   return (
                     <label 
                       key={t.id}
-                      className={`border p-3 flex flex-col justify-between cursor-pointer transition-all duration-200 select-none rounded-xl relative ${
+                      className={`border p-3 flex flex-col justify-between cursor-pointer transition-all duration-200 select-none rounded-xl relative ${spanClass} ${
                         isSelected 
-                          ? 'border-[#7C5F43] bg-[#FAF5EF] shadow-xs' 
-                          : 'border-[#EADFC9]/50 bg-white hover:border-[#7C5F43]/45'
+                          ? 'border-[#8B6844] bg-[#F4F1EC] shadow-sm' 
+                          : 'border-[#E0D8CE]/60 bg-[#FFFDFC] hover:border-[#8B6844]/60'
                       }`}
                     >
                       <input 
@@ -293,14 +318,14 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
                         className="hidden"
                       />
                       {isSelected && (
-                        <div className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-[#7C5F43] text-white rounded-full flex items-center justify-center font-bold text-[8px] z-10 shadow-xs">
+                        <div className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-[#8B6844] text-white rounded-full flex items-center justify-center font-bold text-[8px] z-10 shadow-sm">
                           ✓
                         </div>
                       )}
                       <div>
                         <span className="text-xl mb-1.5 block">{t.icon}</span>
-                        <span className="block font-serif font-bold text-xs text-[#2A211D] leading-tight mb-0.5">{t.name}</span>
-                        <span className="block text-[9.5px] text-[#8E7D75] leading-snug">{t.desc}</span>
+                        <span className="block font-serif font-bold text-xs text-[#201712] leading-tight mb-0.5">{t.name}</span>
+                        <span className="block text-[9.5px] text-[#6D6258] leading-snug">{t.desc}</span>
                       </div>
                     </label>
                   );
@@ -310,7 +335,7 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
 
             {/* 2. Choose Seating Capacity */}
             <div className="mb-5">
-              <label className="block text-[10px] font-bold text-[#2A211D] uppercase tracking-[1.5px] mb-2">
+              <label className="block text-[10px] font-bold text-[#201712] uppercase tracking-[1.5px] mb-2">
                 2. Choose Seating Capacity
               </label>
               <div className="flex flex-row gap-2.5">
@@ -321,8 +346,8 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
                       key={c}
                       className={`flex-grow border py-2 px-4 text-center cursor-pointer transition-all duration-200 rounded-lg text-xs ${
                         isSelected 
-                          ? 'border-[#7C5F43] bg-[#FAF5EF] text-[#2A211D] font-bold shadow-xs' 
-                          : 'border-[#EADFC9]/50 bg-white text-[#8E7D75] hover:border-[#7C5F43]/45'
+                          ? 'border-[#8B6844] bg-[#F4F1EC] text-[#201712] font-bold shadow-sm' 
+                          : 'border-[#E0D8CE]/60 bg-[#FFFDFC] text-[#6D6258] hover:border-[#8B6844]/60'
                       }`}
                     >
                       <input 
@@ -342,10 +367,10 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
 
             {/* 3. Fabric Quality (Economy, Standard, Premium, Luxury cards) */}
             <div className="mb-5">
-              <label className="block text-[10px] font-bold text-[#2A211D] uppercase tracking-[1.5px] mb-2">
+              <label className="block text-[10px] font-bold text-[#201712] uppercase tracking-[1.5px] mb-2">
                 3. Choose Fabric Quality
               </label>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-lg mx-auto">
                 {FABRIC_QUALITIES.map((q) => {
                   const isSelected = selectedQuality === q.id;
                   return (
@@ -353,8 +378,8 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
                       key={q.id}
                       className={`border p-3 flex flex-col justify-between cursor-pointer transition-all duration-200 select-none rounded-xl relative ${
                         isSelected 
-                          ? 'border-[#7C5F43] bg-[#FAF5EF] shadow-xs' 
-                          : 'border-[#EADFC9]/50 bg-white hover:border-[#7C5F43]/45'
+                          ? 'border-[#8B6844] bg-[#F4F1EC] shadow-sm' 
+                          : 'border-[#E0D8CE]/60 bg-[#FFFDFC] hover:border-[#8B6844]/60'
                       }`}
                     >
                       <input 
@@ -366,14 +391,14 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
                         className="hidden"
                       />
                       {isSelected && (
-                        <div className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-[#7C5F43] text-white rounded-full flex items-center justify-center font-bold text-[8px] z-10 shadow-xs">
+                        <div className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-[#8B6844] text-white rounded-full flex items-center justify-center font-bold text-[8px] z-10 shadow-sm">
                           ✓
                         </div>
                       )}
                       <div>
-                        <span className="block font-serif font-bold text-xs text-[#2A211D] leading-tight mb-0.5">{q.name}</span>
-                        <span className="block text-[9.5px] text-[#8E7D75] leading-snug mb-1">{q.desc}</span>
-                        <span className="block text-[9px] font-bold text-[#7C5F43]">
+                        <span className="block font-serif font-bold text-xs text-[#201712] leading-tight mb-0.5">{q.name}</span>
+                        <span className="block text-[9.5px] text-[#6D6258] leading-snug mb-1">{q.desc}</span>
+                        <span className="block text-[9px] font-bold text-[#8B6844]">
                           {q.modifier === 0 ? 'Base Rate' : `+₹${q.modifier.toLocaleString('en-IN')}`}
                         </span>
                       </div>
@@ -384,25 +409,25 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
             </div>
 
             {/* 4. Choose Fabric Colour (Browse Catalog Modal Button) */}
-            <div className="mb-5 border-t border-[#EADFC9]/25 pt-4">
-              <label className="block text-[10px] font-bold text-[#2A211D] uppercase tracking-[1.5px] mb-2.5">
+            <div className="mb-5 border-t border-[#E0D8CE]/40 pt-4">
+              <label className="block text-[10px] font-bold text-[#201712] uppercase tracking-[1.5px] mb-2.5">
                 4. Select Fabric Colour
               </label>
               
               <button
                 onClick={() => setIsCatalogOpen(true)}
-                className="w-full bg-[#FAF5EF] hover:bg-[#F3EFE6] border border-[#7C5F43]/35 text-[#7C5F43] font-bold text-xs uppercase tracking-[1px] py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer shadow-xs active:scale-[0.99] focus:outline-none"
+                className="w-full bg-[#F4F1EC] hover:bg-[#E0D8CE]/40 border border-[#8B6844]/40 text-[#8B6844] font-bold text-xs uppercase tracking-[1px] py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer shadow-sm active:scale-[0.99] focus:outline-none"
               >
                 🎨 {activeQualityData.text}
               </button>
             </div>
 
             {/* 5. Selected Fabric Panel detail */}
-            <div className="bg-[#FAF8F5] border border-[#EADFC9]/45 p-4 rounded-xl">
-              <span className="block text-[9px] font-bold uppercase tracking-[1px] text-[#7C5F43] mb-2">Selected Fabric Upholstery</span>
+            <div className="bg-[#F4F1EC] border border-[#E0D8CE]/60 p-4 rounded-xl">
+              <span className="block text-[9px] font-bold uppercase tracking-[1px] text-[#8B6844] mb-2">Selected Fabric Upholstery</span>
               <div className="flex items-center gap-4">
                 <div 
-                  className="w-12 h-12 rounded-lg border border-[#EADFC9]/60 shadow-xs flex-shrink-0 relative overflow-hidden"
+                  className="w-12 h-12 rounded-lg border border-[#E0D8CE]/60 shadow-sm flex-shrink-0 relative overflow-hidden"
                   style={{ backgroundColor: selectedFabric.color }}
                 >
                   {/* Subtle fabric structure lines pattern inside swatch */}
@@ -412,19 +437,19 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
                 <div className="flex-grow min-w-0">
                   <div className="flex justify-between items-start gap-2">
                     <div>
-                      <span className="block text-xs font-bold text-[#2A211D]">{selectedFabric.code} - {selectedFabric.name}</span>
-                      <span className="block text-[9.5px] text-[#8E7D75]">Quality: {activeQualityData.name} &nbsp;•&nbsp; Finish: {selectedFabric.finish}</span>
+                      <span className="block text-xs font-bold text-[#201712]">{selectedFabric.code} - {selectedFabric.name}</span>
+                      <span className="block text-[9.5px] text-[#6D6258]">Quality: {activeQualityData.name} &nbsp;•&nbsp; Finish: {selectedFabric.finish}</span>
                     </div>
                     
                     <button 
                       onClick={() => setIsCatalogOpen(true)}
-                      className="text-[9px] text-[#7C5F43] hover:underline font-bold focus:outline-none"
+                      className="text-[9px] text-[#8B6844] hover:underline font-bold focus:outline-none"
                     >
                       Change Selection
                     </button>
                   </div>
                   {activeQualityData.modifier > 0 && (
-                    <span className="block text-[9.5px] text-[#7C5F43] font-semibold mt-1">
+                    <span className="block text-[9.5px] text-[#8B6844] font-semibold mt-1">
                       Includes quality adjustment: +₹{activeQualityData.modifier.toLocaleString('en-IN')}
                     </span>
                   )}
@@ -436,71 +461,71 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
 
           <button 
             onClick={handleCustomQuote}
-            className="w-full border border-[#7C5F43] text-[#7C5F43] hover:bg-[#FAF5EF] bg-transparent text-[11px] font-bold py-2.5 rounded-lg tracking-wider uppercase transition-colors duration-200 mt-5 active:scale-[0.99] focus:outline-none"
+            className="w-full border border-[#8B6844] text-[#8B6844] hover:bg-[#F4F1EC] bg-transparent text-[11px] font-bold py-2.5 rounded-lg tracking-wider uppercase transition-colors duration-200 mt-5 active:scale-[0.99] focus:outline-none"
           >
             Request Custom Shape / Dimension Quote
           </button>
         </div>
 
         {/* Right Side Visual Upholstery Live Preview & Pricing Summary Column */}
-        <div className="lg:col-span-5 bg-[#201917] p-5 md:p-8 flex flex-col justify-between relative overflow-hidden border-t lg:border-t-0 lg:border-l border-[#EADFC9]/15 min-h-[440px]">
+        <div className="lg:col-span-5 bg-[#201712] p-5 md:p-8 flex flex-col justify-between relative overflow-hidden border-t lg:border-t-0 lg:border-l border-[#E0D8CE]/20 min-h-[440px]">
           {/* Ambient background glow */}
-          <div className="absolute top-0 right-0 w-48 h-48 bg-[#7C5F43]/5 blur-3xl pointer-events-none rounded-full"></div>
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[#8B6844]/10 blur-3xl pointer-events-none rounded-full"></div>
 
           <div className="mb-5 flex flex-col gap-4">
             <div>
-              <span className="inline-block bg-[#7C5F43] text-white font-bold text-[9px] uppercase tracking-[1.5px] py-1 px-2.5 rounded-md mb-2">
+              <span className="inline-block bg-[#8B6844] text-white font-bold text-[9px] uppercase tracking-[1.5px] py-1 px-2.5 rounded-md mb-2">
                 Live Sofa Preview
               </span>
-              <h4 className="text-xl font-serif font-bold text-[#E3D8C4] mb-1">{defaultProduct ? defaultProduct.name : 'Custom Sofa Layout'}</h4>
-              <p className="text-xs text-stone-400">Visualization of selected configuration and fabric shade</p>
+              <h4 className="text-xl font-serif font-bold text-[#F4F1EC] mb-1">{defaultProduct ? defaultProduct.name : 'Custom Sofa Layout'}</h4>
+              <p className="text-xs text-[#E0D8CE]/80">Visualization of selected configuration and fabric shade</p>
             </div>
 
             {/* Live Sofa Cushion Color Binding visual block */}
             <div className="relative py-2 flex flex-col items-center justify-center min-h-[170px]">
-              {renderSofaSVG(selectedFabric.color)}
+              {renderSofaSVG(selectedFabric.color, selectedCapacity)}
               
-              <div className="flex gap-2.5 mt-3 items-center bg-[#2B211D]/80 border border-[#7C5F43]/20 px-3 py-1.5 rounded-md text-[9.5px]">
+              <div className="flex gap-2.5 mt-3 items-center bg-[#2B1F18]/90 border border-[#8B6844]/30 px-3 py-1.5 rounded-md text-[9.5px]">
                 <div className="w-3 h-3 rounded-full border border-white/20" style={{ backgroundColor: selectedFabric.color }}></div>
-                <span className="text-stone-300 font-medium">Upholstery: {selectedFabric.code} ({selectedFabric.name})</span>
+                <span className="text-[#F4F1EC] font-medium">Upholstery: {selectedFabric.code} ({selectedFabric.name})</span>
               </div>
             </div>
           </div>
 
           {/* Pricing Summary Card */}
-          <div className="bg-white border border-[#EADFC9]/70 p-4 rounded-xl mt-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
-            <h5 className="text-[9.5px] font-bold uppercase tracking-[1.5px] text-[#7C5F43] mb-2 pb-1 border-b border-[#EADFC9]/30">
+          <div className="bg-[#FFFDFC] border border-[#E0D8CE]/70 p-4 rounded-xl mt-4 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+            <h5 className="text-[9.5px] font-bold uppercase tracking-[1.5px] text-[#8B6844] mb-2 pb-1 border-b border-[#E0D8CE]/40">
               Configuration Summary
             </h5>
-            <ul className="flex flex-col gap-1.5 text-xs text-[#8E7D75] mb-4">
+            <ul className="flex flex-col gap-1.5 text-xs text-[#6D6258] mb-4">
               <li className="flex justify-between">
-                <span className="text-[#8E7D75]">Sofa Layout:</span>
-                <span className="font-semibold text-[#2A211D] truncate max-w-[125px]">{selectedType}</span>
+                <span className="text-[#6D6258]">Sofa Layout:</span>
+                <span className="font-semibold text-[#201712] truncate max-w-[125px]">{selectedType}</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-[#8E7D75]">Capacity:</span>
-                <span className="font-semibold text-[#2A211D]">{selectedCapacity} Seater Layout</span>
+                <span className="text-[#6D6258]">Capacity:</span>
+                <span className="font-semibold text-[#201712]">{selectedCapacity} Seater Layout</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-[#8E7D75]">Fabric Quality:</span>
-                <span className="font-semibold text-[#2A211D]">{activeQualityData.name}</span>
+                <span className="text-[#6D6258]">Fabric Quality:</span>
+                <span className="font-semibold text-[#201712]">{activeQualityData.name}</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-[#8E7D75]">Fabric Code / Name:</span>
-                <span className="font-semibold text-[#2A211D] truncate max-w-[140px]">{selectedFabric.code} - {selectedFabric.name}</span>
+                <span className="text-[#6D6258]">Fabric Code / Name:</span>
+                <span className="font-semibold text-[#201712] truncate max-w-[140px]">{selectedFabric.code} - {selectedFabric.name}</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-[#8E7D75]">Fabric Finish:</span>
-                <span className="font-semibold text-[#2A211D]">{selectedFabric.finish}</span>
+                <span className="text-[#6D6258]">Fabric Finish:</span>
+                <span className="font-semibold text-[#201712]">{selectedFabric.finish}</span>
               </li>
             </ul>
             
-            <div className="flex justify-between items-end mb-3 border-t border-[#EADFC9]/30 pt-2.5">
+            <div className="flex justify-between items-end mb-3 border-t border-[#E0D8CE]/40 pt-2.5">
               <div>
-                <span className="text-[8px] uppercase tracking-wider text-[#8E7D75] font-bold block mb-0.5">Factory Price</span>
-                <span className="text-2.5xl font-serif font-bold text-[#7C5F43]">₹{finalPrice.toLocaleString('en-IN')}</span>
+                <span className="text-[8px] uppercase tracking-wider text-[#6D6258] font-bold block mb-0.5">Factory Price</span>
+                <span className="text-2.5xl font-serif font-bold text-[#8B6844]">₹{finalPrice.toLocaleString('en-IN')}</span>
               </div>
-              <span className="text-[9px] bg-[#FAF5EF] text-[#7C5F43] font-bold px-2 py-0.5 border border-[#7C5F43]/15 rounded-md">
+              <span className="text-[9px] bg-[#F4F1EC] text-[#8B6844] font-bold px-2 py-0.5 border border-[#8B6844]/20 rounded-md">
                 Save {savingsPercent}%
               </span>
             </div>
@@ -516,7 +541,7 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
               Add To Inquiry
             </button>
             
-            <span className="block text-center text-[9px] text-[#8E7D75]/80 mt-1.5 font-medium">
+            <span className="block text-center text-[9px] text-[#6D6258]/80 mt-1.5 font-medium">
               Get expert assistance on WhatsApp
             </span>
           </div>
@@ -526,10 +551,10 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
       </div>
 
       {/* Mobile/Tablet Sticky Bottom CTA Bar (Fixed to viewport) */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#201917] border-t border-[#7C5F43]/30 px-6 py-3.5 shadow-[0_-5px_25px_rgba(0,0,0,0.15)] flex justify-between items-center gap-4">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#201712] border-t border-[#8B6844]/30 px-6 py-3.5 shadow-[0_-5px_25px_rgba(0,0,0,0.15)] flex justify-between items-center gap-4">
         <div>
-          <span className="text-[8px] uppercase tracking-wider text-stone-400 font-bold block mb-0.5">Factory Price</span>
-          <span className="text-lg font-serif font-bold text-[#E3D8C4]">₹{finalPrice.toLocaleString('en-IN')}</span>
+          <span className="text-[8px] uppercase tracking-wider text-[#E0D8CE]/80 font-bold block mb-0.5">Factory Price</span>
+          <span className="text-lg font-serif font-bold text-[#F4F1EC]">₹{finalPrice.toLocaleString('en-IN')}</span>
         </div>
         
         <button
@@ -554,21 +579,21 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
           <div className="w-full lg:max-w-2xl bg-white rounded-t-2xl lg:rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] overflow-hidden z-10 flex flex-col max-h-[85vh] lg:max-h-[80vh] animate-slide-up select-none">
             
             {/* Modal Header */}
-            <div className="px-5 py-4 border-b border-[#EADFC9]/40 flex justify-between items-center bg-[#FAF8F5] flex-shrink-0">
+            <div className="px-5 py-4 border-b border-[#E0D8CE]/60 flex justify-between items-center bg-[#F4F1EC] flex-shrink-0">
               <div>
-                <h4 className="font-serif font-bold text-base text-[#2A211D]">{activeQualityData.name} Swatches</h4>
-                <p className="text-[10px] text-[#8E7D75]">Search and filter premium materials in the direct factory catalog</p>
+                <h4 className="font-serif font-bold text-base text-[#201712]">{activeQualityData.name} Swatches</h4>
+                <p className="text-[10px] text-[#6D6258]">Search and filter premium materials in the direct factory catalog</p>
               </div>
               <button 
                 onClick={() => setIsCatalogOpen(false)}
-                className="text-stone-400 hover:text-stone-600 font-bold text-xl p-1.5 focus:outline-none"
+                className="text-[#6D6258] hover:text-[#201712] font-bold text-xl p-1.5 focus:outline-none"
               >
                 ✕
               </button>
             </div>
 
             {/* Catalog Filters and Search Section */}
-            <div className="px-5 py-3 border-b border-[#EADFC9]/25 flex flex-col gap-2.5 bg-white flex-shrink-0">
+            <div className="px-5 py-3 border-b border-[#E0D8CE]/40 flex flex-col gap-2.5 bg-[#FFFDFC] flex-shrink-0">
               <div className="flex gap-2">
                 <input 
                   type="text"
@@ -578,7 +603,7 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
                     setSearchText(e.target.value);
                     setCatalogPage(1);
                   }}
-                  className="flex-grow bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-lg px-3 py-1.5 text-xs text-[#2A211D] focus:outline-none focus:border-[#7C5F43] font-semibold"
+                  className="flex-grow bg-[#F4F1EC] border border-[#E0D8CE]/60 rounded-lg px-3 py-1.5 text-xs text-[#201712] focus:outline-none focus:border-[#8B6844] font-semibold"
                 />
               </div>
 
@@ -595,8 +620,8 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
                       }}
                       className={`px-3 py-1 text-[10px] font-bold rounded-full border transition-all duration-150 flex-shrink-0 focus:outline-none cursor-pointer ${
                         isFilterActive
-                          ? 'bg-[#7C5F43] border-[#7C5F43] text-white'
-                          : 'bg-white border-[#EADFC9]/60 text-[#8E7D75] hover:border-[#7C5F43]/45'
+                          ? 'bg-[#8B6844] border-[#8B6844] text-white shadow-sm'
+                          : 'bg-[#FFFDFC] border-[#E0D8CE]/60 text-[#6D6258] hover:border-[#8B6844]/60'
                       }`}
                     >
                       {filter}
@@ -607,7 +632,7 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
             </div>
 
             {/* Modal Body: Swatches Grid */}
-            <div className="p-5 overflow-y-auto flex-grow bg-white">
+            <div className="p-5 overflow-y-auto flex-grow bg-[#FFFDFC]">
               {currentFabricsList.length > 0 ? (
                 <div className="grid grid-cols-2 gap-3.5">
                   {currentFabricsList.map((f) => {
@@ -619,13 +644,13 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
                           setSelectedFabric(f);
                           setIsCatalogOpen(false);
                         }}
-                        className={`border p-3 rounded-xl cursor-pointer flex items-center gap-3 transition-all duration-150 hover:bg-[#FAF8F5] ${
-                          isSelected ? 'border-[#7C5F43] bg-[#FAF5EF]' : 'border-[#EADFC9]/50 bg-white'
+                        className={`border p-3 rounded-xl cursor-pointer flex items-center gap-3 transition-all duration-150 hover:bg-[#F4F1EC] ${
+                          isSelected ? 'border-[#8B6844] bg-[#F4F1EC] shadow-sm' : 'border-[#E0D8CE]/60 bg-[#FFFDFC]'
                         }`}
                       >
                         {/* Swatch circle */}
                         <div 
-                          className="w-10 h-10 rounded-lg border border-[#EADFC9]/50 shadow-xs flex-shrink-0 relative overflow-hidden"
+                          className="w-10 h-10 rounded-lg border border-[#E0D8CE]/60 shadow-sm flex-shrink-0 relative overflow-hidden"
                           style={{ backgroundColor: f.color }}
                         >
                           <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%), linear-gradient(-45deg, #000 25%, transparent 25%)', backgroundSize: '3px 3px' }}></div>
@@ -633,18 +658,18 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
 
                         <div className="flex-grow min-w-0">
                           <div className="flex justify-between items-center">
-                            <span className="text-[10px] font-bold text-[#7C5F43] leading-none">{f.code}</span>
-                            {isSelected && <span className="text-[9px] font-bold text-[#7C5F43]">Active</span>}
+                            <span className="text-[10px] font-bold text-[#8B6844] leading-none">{f.code}</span>
+                            {isSelected && <span className="text-[9px] font-bold text-[#8B6844]">Active</span>}
                           </div>
-                          <span className="block font-serif font-bold text-xs text-[#2A211D] truncate leading-tight mt-1">{f.name}</span>
-                          <span className="block text-[9.5px] text-[#8E7D75] truncate mt-0.5">{f.finish} • {f.desc}</span>
+                          <span className="block font-serif font-bold text-xs text-[#201712] truncate leading-tight mt-1">{f.name}</span>
+                          <span className="block text-[9.5px] text-[#6D6258] truncate mt-0.5">{f.finish} • {f.desc}</span>
                         </div>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                <div className="text-center py-12 text-[#8E7D75] text-xs font-semibold">
+                <div className="text-center py-12 text-[#6D6258] text-xs font-semibold">
                   No fabric matching search query found in the {activeQualityData.name} catalogue.
                 </div>
               )}
@@ -652,23 +677,23 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
 
             {/* Modal Footer: Pagination */}
             {totalPages > 1 && (
-              <div className="px-5 py-3 border-t border-[#EADFC9]/30 flex justify-between items-center bg-[#FAF8F5] flex-shrink-0">
+              <div className="px-5 py-3 border-t border-[#E0D8CE]/40 flex justify-between items-center bg-[#F4F1EC] flex-shrink-0">
                 <button
                   disabled={catalogPage === 1}
                   onClick={() => setCatalogPage(prev => Math.max(1, prev - 1))}
-                  className="px-3 py-1 bg-white border border-[#EADFC9]/60 rounded-md text-[10px] font-bold hover:border-[#7C5F43]/45 disabled:opacity-40 disabled:pointer-events-none cursor-pointer focus:outline-none"
+                  className="px-3 py-1 bg-[#FFFDFC] border border-[#E0D8CE]/60 rounded-md text-[10px] font-bold hover:border-[#8B6844]/60 disabled:opacity-40 disabled:pointer-events-none cursor-pointer focus:outline-none shadow-xs"
                 >
                   Previous
                 </button>
                 
-                <span className="text-[10px] text-[#8E7D75] font-semibold">
+                <span className="text-[10px] text-[#6D6258] font-semibold">
                   Page {catalogPage} of {totalPages}
                 </span>
 
                 <button
                   disabled={catalogPage === totalPages}
                   onClick={() => setCatalogPage(prev => Math.min(totalPages, prev + 1))}
-                  className="px-3 py-1 bg-white border border-[#EADFC9]/60 rounded-md text-[10px] font-bold hover:border-[#7C5F43]/45 disabled:opacity-40 disabled:pointer-events-none cursor-pointer focus:outline-none"
+                  className="px-3 py-1 bg-[#FFFDFC] border border-[#E0D8CE]/60 rounded-md text-[10px] font-bold hover:border-[#8B6844]/60 disabled:opacity-40 disabled:pointer-events-none cursor-pointer focus:outline-none shadow-xs"
                 >
                   Next
                 </button>
