@@ -23,7 +23,7 @@ export default {
         },
         bg: {
           dark: '#2E221A',    // Primary Dark Base
-          light: '#F4F1EC',   // Warm Ivory Background
+          light: '#ffffff',   // Warm Ivory Background
           card: '#FFFDFC',    // Pure Luxury Card Background
         }
       },

@@ -106,9 +106,8 @@ const MainLayout = ({ children }) => {
         </button>
       </div>
 
-      {/* --- FOOTER --- */}
       <footer className="bg-[#201712] text-stone-300 pt-16 pb-6 mt-auto border-t-2 border-[#8B6844]/30">
-        <div className="max-w-[1480px] mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/5">
             
             <div className="flex flex-col gap-3">
