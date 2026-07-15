@@ -27,7 +27,7 @@ const About = () => {
 We utilize state-of-the-art manufacturing processes to design memory foam, natural latex, and pocket spring comfort cores. Every mattress is crafted with precision, checking for exact density levels and edge support integrity to ensure deep sleep that lasts for years. By controlling the entire manufacturing pipeline, we guarantee that you get premium quality at a fraction of standard retail prices.`;
 
   return (
-    <div className="max-w-[1000px] mx-auto px-6 py-16 select-none animate-fade-in">
+    <div className="max-w-[1000px] mx-auto px-6 py-16 select-none animate-fade-in bg-white">
       <MetaTags 
         title="About Our Factory | TimeWell Mattress & Sofa Manufacturer"
         description="Learn more about TimeWell Mattress Factory, our custom-size sleep technologies, orthopedic design guidelines, and direct-to-home pricing models."

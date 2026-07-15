@@ -46,7 +46,7 @@ const MainLayout = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-bg-light text-primary">
+    <div className="min-h-screen flex flex-col bg-white text-primary">
       
       {/* --- PREMIUM NAVIGATION BAR (WOODNEST STYLE) --- */}
       <header className={`fixed top-0 left-0 w-full z-[1000] border-b bg-white/95 backdrop-blur-md text-[#201712] border-[#E0D8CE]/60 transition-all duration-300 ${scrolled ? 'shadow-md py-2.5' : 'py-4'}`}>
