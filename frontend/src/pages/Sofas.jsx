@@ -61,8 +61,8 @@ const Sofas = () => {
   const featuredSofa = products.find(p => p.isFeatured) || products[0];
 
   return (
-    <div className="w-full select-none bg-white min-h-screen pt-10 pb-16 px-4 md:px-12 lg:px-16 flex flex-col items-center">
-      <div className="w-full max-w-[1400px]">
+    <div className="w-full select-none bg-white min-h-screen pt-10 pb-16 flex flex-col items-center">
+      <div className="w-[92%] max-w-[1500px] px-8">
         <MetaTags 
           title="Custom Sofa Collection | Premium Sofa Manufacturer"
           description="Explore custom sectional sofas, recliners, 2-seaters, 3-seaters, and corner sofa layouts. Handcrafted in India directly from wood frame to fabric."
@@ -288,7 +288,7 @@ Please guide me on how I can customize seating, fabric materials, and colors!`
 
         {/* --- SOFA TRUST BADGES --- */}
         <section className="mt-20 border border-[#E0D8CE]/50 bg-white/70 backdrop-blur-xs rounded-2xl p-8 md:p-12 select-none shadow-2xs">
-          <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 text-center justify-items-center">
+          <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 text-center justify-items-center">
             {[
               {
                 icon: 'fa-couch',

@@ -74,8 +74,8 @@ const Mattresses = () => {
   }
 
   return (
-    <div className="w-full select-none bg-white min-h-screen pt-5 pb-12 px-4 md:px-12 lg:px-16 flex flex-col items-center">
-      <div className="w-full max-w-[1400px]">
+    <div className="w-full select-none bg-white min-h-screen pt-5 pb-12 flex flex-col items-center">
+      <div className="w-[92%] max-w-[1500px] px-8">
         <MetaTags
           title="Explore Mattress Collection | Sleepora Factory Direct"
           description="Browse our range of OrthoRest Premium, CloudNest, BackCare, DreamRest, and Hotel Collection mattresses. Handcrafted to order."

@@ -113,7 +113,7 @@ const Home = () => {
         {/* Soft cream-to-transparent overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-white/98 via-white/90 to-transparent pointer-events-none"></div>
 
-        <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10 w-full">
+        <div className="max-w-[1500px] w-[92%] mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10 w-full">
           <div className="lg:col-span-7 flex flex-col items-start text-left">
             <span className="text-[11px] font-bold text-[#8B6844] uppercase tracking-[2.5px] mb-2 inline-block">
               {heroCopy.heroSubheading}
@@ -203,7 +203,7 @@ const Home = () => {
 
       {/* --- TRUST BADGES BAR --- */}
       <section className="bg-white border-b border-[#E0D8CE]/60 py-6 select-none animate-fade-in">
-        <div className="max-w-[1200px] mx-auto px-6">
+        <div className="max-w-[1500px] w-[92%] mx-auto px-8">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-y-4 gap-x-6 justify-items-center items-center text-center">
             {[
               'Orthopaedic Support',
@@ -226,7 +226,7 @@ const Home = () => {
 
       {/* --- WHY CHOOSE SLEEPORA --- */}
       <section className="py-24 bg-[#201712] text-[#FFFDFC] select-none border-b border-[#8B6844]/30 animate-fade-in">
-        <div className="max-w-[1200px] mx-auto px-6 text-center">
+        <div className="max-w-[1500px] w-[92%] mx-auto px-8 text-center">
           <div className="max-w-[650px] mx-auto mb-20 animate-fade-in">
             <span className="text-xs font-bold text-[#8B6844] uppercase tracking-[2px] mb-3 inline-block">The Sleepora Difference</span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#FFFDFC] mb-4">Why Choose Sleepora?</h2>
@@ -292,7 +292,7 @@ const Home = () => {
 
       {/* --- CRAFTSMANSHIP STORY / ABOUT SECTION (WOODNEST STYLE) --- */}
       <section className="py-16 md:py-20 bg-white select-none border-b border-[#E0D8CE]/50 animate-fade-in">
-        <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16 items-center">
+        <div className="max-w-[1500px] w-[92%] mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16 items-center">
 
           {/* Left: Heading, description, button */}
           <div className="lg:col-span-7 flex flex-col items-start text-left">
@@ -329,7 +329,7 @@ const Home = () => {
 
       {/* --- FEATURED MATTRESS CATALOGUE PREVIEW --- */}
       <section className="py-16 bg-white select-none border-b border-[#E0D8CE]/40 animate-fade-in">
-        <div className="max-w-[1200px] mx-auto px-6">
+        <div className="max-w-[1500px] w-[92%] mx-auto px-8">
           <div className="text-center max-w-[650px] mx-auto mb-12">
             <span className="text-xs font-bold text-[#8B6844] uppercase tracking-[2px] mb-2.5 inline-block">Sleep Architecture Lab</span>
             <h2 className="text-[32px] md:text-[38px] font-serif font-bold text-[#201712] leading-tight">Featured Mattress Collection</h2>
@@ -360,7 +360,7 @@ const Home = () => {
       {/* --- FEATURED SOFA CATALOGUE PREVIEW --- */}
       {featuredSofas.length > 0 && (
         <section className="py-16 bg-white select-none border-b border-[#E0D8CE]/50 animate-fade-in">
-          <div className="max-w-[1200px] mx-auto px-6">
+          <div className="max-w-[1500px] w-[92%] mx-auto px-8">
             <div className="text-center max-w-[650px] mx-auto mb-12">
               <span className="text-xs font-bold text-[#8B6844] uppercase tracking-[2px] mb-2.5 inline-block">Living Room Masterpieces</span>
               <h2 className="text-[32px] md:text-[38px] font-serif font-bold text-[#201712] leading-tight">Featured Sofa Collection</h2>
@@ -390,7 +390,7 @@ const Home = () => {
 
       {/* --- ASSEMBLY TIMELINE --- */}
       <section className="py-16 bg-white select-none border-b border-[#E0D8CE]/50 animate-fade-in">
-        <div className="max-w-[1200px] mx-auto px-6 text-center">
+        <div className="max-w-[1500px] w-[92%] mx-auto px-8 text-center">
           <div className="max-w-[650px] mx-auto mb-12 animate-fade-in">
             <span className="text-xs font-bold text-[#8B6844] uppercase tracking-[2px] mb-2.5 inline-block">Process Preview</span>
             <h2 className="text-[32px] md:text-[38px] font-serif font-bold text-[#201712] leading-tight">Precision Manufacturing Timeline</h2>
@@ -434,7 +434,7 @@ const Home = () => {
       {/* --- CUSTOMER TESTIMONIALS --- */}
       {testimonials.length > 0 && (
         <section className="py-16 bg-white select-none border-b border-[#E0D8CE]/50 animate-fade-in">
-          <div className="max-w-[1200px] mx-auto px-6">
+          <div className="max-w-[1500px] w-[92%] mx-auto px-8">
             <div className="text-center max-w-[650px] mx-auto mb-12">
               <span className="text-xs font-bold text-[#8B6844] uppercase tracking-[2px] mb-2.5 inline-block">Reviews</span>
               <h2 className="text-[32px] md:text-[38px] font-serif font-bold text-[#201712] leading-tight">What Our Customers Say</h2>
