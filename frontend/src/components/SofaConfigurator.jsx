@@ -523,9 +523,9 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
             <div className="flex justify-between items-end mb-3 border-t border-[#E0D8CE]/40 pt-2.5">
               <div>
                 <span className="text-[8px] uppercase tracking-wider text-[#6D6258] font-bold block mb-0.5">Factory Price</span>
-                <span className="text-2.5xl font-serif font-bold text-[#8B6844]">₹{finalPrice.toLocaleString('en-IN')}</span>
+                <span className="text-3xl font-serif font-extrabold text-[#201712]">₹{finalPrice.toLocaleString('en-IN')}</span>
               </div>
-              <span className="text-[9px] bg-[#F4F1EC] text-[#8B6844] font-bold px-2 py-0.5 border border-[#8B6844]/20 rounded-md">
+              <span className="text-[9px] bg-[#F4F1EC] text-[#201712] font-extrabold px-2 py-0.5 border border-[#201712]/20 rounded-md">
                 Save {savingsPercent}%
               </span>
             </div>
