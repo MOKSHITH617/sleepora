@@ -40,82 +40,100 @@ const seedData = async () => {
     await MattressConfig.create({
       cores: [
         {
-          type: 'ortho',
-          name: 'Ortho-Memory Foam',
-          basePrice: 6500,
-          retailMultiplier: 2.0,
-          desc: 'Designed with high-density orthopaedic foam and contouring memory foam. Ideal for back support and posture alignment.',
+          type: 'soft-rebonded',
+          name: 'Soft Foam + Rebonded',
+          basePrice: 5200,
+          retailMultiplier: 1.85,
+          desc: 'Soft comfort layer with firm support base.',
           layers: [
-            { name: 'Quilted Breathable Cover', height: '20px', color: 'linear-gradient(135deg, #E2E8F0, #94A3B8)' },
-            { name: 'Contouring Memory Foam', height: '35px', color: 'linear-gradient(135deg, #FDE047, #CA8A04)' },
-            { name: 'High-Resilience Support Foam', height: '70px', color: 'linear-gradient(135deg, #475569, #1E293B)' },
-            { name: 'Anti-Skid Base', height: '15px', color: 'linear-gradient(135deg, #1E293B, #0F172A)' }
+            { name: 'Quilted Cover Layer', height: '15px', color: 'linear-gradient(135deg, #E2E8F0, #CBD5E1)' },
+            { name: 'Premium Soft Foam Comfort', height: '35px', color: 'linear-gradient(135deg, #FFF9E6, #FFF0CA)' },
+            { name: 'High Density Rebonded Support', height: '70px', color: 'linear-gradient(135deg, #72706E, #4A4847)' }
           ]
         },
         {
-          type: 'latex',
-          name: 'Premium Natural Latex',
-          basePrice: 11500,
-          retailMultiplier: 1.9,
-          desc: 'Eco-friendly, hypoallergenic 100% natural pin-core latex. Excellent bounce, temperature regulation, and durability.',
+          type: 'rebonded-latex',
+          name: 'Rebonded + Latex',
+          basePrice: 8500,
+          retailMultiplier: 1.95,
+          desc: 'Natural latex on top of rebonded support.',
           layers: [
             { name: 'Premium Bamboo Fiber Quilting', height: '25px', color: 'linear-gradient(135deg, #E2E8F0, #A7F3D0)' },
             { name: '100% Natural Pin-Core Latex', height: '50px', color: 'linear-gradient(135deg, #FEF08A, #EAB308)' },
-            { name: 'Super Soft Foam Transition Layer', height: '40px', color: 'linear-gradient(135deg, #E2E8F0, #CBD5E1)' },
-            { name: 'High Density HR Base Foam', height: '50px', color: 'linear-gradient(135deg, #334155, #0F172A)' }
+            { name: 'High Density Rebonded Base', height: '65px', color: 'linear-gradient(135deg, #72706E, #334155)' }
           ]
         },
         {
-          type: 'spring',
-          name: 'Luxury Pocket Spring',
-          basePrice: 9000,
+          type: 'memory-foam',
+          name: 'Memory Foam Mattress',
+          basePrice: 7500,
+          retailMultiplier: 1.9,
+          desc: 'Contouring comfort with pressure relief.',
+          layers: [
+            { name: 'Luxury Knitted Cover', height: '20px', color: 'linear-gradient(135deg, #E2E8F0, #94A3B8)' },
+            { name: 'Plush Memory Foam', height: '40px', color: 'linear-gradient(135deg, #FFF2CC, #FFE599)' },
+            { name: 'High Density Support Base', height: '60px', color: 'linear-gradient(135deg, #EBE6DD, #D6CFC4)' }
+          ]
+        },
+        {
+          type: 'ortho-mattress',
+          name: 'Orthopaedic Mattress',
+          basePrice: 6500,
+          retailMultiplier: 2.0,
+          desc: 'Enhanced back support for better posture.',
+          layers: [
+            { name: 'Cooling Gel Memory Foam Layer', height: '30px', color: 'linear-gradient(135deg, #E0F7FA, #80DEEA)' },
+            { name: 'High Resilient Ortho Support Foam', height: '75px', color: 'linear-gradient(135deg, #A78BFA, #8B5CF6)' }
+          ]
+        },
+        {
+          type: 'hr-foam',
+          name: 'HR Foam Mattress',
+          basePrice: 5800,
+          retailMultiplier: 1.85,
+          desc: 'High resilience foam for superior durability.',
+          layers: [
+            { name: 'Quilted Tencel Fabric Cover', height: '20px', color: 'linear-gradient(135deg, #F1F5F9, #E2E8F0)' },
+            { name: 'Super Soft Transition Foam', height: '30px', color: 'linear-gradient(135deg, #FFF3E0, #FFE0B2)' },
+            { name: 'High Resilience (HR) Support Core', height: '70px', color: 'linear-gradient(135deg, #A7F3D0, #34D399)' }
+          ]
+        },
+        {
+          type: 'pocket-spring',
+          name: 'Pocket Spring Mattress',
+          basePrice: 11500,
           retailMultiplier: 2.1,
-          desc: 'Individual pocketed springs that prevent motion transfer. Layered with high-density foam for plush comfort.',
+          desc: 'Individually packed springs for motion isolation.',
           layers: [
-            { name: 'Plush Knitted Cover Padding', height: '30px', color: 'linear-gradient(135deg, #F1F5F9, #CBD5E1)' },
-            { name: 'High Resilience Foam Pillow-Top', height: '35px', color: 'linear-gradient(135deg, #FED7AA, #F97316)' },
-            { name: 'Pocketed Spring Core Unit', height: '80px', color: 'linear-gradient(135deg, #64748B, #334155)' },
-            { name: 'Sturdy Felt Protection Layer', height: '15px', color: 'linear-gradient(135deg, #1E293B, #0F172A)' }
+            { name: 'Plush Pillow-Top Quilting', height: '30px', color: 'linear-gradient(135deg, #FFEAA7, #FFD166)' },
+            { name: 'Zero-Motion Pocket Springs', height: '80px', color: 'linear-gradient(135deg, #E5E7EB, #9CA3AF)' },
+            { name: 'High Density Felt Base Pad', height: '15px', color: 'linear-gradient(135deg, #D1CFC9, #B8B5AE)' }
           ]
         },
         {
-          type: 'dual',
-          name: 'Dual Comfort (Hard/Soft)',
-          basePrice: 5000,
-          retailMultiplier: 2.0,
-          desc: 'Reversible mattress with one firm side for orthopaedic support and one soft side for cloud-like comfort.',
+          type: 'dual-comfort',
+          name: 'Dual Comfort Mattress',
+          basePrice: 6000,
+          retailMultiplier: 1.8,
+          desc: 'Two-sided comfort – soft & firm in one.',
           layers: [
-            { name: 'Dual-Tone Knitted Fabric Cover', height: '20px', color: 'linear-gradient(135deg, #E2E8F0, #64748B)' },
-            { name: 'Cloud Comfort Soft Foam (Soft Side)', height: '45px', color: 'linear-gradient(135deg, #BFDBFE, #3B82F6)' },
-            { name: 'Super Firm HR Ortho Foam (Firm Side)', height: '60px', color: 'linear-gradient(135deg, #475569, #0F172A)' }
-          ]
-        },
-        {
-          type: 'coir',
-          name: 'Classic Coir Mattress',
-          basePrice: 4200,
-          retailMultiplier: 2.0,
-          desc: 'Traditional firm support using high density natural coconut coir fiber blocks. Stays cool and keeps spine straight.',
-          layers: [
-            { name: 'Cotton Quilted Cover', height: '15px', color: 'linear-gradient(135deg, #F1F5F9, #E2E8F0)' },
-            { name: 'Transition Foam Foam', height: '20px', color: 'linear-gradient(135deg, #E2E8F0, #CBD5E1)' },
-            { name: 'Premium Natural Rubberised Coir Block', height: '65px', color: 'linear-gradient(135deg, #854D0E, #451A03)' },
-            { name: 'Heavy Duty Cotton Fabric Base', height: '10px', color: 'linear-gradient(135deg, #1E293B, #0F172A)' }
+            { name: 'Medium-Soft Comfort Foam (Top)', height: '45px', color: 'linear-gradient(135deg, #FFF3E0, #FFB74D)' },
+            { name: 'Medium-Firm Ortho Support (Bottom)', height: '60px', color: 'linear-gradient(135deg, #D1D5DB, #9CA3AF)' }
           ]
         }
       ],
       sizes: [
-        { name: 'Single (72 x 36)', multiplier: 1.0 },
-        { name: 'Double (72 x 48)', multiplier: 1.4 },
-        { name: 'Queen (78 x 60)', multiplier: 1.6 },
-        { name: 'King (78 x 72)', multiplier: 1.8 }
+        { name: 'Single (72 x 36)', multiplier: 1.00 },
+        { name: 'Double (72 x 48)', multiplier: 1.35 },
+        { name: 'Queen (78 x 60)', multiplier: 1.75 },
+        { name: 'King (78 x 72)', multiplier: 2.10 }
       ],
       thicknesses: [
-        { name: '4-inch', multiplier: 0.8 },
-        { name: '5-inch', multiplier: 1.0 },
-        { name: '6-inch', multiplier: 1.25 },
-        { name: '8-inch', multiplier: 1.5 },
-        { name: '10-inch', multiplier: 1.8 }
+        { name: '4-inch', multiplier: 0.90 },
+        { name: '5-inch', multiplier: 1.00 },
+        { name: '6-inch', multiplier: 1.20 },
+        { name: '8-inch', multiplier: 1.50 },
+        { name: '10-inch', multiplier: 1.80 }
       ]
     });
     console.log('Seeded Mattress configurations.');

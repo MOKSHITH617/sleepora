@@ -168,7 +168,7 @@ const MATTRESS_TYPES = [
     id: 'soft-rebonded',
     name: 'Soft Foam + Rebonded',
     desc: 'Soft comfort layer with firm support base.',
-    basePrice: 7000,
+    basePrice: 5200,
     retailMultiplier: 1.85,
     iconStack: ['#FFF8E7', '#7C7A78'],
     getLayers: (t) => {
@@ -202,7 +202,7 @@ const MATTRESS_TYPES = [
     id: 'rebonded-latex',
     name: 'Rebonded + Latex',
     desc: 'Natural latex on top of rebonded support.',
-    basePrice: 11500,
+    basePrice: 8500,
     retailMultiplier: 1.95,
     iconStack: ['#FCF9F2', '#7C7A78'],
     getLayers: (t) => {
@@ -236,7 +236,7 @@ const MATTRESS_TYPES = [
     id: 'memory-foam',
     name: 'Memory Foam Mattress',
     desc: 'Contouring comfort with pressure relief.',
-    basePrice: 9500,
+    basePrice: 7500,
     retailMultiplier: 1.9,
     iconStack: ['#FFEAA7', '#EBE6DD'],
     getLayers: (t) => {
@@ -267,9 +267,9 @@ const MATTRESS_TYPES = [
   },
   {
     id: 'ortho-mattress',
-    name: 'Orthopedic Mattress',
+    name: 'Orthopaedic Mattress',
     desc: 'Enhanced back support for better posture.',
-    basePrice: 10500,
+    basePrice: 6500,
     retailMultiplier: 2.0,
     iconStack: ['#E0F7FA', '#8B5CF6'],
     getLayers: (t) => {
@@ -303,7 +303,7 @@ const MATTRESS_TYPES = [
     id: 'hr-foam',
     name: 'HR Foam Mattress',
     desc: 'High resilience foam for superior durability.',
-    basePrice: 8500,
+    basePrice: 5800,
     retailMultiplier: 1.85,
     iconStack: ['#FFF3E0', '#34D399'],
     getLayers: (t) => {
@@ -337,7 +337,7 @@ const MATTRESS_TYPES = [
     id: 'pocket-spring',
     name: 'Pocket Spring Mattress',
     desc: 'Individually packed springs for motion isolation.',
-    basePrice: 12000,
+    basePrice: 11500,
     retailMultiplier: 2.1,
     iconStack: ['#FFEAA7', '#D1D5DB', '#D1CFC9'],
     getLayers: (t) => {
@@ -381,7 +381,7 @@ const MATTRESS_TYPES = [
     id: 'dual-comfort',
     name: 'Dual Comfort Mattress',
     desc: 'Two-sided comfort – soft & firm in one.',
-    basePrice: 8000,
+    basePrice: 6000,
     retailMultiplier: 1.8,
     iconStack: ['#FFF3E0', '#D1D5DB'],
     getLayers: (t) => {
@@ -461,13 +461,13 @@ const MattressConfigurator = ({ config, defaultCore }) => {
 
   // Thickness pricing factors
   let thicknessMultiplier = 1.0;
-  if (thicknessVal === 4) thicknessMultiplier = 0.8;
-  else if (thicknessVal === 5) thicknessMultiplier = 1.0;
-  else if (thicknessVal === 6) thicknessMultiplier = 1.15;
-  else if (thicknessVal === 7) thicknessMultiplier = 1.3;
-  else if (thicknessVal === 8) thicknessMultiplier = 1.45;
-  else if (thicknessVal === 9) thicknessMultiplier = 1.6;
-  else if (thicknessVal === 10) thicknessMultiplier = 1.75;
+  if (thicknessVal === 4) thicknessMultiplier = 0.90;
+  else if (thicknessVal === 5) thicknessMultiplier = 1.00;
+  else if (thicknessVal === 6) thicknessMultiplier = 1.20;
+  else if (thicknessVal === 7) thicknessMultiplier = 1.35;
+  else if (thicknessVal === 8) thicknessMultiplier = 1.50;
+  else if (thicknessVal === 9) thicknessMultiplier = 1.65;
+  else if (thicknessVal === 10) thicknessMultiplier = 1.80;
 
   // Factory Price Calculation
   const factoryPrice = Math.round(coreData.basePrice * sizeObj.multiplier * thicknessMultiplier);
