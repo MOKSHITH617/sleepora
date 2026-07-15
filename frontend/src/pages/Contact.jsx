@@ -49,7 +49,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="max-w-[1500px] w-[92%] mx-auto px-8 pt-10 pb-[25px] select-none bg-white">
+    <div className="max-w-[1200px] mx-auto px-6 pt-10 pb-[25px] select-none bg-white">
       <MetaTags 
         title="Contact Us & Get Custom Quotes | Sleepora Mattress Factory"
         description="Get in touch with the Sleepora Mattress Factory. Request custom quotes, find showroom driving directions, or chat with the owner on WhatsApp."

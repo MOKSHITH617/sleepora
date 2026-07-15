@@ -50,7 +50,7 @@ const MainLayout = ({ children }) => {
       
       {/* --- PREMIUM NAVIGATION BAR (WOODNEST STYLE) --- */}
       <header className={`fixed top-0 left-0 w-full z-[1000] border-b bg-white/95 backdrop-blur-md text-[#201712] border-[#E0D8CE]/60 transition-all duration-300 ${scrolled ? 'shadow-md py-2.5' : 'py-4'}`}>
-        <div className="max-w-[1500px] w-[92%] mx-auto px-8 flex justify-between items-center">
+        <div className="max-w-[1200px] mx-auto px-6 flex justify-between items-center">
           
           <Link to="/" className="font-serif text-[30px] font-bold tracking-wide text-[#8B6844] transition-colors duration-300 hover:text-[#6D5134] select-none">
             Sleepora
@@ -107,7 +107,7 @@ const MainLayout = ({ children }) => {
       </div>
 
       <footer className="bg-[#201712] text-stone-300 pt-16 pb-6 mt-auto border-t-2 border-[#8B6844]/30">
-        <div className="max-w-[1500px] w-[92%] mx-auto px-8">
+        <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/5">
             
             <div className="flex flex-col gap-3">
