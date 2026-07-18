@@ -95,7 +95,7 @@ const Mattresses = () => {
           </p>
 
           {/* Category Filter Pills directly under subtitle */}
-          <div className="flex flex-wrap items-center justify-center gap-3.5 mb-2 select-none">
+          <div className="flex overflow-x-auto snap-x snap-mandatory lg:flex-wrap lg:justify-center gap-3.5 mb-2 select-none no-scrollbar w-full pb-2">
             {[
               { label: 'ALL', id: 'all' },
               { label: 'MEMORY FOAM', id: 'ortho' },
@@ -109,7 +109,7 @@ const Mattresses = () => {
                 <button
                   key={idx}
                   onClick={() => handlePillClick(pill.id)}
-                  className={`text-[11px] font-bold py-2.5 px-6 rounded-full border tracking-wider uppercase transition-all duration-300 focus:outline-none cursor-pointer ${
+                  className={`flex-shrink-0 snap-center text-[11px] font-bold py-2.5 px-6 rounded-full border tracking-wider uppercase transition-all duration-300 focus:outline-none cursor-pointer ${
                     isActive
                       ? 'bg-[#8B6844] border-[#8B6844] text-white shadow-sm'
                       : 'bg-white border-[#E0D8CE]/80 text-[#6D6258] hover:text-[#201712] hover:border-[#8B6844]'
@@ -240,7 +240,7 @@ const Mattresses = () => {
           {/* 3-Column Catalog Grid */}
           {sortedProducts.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-x-10 lg:gap-y-8 xl:gap-x-12 xl:gap-y-10 animate-fade-in">
                 {sortedProducts.slice(0, visibleLimit).map((product) => (
                   <MattressCard key={product._id} product={product} />
                 ))}

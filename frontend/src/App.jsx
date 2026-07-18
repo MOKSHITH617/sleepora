@@ -16,9 +16,53 @@ import Stores from './pages/Stores';
 import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 
+import SleeporaLogo from './components/SleeporaLogo';
+import { useState, useEffect } from 'react';
+
 function App() {
+  const [loading, setLoading] = useState(true);
+  const [fadeStage, setFadeStage] = useState('fade-in'); // 'fade-in' | 'visible' | 'fade-out'
+
+  useEffect(() => {
+    // Fade-in timing
+    const timerVisible = setTimeout(() => {
+      setFadeStage('visible');
+    }, 100); // Trigger fade-in immediately on mount
+
+    // Fade-out timing (1200ms visible time)
+    const timerFadeOut = setTimeout(() => {
+      setFadeStage('fade-out');
+    }, 1300);
+
+    // Complete loading after fade-out transition (500ms transition duration)
+    const timerDone = setTimeout(() => {
+      setLoading(false);
+    }, 1800);
+
+    return () => {
+      clearTimeout(timerVisible);
+      clearTimeout(timerFadeOut);
+      clearTimeout(timerDone);
+    };
+  }, []);
+
   return (
     <AuthProvider>
+      {loading && (
+        <div 
+          className={`fixed inset-0 z-[99999] bg-[#FFFDFC] flex flex-col items-center justify-center select-none transition-opacity duration-500 ease-in-out ${
+            fadeStage === 'fade-in' ? 'opacity-0' :
+            fadeStage === 'visible' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className="flex flex-col items-center gap-2">
+            <SleeporaLogo variant="dark" vertical={true} className="mb-2" />
+            <span className="text-[10px] font-sans font-bold tracking-[4px] text-[#8B6844] uppercase animate-pulse mt-4">
+              Loading...
+            </span>
+          </div>
+        </div>
+      )}
       <Router>
         <ScrollToTop />
         <MainLayout>

@@ -551,7 +551,7 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
       </div>
 
       {/* Mobile/Tablet Sticky Bottom CTA Bar (Fixed to viewport) */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#201712] border-t border-[#8B6844]/30 px-6 py-3.5 shadow-[0_-5px_25px_rgba(0,0,0,0.15)] flex justify-between items-center gap-4">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[990] bg-[#201712] border-t border-[#8B6844]/30 px-6 py-3.5 shadow-[0_-5px_25px_rgba(0,0,0,0.15)] flex justify-between items-center gap-4 customizer-sticky-bar">
         <div>
           <span className="text-[8px] uppercase tracking-wider text-[#E0D8CE]/80 font-bold block mb-0.5">Factory Price</span>
           <span className="text-lg font-serif font-bold text-[#F4F1EC]">₹{finalPrice.toLocaleString('en-IN')}</span>
@@ -565,7 +565,7 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
           <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
             <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.852.002-2.631-1.019-5.105-2.875-6.964-1.857-1.859-4.335-2.88-6.97-2.881-5.437 0-9.863 4.421-9.867 9.853-.001 1.73.457 3.419 1.323 4.913l-.973 3.555 3.648-.957z"/>
           </svg>
-          Inquire via WhatsApp
+          Add to Inquiry
         </button>
       </div>
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import API from '../services/api';
 import MetaTags from '../components/MetaTags';
+import SleeporaLogo from '../components/SleeporaLogo';
 
 const FABRIC_QUALITIES = [
   { id: 'standard', name: 'Standard Fabric', modifier: 2500 },
@@ -765,12 +766,13 @@ const AdminDashboard = () => {
         <div>
           {/* Brand Identity */}
           <div className="mb-8 border-b border-stone-800 pb-5">
-            <span className="block font-serif text-2xl font-bold tracking-wide text-[#E3D8C4] select-none">
-              Sleepora
-            </span>
-            <span className="block text-[8px] uppercase tracking-[2px] text-[#7C5F43] font-bold mt-1">
-              Manufacturing Portal
-            </span>
+            <div className="animate-fade-in" style={{ animationDuration: '300ms' }}>
+              <SleeporaLogo 
+                variant="light" 
+                height="40px" 
+                subtitle="Manufacturing Portal" 
+              />
+            </div>
           </div>
 
           <span className="block text-[9px] font-bold text-[#8E7D75] uppercase tracking-wider mb-3.5 px-3">

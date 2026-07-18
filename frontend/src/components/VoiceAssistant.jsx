@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import API from '../services/api';
 
 const LANG_CONFIG = {
@@ -20,8 +20,17 @@ const REDIRECT_KEYWORDS = [
   { path: '/stores', keywords: ['store', 'location', 'branch', 'outlet', 'address', 'दुकान', 'స్టోర్స్', 'കടകൾ', 'ಮಳಿಗೆಗಳು'] }
 ];
 
-const VoiceAssistant = () => {
+const VoiceAssistant = ({ menuActive }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const [isOpen, setIsOpen] = useState(false);
   const [langKey, setLangKey] = useState('en');
   const [messages, setMessages] = useState([
@@ -47,6 +56,14 @@ const VoiceAssistant = () => {
   useEffect(() => {
     setSessionId(`session_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`);
   }, []);
+
+  // Close chat assistant when mobile drawer navigation menu opens
+  useEffect(() => {
+    if (menuActive) {
+      setIsOpen(false);
+      stopSpeaking();
+    }
+  }, [menuActive]);
 
   // Initialize Speech Recognition API
   useEffect(() => {
@@ -77,6 +94,25 @@ const VoiceAssistant = () => {
       rec.onerror = (event) => {
         console.error('Speech Recognition Error:', event.error);
         setIsListening(false);
+        if (event.error === 'not-allowed') {
+          setMessages(prev => [...prev, {
+            id: `err_mic_${Date.now()}`,
+            role: 'assistant',
+            content: '⚠️ Microphone access is blocked. Please click the camera/mic icon in your browser address bar and choose "Allow" to use voice commands.'
+          }]);
+        } else if (event.error === 'no-speech') {
+          setMessages(prev => [...prev, {
+            id: `err_mic_${Date.now()}`,
+            role: 'assistant',
+            content: '⚠️ No speech was detected. Please make sure your microphone is connected and try speaking again.'
+          }]);
+        } else if (event.error === 'network') {
+          setMessages(prev => [...prev, {
+            id: `err_mic_${Date.now()}`,
+            role: 'assistant',
+            content: '⚠️ A network connection issue occurred with the speech recognition service.'
+          }]);
+        }
       };
 
       recognitionRef.current = rec;
@@ -103,9 +139,18 @@ const VoiceAssistant = () => {
     }
 
     if (isListening) {
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+      } catch (err) {
+        console.warn('Failed to stop speech recognition:', err);
+      }
     } else {
-      recognitionRef.current.start();
+      try {
+        recognitionRef.current.start();
+      } catch (err) {
+        console.warn('Failed to start speech recognition:', err);
+        setIsListening(false);
+      }
     }
   };
 
@@ -226,14 +271,23 @@ const VoiceAssistant = () => {
     }
   };
 
+  const isDetailsPage = location.pathname.includes('/sofas/') || location.pathname.includes('/mattresses/');
+  const positionClass = isOpen
+    ? (isMobile 
+        ? (isDetailsPage ? 'inset-x-4 bottom-[85px]' : 'inset-x-4 bottom-4') 
+        : 'inset-x-4 bottom-4 md:inset-auto md:bottom-6 md:right-24')
+    : (isMobile 
+        ? (isDetailsPage ? 'bottom-[85px] right-6' : 'bottom-[84px] right-6') 
+        : 'bottom-6 right-24');
+
   return (
-    <div className="fixed bottom-6 right-24 z-[1000] select-none font-sans">
+    <div className={`fixed z-[1000] select-none font-sans transition-all duration-300 ${positionClass}`}>
       
       {/* MINIMIZED BUBBLE BUTTON */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="w-14 h-14 bg-gradient-to-br from-primary to-[#1E293B] hover:scale-110 text-white rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 relative border border-white/20 animate-bounce"
+          className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-primary to-[#1E293B] hover:scale-110 text-white rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 relative border border-white/20"
           aria-label="Open AI Assistant"
         >
           <span className="text-xl">💬</span>
@@ -245,7 +299,7 @@ const VoiceAssistant = () => {
 
       {/* EXPANDED GLASSMORPHISM CONTAINER */}
       {isOpen && (
-        <div className="w-[340px] md:w-[380px] h-[500px] backdrop-blur-md bg-white/80 border border-white/40 shadow-2xl rounded-2xl flex flex-col overflow-hidden transition-all duration-300">
+        <div className="w-full md:w-[380px] h-[calc(100vh-120px)] md:h-[500px] max-h-[550px] backdrop-blur-md bg-white/95 border border-[#E0D8CE]/40 shadow-2xl rounded-2xl flex flex-col overflow-hidden transition-all duration-300">
           
           {/* Header */}
           <div className="bg-primary text-white p-4 flex justify-between items-center border-b border-primary-light">
@@ -352,7 +406,7 @@ const VoiceAssistant = () => {
             {/* Mic Toggle Button */}
             <button
               onClick={toggleListening}
-              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all flex-shrink-0 ${
                 isListening 
                   ? 'bg-red-500 text-white animate-pulse' 
                   : 'bg-bg-light hover:bg-border text-primary'
@@ -368,7 +422,7 @@ const VoiceAssistant = () => {
                 if (!muteTTS) stopSpeaking();
                 setMuteTTS(!muteTTS);
               }}
-              className={`text-xs px-1.5 py-1 rounded border border-border ${muteTTS ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-600'}`}
+              className={`text-xs px-1.5 py-1 rounded border border-border flex-shrink-0 ${muteTTS ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-600'}`}
               title={muteTTS ? "Unmute Speech synthesis" : "Mute Speech synthesis"}
             >
               {muteTTS ? "🔇" : "🔊"}
@@ -381,12 +435,12 @@ const VoiceAssistant = () => {
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
               placeholder={LANG_CONFIG[langKey].placeholder}
-              className="flex-grow bg-bg-light border border-border rounded-full py-2 px-4 text-xs focus:outline-none text-primary"
+              className="flex-grow min-w-0 bg-bg-light border border-border rounded-full py-2 px-4 text-xs focus:outline-none text-primary"
             />
 
             <button
               onClick={() => handleSendMessage()}
-              className="w-9 h-9 bg-primary hover:bg-primary-light text-white font-bold rounded-full flex items-center justify-center text-xs focus:outline-none"
+              className="w-9 h-9 bg-primary hover:bg-primary-light text-white font-bold rounded-full flex items-center justify-center text-xs focus:outline-none flex-shrink-0"
               title="Send text query"
             >
               ➔

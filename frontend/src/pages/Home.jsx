@@ -118,7 +118,7 @@ const Home = () => {
             <span className="text-[11px] font-bold text-[#8B6844] uppercase tracking-[2.5px] mb-2 inline-block">
               {heroCopy.heroSubheading}
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-[54px] font-serif font-bold text-[#201712] leading-[1.12] mb-5">
+            <h1 className="text-[28px] sm:text-[32px] lg:text-[54px] font-serif font-bold text-[#201712] leading-[1.12] mb-5">
               {heroCopy.heroTitle.endsWith('Life.') ? (
                 <>
                   {heroCopy.heroTitle.substring(0, heroCopy.heroTitle.lastIndexOf('Life.'))}
@@ -141,19 +141,20 @@ const Home = () => {
             <div className="flex flex-row gap-4 mb-8 w-full sm:w-auto">
               <Link
                 to="/mattresses"
-                className="flex-grow sm:flex-grow-0 btn-luxury-wood px-8 py-3.5 rounded-none font-bold text-xs tracking-wider uppercase text-center"
+                className="flex-grow sm:flex-grow-0 btn-luxury-wood px-8 py-3.5 rounded-[16px] font-bold text-xs tracking-wider uppercase text-center"
               >
                 Explore Mattresses
               </Link>
               <Link
                 to="/sofas"
-                className="flex-grow sm:flex-grow-0 border border-[#8B6844] text-[#8B6844] bg-transparent px-8 py-3.5 rounded-none font-bold text-xs tracking-wider uppercase hover:bg-white transition-all duration-300 text-center"
+                className="flex-grow sm:flex-grow-0 border border-[#8B6844] text-[#8B6844] bg-transparent px-8 py-3.5 rounded-[16px] font-bold text-xs tracking-wider uppercase hover:bg-white transition-all duration-300 text-center"
               >
                 Explore Sofas
               </Link>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 border-t border-[#E0D8CE]/60 pt-5 w-full max-w-[580px]">
+            {/* Desktop Stats Grid */}
+            <div className="hidden md:grid grid-cols-3 gap-6 border-t border-[#E0D8CE]/60 pt-5 w-full max-w-[580px]">
               <div className="flex items-center gap-3.5">
                 <span className="text-[#8B6844] text-3xl font-serif font-bold">40%</span>
                 <div className="flex flex-col text-left">
@@ -177,6 +178,38 @@ const Home = () => {
               </div>
             </div>
 
+            {/* Mobile Stats Scroll-Snap Flex Row */}
+            <div className="flex md:hidden overflow-x-auto snap-x snap-mandatory gap-4 border-t border-[#E0D8CE]/60 pt-5 w-full no-scrollbar pb-2">
+              <div className="flex-shrink-0 snap-center flex items-center gap-3 bg-[#F8F5EF] px-4 py-2.5 rounded-lg min-w-[140px]">
+                <span className="text-[#8B6844] text-2xl font-serif font-bold">40%</span>
+                <div className="flex flex-col text-left">
+                  <span className="text-[9px] font-bold text-[#6D6258] uppercase tracking-wider leading-none">Direct</span>
+                  <span className="text-[9px] font-bold text-[#6D6258] uppercase tracking-wider leading-none mt-0.5">Savings</span>
+                </div>
+              </div>
+              <div className="flex-shrink-0 snap-center flex items-center gap-3 bg-[#F8F5EF] px-4 py-2.5 rounded-lg min-w-[140px]">
+                <span className="text-[#8B6844] text-2xl font-serif font-bold">100%</span>
+                <div className="flex flex-col text-left">
+                  <span className="text-[9px] font-bold text-[#6D6258] uppercase tracking-wider leading-none">Custom</span>
+                  <span className="text-[9px] font-bold text-[#6D6258] uppercase tracking-wider leading-none mt-0.5">Sizing</span>
+                </div>
+              </div>
+              <div className="flex-shrink-0 snap-center flex items-center gap-3 bg-[#F8F5EF] px-4 py-2.5 rounded-lg min-w-[140px]">
+                <span className="text-[#8B6844] text-2xl font-serif font-bold">10Y</span>
+                <div className="flex flex-col text-left">
+                  <span className="text-[9px] font-bold text-[#6D6258] uppercase tracking-wider leading-none">Certified</span>
+                  <span className="text-[9px] font-bold text-[#6D6258] uppercase tracking-wider leading-none mt-0.5">Warranty</span>
+                </div>
+              </div>
+              <div className="flex-shrink-0 snap-center flex items-center gap-3 bg-[#F8F5EF] px-4 py-2.5 rounded-lg min-w-[140px]">
+                <span className="text-[#8B6844] text-2xl font-serif font-bold">20+</span>
+                <div className="flex flex-col text-left">
+                  <span className="text-[9px] font-bold text-[#6D6258] uppercase tracking-wider leading-none">Years</span>
+                  <span className="text-[9px] font-bold text-[#6D6258] uppercase tracking-wider leading-none mt-0.5">Exp</span>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <div className="lg:col-span-5 relative flex items-center justify-center select-none">
@@ -189,7 +222,7 @@ const Home = () => {
               />
 
               {/* Experience Badge overlay */}
-              <div className="absolute bottom-[-15px] left-[-15px] bg-white border border-[#E0D8CE]/50 p-4 shadow-lg flex items-center gap-3 z-20">
+              <div className="absolute bottom-[-15px] left-[-15px] bg-white border border-[#E0D8CE]/50 p-4 shadow-lg flex items-center gap-3 z-20 hidden md:flex">
                 <span className="text-3xl font-serif font-bold text-[#8B6844] leading-none">20+</span>
                 <div className="flex flex-col text-left">
                   <span className="text-[8px] font-bold text-[#6D6258] uppercase tracking-wider leading-none">Years of</span>
@@ -307,7 +340,7 @@ const Home = () => {
             </p>
             <Link
               to="/factory"
-              className="inline-block border border-[#8B6844] text-[#8B6844] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3 px-7 hover:bg-[#8B6844] hover:text-white transition-all duration-300 rounded-none"
+              className="inline-block border border-[#8B6844] text-[#8B6844] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3 px-7 hover:bg-[#8B6844] hover:text-white transition-all duration-300 rounded-[16px]"
             >
               Read Our Story
             </Link>
@@ -349,7 +382,7 @@ const Home = () => {
           <div className="mt-12 text-center animate-fade-in">
             <Link
               to="/mattresses"
-              className="inline-block border border-[#8B6844] text-[#8B6844] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3.5 px-8 hover:bg-[#8B6844] hover:text-white transition-all duration-300"
+              className="inline-block border border-[#8B6844] text-[#8B6844] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3.5 px-8 hover:bg-[#8B6844] hover:text-white transition-all duration-300 rounded-[16px]"
             >
               EXPLORE MATTRESS COLLECTION
             </Link>
@@ -379,7 +412,7 @@ const Home = () => {
             <div className="mt-12 text-center animate-fade-in">
               <Link
                 to="/sofas"
-                className="inline-block border border-[#8B6844] text-[#8B6844] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3.5 px-8 hover:bg-[#8B6844] hover:text-white transition-all duration-300"
+                className="inline-block border border-[#8B6844] text-[#8B6844] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3.5 px-8 hover:bg-[#8B6844] hover:text-white transition-all duration-300 rounded-[16px]"
               >
                 EXPLORE SOFA COLLECTION
               </Link>
@@ -399,32 +432,32 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative text-left">
             <div className="flex flex-col items-start relative z-10 bg-white p-6 border border-[#E0D8CE]/60 hover:border-[#8B6844]/60 transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1">
-              <span className="w-8 h-8 btn-luxury-wood text-white rounded-none flex items-center justify-center font-serif font-bold text-sm shadow-xs mb-6">1</span>
+              <span className="w-8 h-8 btn-luxury-wood text-white rounded-full flex items-center justify-center font-serif font-bold text-sm shadow-xs mb-6">1</span>
               <h4 className="font-serif font-bold text-base text-[#201712] mb-2">1. Material Selection</h4>
               <p className="text-[11.5px] text-[#6D6258] leading-relaxed">We source certified high-density foam core sheets, organic latex, and seasoned Sal wood framing components.</p>
             </div>
 
             <div className="flex flex-col items-start relative z-10 bg-white p-6 border border-[#E0D8CE]/60 hover:border-[#8B6844]/60 transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1">
-              <span className="w-8 h-8 btn-luxury-wood text-white rounded-none flex items-center justify-center font-serif font-bold text-sm shadow-xs mb-6">2</span>
+              <span className="w-8 h-8 btn-luxury-wood text-white rounded-full flex items-center justify-center font-serif font-bold text-sm shadow-xs mb-6">2</span>
               <h4 className="font-serif font-bold text-base text-[#201712] mb-2">2. Manufacturing</h4>
               <p className="text-[11.5px] text-[#6D6258] leading-relaxed">Components are precisely CNC-sliced or framed, and custom bamboo quilted covers are stitched by artisans.</p>
             </div>
 
             <div className="flex flex-col items-start relative z-10 bg-white p-6 border border-[#E0D8CE]/60 hover:border-[#8B6844]/60 transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1">
-              <span className="w-8 h-8 btn-luxury-wood text-white rounded-none flex items-center justify-center font-serif font-bold text-sm shadow-xs mb-6">3</span>
+              <span className="w-8 h-8 btn-luxury-wood text-white rounded-full flex items-center justify-center font-serif font-bold text-sm shadow-xs mb-6">3</span>
               <h4 className="font-serif font-bold text-base text-[#201712] mb-2">3. Quality Testing</h4>
               <p className="text-[11.5px] text-[#6D6258] leading-relaxed">The product passes compression load checks and seam reinforcement evaluations to verify longevity.</p>
             </div>
 
             <div className="flex flex-col items-start relative z-10 bg-white p-6 border border-[#E0D8CE]/60 hover:border-[#8B6844]/60 transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1">
-              <span className="w-8 h-8 btn-luxury-wood text-white rounded-none flex items-center justify-center font-serif font-bold text-sm shadow-xs mb-6">4</span>
+              <span className="w-8 h-8 btn-luxury-wood text-white rounded-full flex items-center justify-center font-serif font-bold text-sm shadow-xs mb-6">4</span>
               <h4 className="font-serif font-bold text-base text-[#201712] mb-2">4. Delivery</h4>
               <p className="text-[11.5px] text-[#6D6258] leading-relaxed">Direct dispatch via specialized logistics networks with protective wrapping for dust-free arrival.</p>
             </div>
           </div>
 
           <div className="mt-16">
-            <Link to="/factory" className="inline-block border border-[#8B6844] text-[#8B6844] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3.5 px-8 hover:bg-[#8B6844] hover:text-white transition-all duration-300">
+            <Link to="/factory" className="inline-block border border-[#8B6844] text-[#8B6844] bg-transparent text-[11px] font-bold tracking-[1.5px] uppercase py-3.5 px-8 hover:bg-[#8B6844] hover:text-white transition-all duration-300 rounded-[16px]">
               Tour Factory Manufacturing In Detail
             </Link>
           </div>
@@ -467,7 +500,7 @@ const Home = () => {
                     </p>
                   </div>
                   <div className="flex items-center gap-3 border-t border-[#E0D8CE]/40 pt-4">
-                    <span className="w-9 h-9 bg-white text-[#8B6844] rounded-none flex items-center justify-center font-bold text-xs border border-[#E0D8CE]/60">
+                    <span className="w-9 h-9 bg-white text-[#8B6844] rounded-full flex items-center justify-center font-bold text-xs border border-[#E0D8CE]/60">
                       {t.avatar || t.name[0]}
                     </span>
                     <div>
@@ -496,7 +529,7 @@ const Home = () => {
             href={`https://wa.me/919876543210?text=${encodeURIComponent("Hi, I would like to inquire about customizing a mattress or sofa.")}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 bg-whatsapp hover:bg-whatsapp-dark text-white font-bold text-xs tracking-wider uppercase py-3.5 px-8 rounded-none transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg"
+            className="inline-flex items-center gap-2.5 bg-whatsapp hover:bg-whatsapp-dark text-white font-bold text-xs tracking-wider uppercase py-3.5 px-8 rounded-[16px] transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
               <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.73-1.455L0 24zm6.59-4.846c1.6.95 3.473 1.452 5.378 1.453 5.541 0 10.051-4.509 10.055-10.05.002-2.684-1.038-5.207-2.93-7.098C17.26 1.57 14.75 .53 12.008.53c-5.547 0-10.059 4.511-10.063 10.055-.001 1.902.497 3.762 1.442 5.36l-.946 3.454 3.541-.928zM17.52 14.33c-.302-.15-1.785-.88-2.053-.978-.268-.1-.463-.15-.658.15-.195.3-.755.95-.926 1.15-.17.2-.34.225-.642.075-.302-.15-1.272-.469-2.423-1.496-.895-.798-1.5-1.784-1.676-2.084-.176-.3-.019-.462.132-.611.135-.134.302-.35.453-.525.151-.175.201-.3.302-.5.101-.2.05-.375-.025-.525-.075-.15-.658-1.583-.902-2.172-.238-.574-.479-.496-.658-.505-.17-.008-.365-.01-.56-.01-.195 0-.512.074-.78.373-.268.3-.993.972-.993 2.37 0 1.399 1.018 2.748 1.164 2.948.146.2 2.005 3.061 4.856 4.285.679.292 1.209.466 1.62.597.683.217 1.303.187 1.795.114.549-.08 1.785-.73 2.039-1.436.254-.707.254-1.314.177-1.438-.077-.123-.28-.2-.58-.35z" />

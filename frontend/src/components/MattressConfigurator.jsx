@@ -570,19 +570,19 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
             <h3 className="text-xl md:text-2xl font-serif font-bold text-[#201712] mb-1">Select Custom Specifications</h3>
             <p className="text-xs text-[#6D6258] mb-5">Choose core materials, sizes, and slide the mattress depth</p>
 
-            {/* 1. Core Selection Grid (Horizontally scrollable on mobile/tablet, grid on desktop) */}
+            {/* 1. Core Selection Grid (Grid layout on mobile/tablet/desktop) */}
             <div className="mb-5">
               <label className="block text-[10px] font-bold text-[#201712] uppercase tracking-[1.5px] mb-2">
                 1. Choose Mattress Type
               </label>
-              <div className="flex overflow-x-auto snap-x snap-mandatory gap-2.5 pb-3 md:pb-0 md:grid md:grid-cols-2 lg:grid-cols-4 scrollbar-none">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 w-full">
                 {MATTRESS_TYPES.map((c, idx) => {
                   const isSelected = selectedCore === c.id;
-                  const spanClass = idx === 6 ? 'md:col-span-2 lg:col-span-2' : '';
+                  const spanClass = idx === 6 ? 'col-span-2 md:col-span-2 lg:col-span-2' : '';
                   return (
                     <label 
                       key={c.id}
-                      className={`border p-2.5 flex flex-col justify-between cursor-pointer transition-all duration-200 select-none rounded-xl relative flex-shrink-0 w-[135px] md:w-auto snap-start ${spanClass} ${
+                      className={`border p-2.5 flex flex-col justify-between cursor-pointer transition-all duration-200 select-none rounded-xl relative w-full ${spanClass} ${
                         isSelected 
                           ? 'border-[#8B6844] bg-[#F4F1EC] shadow-sm' 
                           : 'border-[#E0D8CE]/60 bg-[#FFFDFC] hover:border-[#8B6844]/60'
@@ -809,7 +809,7 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
       </div>
 
       {/* Mobile/Tablet Sticky Bottom CTA Bar (Fixed to viewport) */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#201712] border-t border-[#8B6844]/30 px-6 py-3.5 shadow-[0_-5px_25px_rgba(0,0,0,0.15)] flex justify-between items-center gap-4">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[990] bg-[#201712] border-t border-[#8B6844]/30 px-6 py-3.5 shadow-[0_-5px_25px_rgba(0,0,0,0.15)] flex justify-between items-center gap-4 customizer-sticky-bar">
         <div>
           <span className="text-[8px] uppercase tracking-wider text-[#E0D8CE]/80 font-bold block mb-0.5">Factory Price</span>
           <span className="text-lg font-serif font-bold text-[#F4F1EC]">₹{factoryPrice.toLocaleString('en-IN')}</span>
@@ -823,7 +823,7 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
           <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
             <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.852.002-2.631-1.019-5.105-2.875-6.964-1.857-1.859-4.335-2.88-6.97-2.881-5.437 0-9.863 4.421-9.867 9.853-.001 1.73.457 3.419 1.323 4.913l-.973 3.555 3.648-.957z"/>
           </svg>
-          Inquire via WhatsApp
+          Add to Inquiry
         </button>
       </div>
 

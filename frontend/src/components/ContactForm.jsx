@@ -107,7 +107,7 @@ Please send me the price details and dispatch timeline!`;
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col">
-            <label htmlFor="form-name" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Full Name</label>
+            <label htmlFor="form-name" className="text-sm md:text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Full Name</label>
             <input 
               id="form-name"
               type="text" 
@@ -115,12 +115,12 @@ Please send me the price details and dispatch timeline!`;
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Rajesh Kumar"
               required
-              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
  
           <div className="flex flex-col">
-            <label htmlFor="form-phone" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">WhatsApp Mobile</label>
+            <label htmlFor="form-phone" className="text-sm md:text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">WhatsApp Mobile</label>
             <input 
               id="form-phone"
               type="tel" 
@@ -130,13 +130,13 @@ Please send me the price details and dispatch timeline!`;
               pattern="[0-9]{10}"
               title="Ten digit mobile number"
               required
-              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
         </div>
  
         <div className="flex flex-col">
-          <label htmlFor="form-email" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Email Address</label>
+          <label htmlFor="form-email" className="text-sm md:text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Email Address</label>
           <input 
             id="form-email"
             type="email" 
@@ -144,13 +144,13 @@ Please send me the price details and dispatch timeline!`;
             onChange={(e) => setEmail(e.target.value)}
             placeholder="e.g. rajesh@example.com"
             required
-            className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+            className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
           />
         </div>
  
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col">
-            <label htmlFor="form-select-cat" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Product Category</label>
+            <label htmlFor="form-select-cat" className="text-sm md:text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Product Category</label>
             <select
               id="form-select-cat"
               value={category}
@@ -158,7 +158,7 @@ Please send me the price details and dispatch timeline!`;
                 setCategory(e.target.value);
                 setProductSelection(e.target.value === 'mattress' ? 'Ortho-Memory Foam' : 'Royal Sectional Sofa');
               }}
-              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
             >
               <option value="mattress">Mattress Range</option>
               <option value="sofa">Sofa Collection</option>
@@ -167,13 +167,13 @@ Please send me the price details and dispatch timeline!`;
           </div>
  
           <div className="flex flex-col">
-            <label htmlFor="form-select-prod" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Product Selection</label>
+            <label htmlFor="form-select-prod" className="text-sm md:text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Product Selection</label>
             {category === 'mattress' ? (
               <select
                 id="form-select-prod"
                 value={productSelection}
                 onChange={(e) => setProductSelection(e.target.value)}
-                className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
+                className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
               >
                 <option value="Ortho-Memory Foam">Ortho-Memory Foam</option>
                 <option value="Premium Natural Latex">Premium Natural Latex</option>
@@ -186,7 +186,7 @@ Please send me the price details and dispatch timeline!`;
                 id="form-select-prod"
                 value={productSelection}
                 onChange={(e) => setProductSelection(e.target.value)}
-                className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
+                className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer"
               >
                 <option value="Royal Sectional Corner Sofa">Royal Sectional Corner Sofa</option>
                 <option value="Plush Lounge Recliner">Plush Lounge Recliner</option>
@@ -201,7 +201,7 @@ Please send me the price details and dispatch timeline!`;
                 value={productSelection}
                 onChange={(e) => setProductSelection(e.target.value)}
                 placeholder="What product are you interested in?"
-                className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+                className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
               />
             )}
           </div>
@@ -209,7 +209,7 @@ Please send me the price details and dispatch timeline!`;
  
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col">
-            <label htmlFor="form-dimension" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Dimensions Preferred</label>
+            <label htmlFor="form-dimension" className="text-sm md:text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Dimensions Preferred</label>
             <select
               id="form-dimension"
               value={dimensionType}
@@ -222,7 +222,7 @@ Please send me the price details and dispatch timeline!`;
                   setDimension('');
                 }
               }}
-              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer mb-2.5"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none focus:border-[#7C5F43] text-[#2A211D] cursor-pointer mb-2.5"
             >
               <option value="Single Bed (72 x 36)">Single Bed (72" x 36")</option>
               <option value="Double Bed (72 x 48)">Double Bed (72" x 48")</option>
@@ -239,13 +239,13 @@ Please send me the price details and dispatch timeline!`;
                 onChange={(e) => setDimension(e.target.value)}
                 placeholder="e.g. custom 75x62 inches"
                 required
-                className="bg-[#FAF8F5] border border-[#7C5F43]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none text-[#2A211D] animate-fade-in placeholder-[#8E7D75]"
+                className="bg-[#FAF8F5] border border-[#7C5F43]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none text-[#2A211D] animate-fade-in placeholder-[#8E7D75]"
               />
             )}
           </div>
  
           <div className="flex flex-col">
-            <label htmlFor="form-qty" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Required Quantity</label>
+            <label htmlFor="form-qty" className="text-sm md:text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Required Quantity</label>
             <input 
               id="form-qty"
               type="number" 
@@ -253,27 +253,27 @@ Please send me the price details and dispatch timeline!`;
               value={quantity}
               onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
               required
-              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
+              className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75]"
             />
           </div>
         </div>
  
         <div className="flex flex-col">
-          <label htmlFor="form-message" className="text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Special Sizing & Details</label>
+          <label htmlFor="form-message" className="text-sm md:text-[10px] font-bold text-[#2A211D] uppercase tracking-wider mb-1.5">Special Sizing & Details</label>
           <textarea 
             id="form-message"
             rows="3"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="e.g. My bed frame is exactly 75x62 inches and I need an 8-inch thickness..."
-            className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-xs focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75] resize-none"
+            className="bg-[#FAF8F5] border border-[#EADFC9]/60 rounded-none py-2.5 px-3.5 text-base md:text-xs min-h-[44px] md:min-h-0 focus:outline-none focus:border-[#7C5F43] text-[#2A211D] placeholder-[#8E7D75] resize-none"
           ></textarea>
         </div>
  
         <button 
           type="submit" 
           disabled={loading}
-          className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-xs uppercase tracking-wider py-3.5 rounded-none shadow-md flex items-center justify-center gap-2 mt-2 transition-all duration-300 disabled:opacity-50 focus:outline-none"
+          className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-sm md:text-xs uppercase tracking-wider py-3.5 rounded-none shadow-md flex items-center justify-center gap-2 mt-2 transition-all duration-300 disabled:opacity-50 focus:outline-none min-h-[44px]"
         >
           <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
             <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11.951 16.942l-1.378 5.244-5.244-1.378c.905.492 1.944.75 3.02.75 3.182 0 5.767-2.586 5.768-5.766 0-3.18-2.585-5.766-5.766-5.766z"/>
@@ -308,7 +308,7 @@ Please send me the price details and dispatch timeline!`;
             <div className="flex flex-col gap-2">
               <button 
                 onClick={handleWhatsAppRedirect}
-                className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-xs uppercase tracking-wider py-3 rounded-none flex items-center justify-center gap-2 focus:outline-none"
+                className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-xs uppercase tracking-wider py-3.5 rounded-none flex items-center justify-center gap-2 focus:outline-none min-h-[44px]"
               >
                 Connect with Factory Owner Now
               </button>

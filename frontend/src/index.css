@@ -241,3 +241,8 @@ body.home-scroll-active ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(90deg, transparent 0%, #C7A36B 50%, transparent 100%);
   opacity: 0.5;
 }
+
+/* Float WhatsApp button higher when mobile customizer bottom bar is active */
+body:has(.customizer-sticky-bar) .whatsapp-btn {
+  bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+}
