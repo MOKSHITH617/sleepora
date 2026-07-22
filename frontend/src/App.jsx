@@ -13,6 +13,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import About from './pages/About';
 import Warranty from './pages/Warranty';
 import Stores from './pages/Stores';
+import NotFound from './pages/NotFound';
 import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -82,6 +83,7 @@ function App() {
             <Route path="/stores" element={<Stores />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </MainLayout>
       </Router>

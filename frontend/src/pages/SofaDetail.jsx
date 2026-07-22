@@ -131,6 +131,18 @@ const SofaDetail = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState('specs');
+
+  // Lock body scroll when mobile customizer bottom sheet is open
+  useEffect(() => {
+    if (isBottomSheetOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isBottomSheetOpen]);
   
   // Custom configured parameters
   const [customType, setSelectedType] = useState('3 Seater');
@@ -833,7 +845,7 @@ Please assist me with booking!`;
 
       {/* MOBILE BOTTOM SHEET FOR CUSTOMIZATION */}
       {isMobile && isBottomSheetOpen && (
-        <div className="fixed inset-0 z-[3000] flex items-end justify-center select-none font-sans text-left">
+        <div className="fixed inset-0 z-[3000] flex items-end justify-center font-sans text-left">
           {/* Backdrop dimming */}
           <div 
             onClick={() => setIsBottomSheetOpen(false)}
@@ -874,7 +886,7 @@ Please assist me with booking!`;
             </div>
 
             {/* Scrollable Configuration Content Area */}
-            <div className="flex-grow overflow-y-auto p-5 space-y-6">
+            <div className="flex-grow overflow-y-auto overscroll-contain touch-pan-y p-5 space-y-6">
               
               {/* Step 1: Choose Size & Layout */}
               <div className="flex flex-col gap-2">

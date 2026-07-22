@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 
 // Configure dotenv path relative to directory
 dotenv.config({ path: path.join(__dirname, '../.env') });
@@ -11,6 +12,22 @@ const MattressConfig = require('../models/MattressConfig');
 const SofaConfig = require('../models/SofaConfig');
 const Testimonial = require('../models/Testimonial');
 const HomepageContent = require('../models/HomepageContent');
+
+// Load Cloudinary URL mapping if present
+let cloudinaryMap = {};
+const cloudinaryMapPath = path.join(__dirname, '../config/cloudinary_urls.json');
+if (fs.existsSync(cloudinaryMapPath)) {
+  try {
+    cloudinaryMap = JSON.parse(fs.readFileSync(cloudinaryMapPath, 'utf8'));
+  } catch (e) {
+    console.warn('Warning: Could not parse cloudinary_urls.json');
+  }
+}
+
+const resolveImages = (imagesArray) => {
+  if (!Array.isArray(imagesArray)) return imagesArray;
+  return imagesArray.map(img => cloudinaryMap[img] || img);
+};
 
 const seedData = async () => {
   try {
@@ -390,7 +407,8 @@ const seedData = async () => {
       }
     ];
 
-    await Product.create(mattresses);
+    const mappedMattresses = mattresses.map(m => ({ ...m, images: resolveImages(m.images) }));
+    await Product.create(mappedMattresses);
     console.log('Seeded Mattress catalogue items.');
 
     // 5. Seed Sofa Catalogue Products
@@ -578,7 +596,8 @@ const seedData = async () => {
       }
     ];
 
-    await Product.create(sofas);
+    const mappedSofas = sofas.map(s => ({ ...s, images: resolveImages(s.images) }));
+    await Product.create(mappedSofas);
     console.log('Seeded Sofa catalogue items.');
 
     // 6. Seed Testimonials (Google Maps reviews mock)

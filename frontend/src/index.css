@@ -242,7 +242,9 @@ body.home-scroll-active ::-webkit-scrollbar-thumb:hover {
   opacity: 0.5;
 }
 
-/* Float WhatsApp button higher when mobile customizer bottom bar is active */
-body:has(.customizer-sticky-bar) .whatsapp-btn {
-  bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+/* Float WhatsApp button higher ONLY on mobile when mobile customizer bottom bar is active */
+@media (max-width: 767px) {
+  body:has(.customizer-sticky-bar) .whatsapp-btn {
+    bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+  }
 }

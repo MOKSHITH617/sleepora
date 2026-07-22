@@ -84,6 +84,18 @@ const MattressDetail = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState('specs');
+
+  // Lock body scroll when mobile customizer bottom sheet is open
+  useEffect(() => {
+    if (isBottomSheetOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isBottomSheetOpen]);
   
   // Custom scroll navigation refs & active progress step
   const scrollContainerRef = useRef(null);
@@ -873,7 +885,7 @@ Please assist me with booking!`;
 
       {/* MOBILE BOTTOM SHEET FOR CUSTOMIZATION */}
       {isMobile && isBottomSheetOpen && (
-        <div className="fixed inset-0 z-[3000] flex items-end justify-center select-none font-sans text-left">
+        <div className="fixed inset-0 z-[3000] flex items-end justify-center font-sans text-left">
           {/* Backdrop dimming */}
           <div 
             onClick={() => setIsBottomSheetOpen(false)}
@@ -964,7 +976,7 @@ Please assist me with booking!`;
             <div 
               ref={scrollContainerRef}
               onScroll={handleScroll}
-              className="flex-grow overflow-y-auto p-6 space-y-8 bg-[#FAF8F5] scroll-smooth"
+              className="flex-grow overflow-y-auto overscroll-contain touch-pan-y p-6 space-y-8 bg-[#FAF8F5] scroll-smooth"
             >
               
               {/* SECTION 1 — SIZE */}

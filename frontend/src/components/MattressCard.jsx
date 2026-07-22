@@ -57,7 +57,7 @@ Please let me know how we can proceed with ordering, payment, and delivery!`
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#25D366] hover:bg-[#128C7E] flex items-center justify-center text-white z-10 shadow-md transition-transform active:scale-95"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#25D366] hover:bg-[#128C7E] flex items-center justify-center text-white z-10 shadow-md transition-transform active:scale-95 md:hidden"
           title="Chat on WhatsApp"
         >
           <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">

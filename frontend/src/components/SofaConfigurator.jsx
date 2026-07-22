@@ -286,7 +286,7 @@ Please guide me on delivery timelines and payment methods. Thank you!`;
       <div className="bg-[#FFFDFC] rounded-[16px] border border-[#E0D8CE]/60 shadow-[0_10px_30px_rgba(32,23,18,0.05)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0 animate-fade-in">
         
         {/* Left Side Spec Controls */}
-        <div className="lg:col-span-7 p-5 md:p-8 flex flex-col justify-between select-none">
+        <div className="lg:col-span-7 p-5 md:p-8 flex flex-col justify-between">
           <div>
             <h3 className="text-xl md:text-2xl font-serif font-bold text-[#201712] mb-1">Select Custom Specifications</h3>
             <p className="text-xs text-[#6D6258] mb-5">Customize sofa layout, seating capacity, fabric qualities, and swatches</p>

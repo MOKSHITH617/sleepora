@@ -49,8 +49,41 @@ const VoiceAssistant = ({ menuActive }) => {
   const [feedbackSent, setFeedbackSent] = useState({});
 
   const chatEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const recognitionRef = useRef(null);
   const speechUtteranceRef = useRef(null);
+
+  // Prevent wheel scroll events inside chatbot from scrolling the main background page
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    if (!chatContainer || !isOpen) return;
+
+    const handleWheel = (e) => {
+      const scrollEl = messagesContainerRef.current;
+      if (scrollEl) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollEl;
+        const isScrollable = scrollHeight > clientHeight;
+
+        if (isScrollable) {
+          const isAtTop = scrollTop <= 0 && e.deltaY < 0;
+          const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 2 && e.deltaY > 0;
+
+          if (!isAtTop && !isAtBottom) {
+            e.stopPropagation();
+            return;
+          }
+        }
+      }
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    chatContainer.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      chatContainer.removeEventListener('wheel', handleWheel);
+    };
+  }, [isOpen]);
 
   // Generate Session ID on load
   useEffect(() => {
@@ -272,22 +305,33 @@ const VoiceAssistant = ({ menuActive }) => {
   };
 
   const isDetailsPage = location.pathname.includes('/sofas/') || location.pathname.includes('/mattresses/');
+
+  const getBottomStyle = () => {
+    if (isOpen) {
+      if (isMobile && isDetailsPage) return 'calc(5.5rem + env(safe-area-inset-bottom))';
+      return 'calc(1.5rem + env(safe-area-inset-bottom))';
+    }
+    if (isMobile && isDetailsPage) {
+      return 'calc(5.5rem + env(safe-area-inset-bottom))';
+    }
+    return 'calc(6.5rem + env(safe-area-inset-bottom))';
+  };
+
   const positionClass = isOpen
-    ? (isMobile 
-        ? (isDetailsPage ? 'inset-x-4 bottom-[85px]' : 'inset-x-4 bottom-4') 
-        : 'inset-x-4 bottom-4 md:inset-auto md:bottom-6 md:right-24')
-    : (isMobile 
-        ? (isDetailsPage ? 'bottom-[85px] right-6' : 'bottom-[84px] right-6') 
-        : 'bottom-6 right-24');
+    ? (isMobile ? 'inset-x-4' : 'inset-x-4 md:inset-auto md:right-6')
+    : 'right-6';
 
   return (
-    <div className={`fixed z-[1000] select-none font-sans transition-all duration-300 ${positionClass}`}>
+    <div 
+      className={`fixed z-[1000] font-sans transition-all duration-300 ${positionClass}`}
+      style={{ bottom: getBottomStyle() }}
+    >
       
       {/* MINIMIZED BUBBLE BUTTON */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-primary to-[#1E293B] hover:scale-110 text-white rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 relative border border-white/20"
+          className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-primary to-[#1E293B] hover:scale-110 text-white rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 relative border border-white/20 select-none"
           aria-label="Open AI Assistant"
         >
           <span className="text-xl">💬</span>
@@ -299,10 +343,10 @@ const VoiceAssistant = ({ menuActive }) => {
 
       {/* EXPANDED GLASSMORPHISM CONTAINER */}
       {isOpen && (
-        <div className="w-full md:w-[380px] h-[calc(100vh-120px)] md:h-[500px] max-h-[550px] backdrop-blur-md bg-white/95 border border-[#E0D8CE]/40 shadow-2xl rounded-2xl flex flex-col overflow-hidden transition-all duration-300">
+        <div ref={chatContainerRef} className="w-full md:w-[380px] h-[calc(100vh-120px)] md:h-[500px] max-h-[550px] backdrop-blur-md bg-white/95 border border-[#E0D8CE]/40 shadow-2xl rounded-2xl flex flex-col overflow-hidden transition-all duration-300">
           
           {/* Header */}
-          <div className="bg-primary text-white p-4 flex justify-between items-center border-b border-primary-light">
+          <div className="bg-primary text-white p-4 flex justify-between items-center border-b border-primary-light select-none">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-gradient-to-br from-accent to-[#B3860B] rounded-full flex items-center justify-center font-bold text-primary text-xs">
                 TW
@@ -339,7 +383,7 @@ const VoiceAssistant = ({ menuActive }) => {
           </div>
 
           {/* Chat message listing area */}
-          <div className="flex-grow p-4 overflow-y-auto space-y-4 bg-bg-light/30">
+          <div ref={messagesContainerRef} className="flex-grow p-4 overflow-y-auto overscroll-contain touch-pan-y space-y-4 bg-bg-light/30">
             {messages.map((m) => (
               <div 
                 key={m.id} 
